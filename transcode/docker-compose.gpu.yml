@@ -1,0 +1,25 @@
+# GPU overlay: builds the app from the CUDA-enabled Dockerfile.gpu instead of
+# the CPU Dockerfile, and reserves the host's NVIDIA GPU(s) for the container.
+# Layer it on top of the base (+ onchain, if paid):
+#
+#   docker compose -f docker-compose.yml -f docker-compose.onchain.yml \
+#     -f docker-compose.gpu.yml up -d --build
+#
+# Requires nvidia-container-toolkit on the host. Set TRANSCODE_AV1_ENCODER
+# (and optionally TRANSCODE_H264_ENCODER/TRANSCODE_H265_ENCODER) to the
+# *_nvenc variants in .env — this overlay only swaps the image/runtime, it
+# doesn't change which encoder is requested. `count: all` puts every GPU the
+# host has to work; runner.py round-robins batch jobs across them via -gpu.
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.gpu
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]

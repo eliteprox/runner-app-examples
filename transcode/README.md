@@ -40,6 +40,32 @@ docker compose up -d --build
 uv sync
 ```
 
+Overlays layer on top of the base (`docker-compose.yml`), same convention as
+the rest of the repo:
+
+```sh
+# on-chain (paid), CPU
+docker compose -f docker-compose.yml -f docker-compose.onchain.yml up -d --build
+
+# on-chain (paid), GPU AV1/H264/H265 (set TRANSCODE_*_ENCODER=*_nvenc in .env)
+docker compose -f docker-compose.yml -f docker-compose.onchain.yml -f docker-compose.gpu.yml up -d --build
+```
+
+On-chain needs a local `.env` — copy `.env.example` and fill in the network,
+keystore, and pricing. GPU needs `nvidia-container-toolkit` on the host.
+
+### Deploying in Portainer
+
+Point a Portainer **Git repository** stack at this repo with a comma-separated
+**Compose path**, e.g. `transcode/docker-compose.yml,transcode/docker-compose.onchain.yml,transcode/docker-compose.gpu.yml`
+(Portainer applies them left to right, same as multiple `-f` flags). Add the
+on-chain `.env` values as stack environment variables in the Portainer UI
+(or upload `.env`) rather than committing them. Redeploying the stack recreates
+both `orchestrator` and `app` together, so they always agree on `--orchSecret` —
+if you're attaching to an orchestrator container from a *different* stack
+instead, its `-orchSecret` and this app's `--orchSecret` must match exactly or
+registration fails with `401 invalid registration authorization`.
+
 ### Batch (VOD) — `POST /transcode`
 
 File in, one rendition per profile out. Base64 for small test clips; **URL / object

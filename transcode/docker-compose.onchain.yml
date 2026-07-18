@@ -1,0 +1,31 @@
+# On-chain payment overlay for transcode. Layer it on the offchain base:
+#   docker compose -f docker-compose.yml -f docker-compose.onchain.yml up -d --build
+#
+# Re-points the orchestrator on-chain (see ../compose.onchain.yml) and
+# registers the app with a price so the orchestrator issues a payment
+# challenge. Requires a local .env (gitignored); copy .env.example and fill
+# it in. No signer here — that's the paying gateway's concern, not the
+# orchestrator's; this overlay only covers the recipient side.
+
+services:
+  orchestrator:
+    extends:
+      file: ../compose.onchain.yml
+      service: orchestrator
+
+  # Re-declare the command to add --price/--pixels-per-unit (base file
+  # registers free) — same flags otherwise as docker-compose.yml.
+  app:
+    command:
+      - python
+      - runner.py
+      - --host=0.0.0.0
+      - --orchestrator=https://orchestrator:8935
+      - --orchSecret=abcdef
+      - --runner-url=http://app:8990
+      - --capacity=${TRANSCODE_CAPACITY:-4}
+      - --av1-encoder=${TRANSCODE_AV1_ENCODER:-libsvtav1}
+      - --h264-encoder=${TRANSCODE_H264_ENCODER:-libx264}
+      - --h265-encoder=${TRANSCODE_H265_ENCODER:-libx265}
+      - --price=${PRICE_PER_UNIT}
+      - --pixels-per-unit=${PIXELS_PER_UNIT}
