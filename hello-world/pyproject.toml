@@ -8,5 +8,8 @@ dependencies = [
 ]
 
 # livepeer-gateway is not on PyPI yet; pull it from the branch.
+# ja/live-runner predates the current live-runner payment protocol: it expects a
+# `payment_url` in the 402 challenge, while orchestrators now send `orchestrator`
+# and the client builds the payment session itself.
 [tool.uv.sources]
-livepeer-gateway = { git = "https://github.com/livepeer/livepeer-python-gateway", branch = "ja/live-runner" }
+livepeer-gateway = { git = "https://github.com/eliteprox/livepeer-python-gateway", branch = "jm/live-runner-session-payments" }
