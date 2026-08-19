@@ -22,6 +22,7 @@ on:
       - "echo/**"
       - "tiles/**"
       - "realtime-transcription/**"
+      - "ffmpeg/**"
       - ".github/workflows/images.yml"
   pull_request:
     paths: *image_paths
@@ -41,7 +42,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        example: [hello-world, echo, tiles, realtime-transcription]
+        example: [hello-world, echo, tiles, realtime-transcription, ffmpeg]
     steps:
       - uses: actions/checkout@v7
 

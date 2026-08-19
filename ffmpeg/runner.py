@@ -11,20 +11,19 @@ command template* (never raw args) and returns the result. This is the
   - SKILL.md is the agent-facing contract (when/how to call each op)
   - command templates are the security boundary (no arbitrary flags)
 
-Single-op cousin: `../vod-transcode` (just transcode). The transport /
+Single-op cousin: a dedicated transcode app would look the same. The transport /
 registration / mode choices are identical and deliberate:
 
   - transport    : HTTP request/response (no live media plane)
   - registration : dynamic — self-registers via the SDK, like hello-world
-  - mode         : persistent (the default); single-shot by nature, but
-                   single-shot payment isn't wired yet (go-livepeer#3955)
+  - mode         : single-shot (one request → one result; billed once per call)
 
 Wire protocol on POST /run:
   request : {"op": "clip", "input_b64": "...", "start": 3, "end": 8}
   response: {"output_b64": "...", "bytes": N, "media_type": "video/mp4"}
 
 Media is base64'd into JSON so it rides the standard buffered call path (and its
-payment), like vod-transcode. Fine for short clips; production passes URLs +
+payment), like hello-world. Fine for short clips; production passes URLs +
 object storage instead of inlining bytes.
 """
 
@@ -388,7 +387,7 @@ def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="ffmpeg multi-op Live Runner (tool -> agent)."
     )
-    parser.add_argument("--orchestrator", default="http://localhost:8935")
+    parser.add_argument("--orchestrator", default="https://localhost:8935")
     parser.add_argument("--orchSecret", default="abcdef")
     parser.add_argument("--runner-url", default=f"http://{DEFAULT_HOST}:{DEFAULT_PORT}")
     parser.add_argument(
@@ -396,12 +395,9 @@ def _parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--price",
-        type=int,
+        type=float,
         default=0,
-        help="Price in USD per pixels-per-unit (0 = free).",
-    )
-    parser.add_argument(
-        "--pixels-per-unit", type=int, default=1, help="Scale factor for the price."
+        help="Runner price in USD per call (0 = free, the offchain default).",
     )
     return parser.parse_args()
 
@@ -413,13 +409,15 @@ def main() -> None:
     args = _parse_args()
 
     async def _on_startup(app: web.Application) -> None:
-        app["registration"] = await register_runner(
+        app["registration"] = await register_runner(  # Livepeer: 1
             args.orchestrator,
             secret=args.orchSecret,
             runner_url=args.runner_url,
             app=APP_ID,
-            price_per_unit=args.price,
-            pixels_per_unit=args.pixels_per_unit,
+            mode="single-shot",
+            price=args.price,  # USD per call
+            # one flat payment per call instead of per-second metering
+            unit="fixed",
         )
         log.info(
             "registered runner_id=%s app=%s ops=%s default_encoder=%s",
@@ -431,7 +429,7 @@ def main() -> None:
 
     async def _on_cleanup(app: web.Application) -> None:
         with suppress(Exception):
-            await app["registration"].close()
+            await app["registration"].close()  # Livepeer: 2
 
     app = web.Application(client_max_size=512 * 1024 * 1024)  # allow modest uploads
     app.router.add_get("/ops", _handle_ops)

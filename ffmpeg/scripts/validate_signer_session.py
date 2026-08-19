@@ -48,7 +48,9 @@ def check_signer_url_precedence() -> SignerCheckResult:
 def check_signer_reachability() -> SignerCheckResult:
     signer_url = os.environ.get("LIVEPEER_SIGNER", "").strip()
     if not signer_url:
-        return SignerCheckResult("signer_reachability", True, "skipped (no LIVEPEER_SIGNER)")
+        return SignerCheckResult(
+            "signer_reachability", True, "skipped (no LIVEPEER_SIGNER)"
+        )
     ok, detail = _http_reachable(signer_url.rstrip("/"))
     return SignerCheckResult("signer_reachability", ok, f"{signer_url} -> {detail}")
 
@@ -58,7 +60,9 @@ def check_oidc_exchange() -> SignerCheckResult:
     client_id = os.environ.get("LIVEPEER_OIDC_CLIENT_ID", "").strip()
     oidc_url = os.environ.get("LIVEPEER_OIDC_URL", "").strip()
     if not (billing and client_id and oidc_url):
-        return SignerCheckResult("oidc_exchange", True, "skipped (OIDC+billing env not set)")
+        return SignerCheckResult(
+            "oidc_exchange", True, "skipped (OIDC+billing env not set)"
+        )
     try:
         from livepeer_gateway_client.oidc_auth import ensure_valid_token
         from livepeer_gateway_client.auth_exchange import exchange_oidc_token_for_signer
@@ -66,7 +70,9 @@ def check_oidc_exchange() -> SignerCheckResult:
         oauth = ensure_valid_token(
             oidc_url,
             client_id=client_id,
-            scopes=os.environ.get("LIVEPEER_OIDC_SCOPES", "openid sign:job offline_access"),
+            scopes=os.environ.get(
+                "LIVEPEER_OIDC_SCOPES", "openid sign:job offline_access"
+            ),
             audience=os.environ.get("LIVEPEER_OIDC_AUDIENCE", "livepeer-clearinghouse"),
             headless=True,
         )
@@ -125,14 +131,18 @@ def check_cached_oidc_reuse() -> SignerCheckResult:
         first = ensure_valid_token(
             oidc_url,
             client_id=client_id,
-            scopes=os.environ.get("LIVEPEER_OIDC_SCOPES", "openid sign:job offline_access"),
+            scopes=os.environ.get(
+                "LIVEPEER_OIDC_SCOPES", "openid sign:job offline_access"
+            ),
             audience=os.environ.get("LIVEPEER_OIDC_AUDIENCE", "livepeer-clearinghouse"),
             headless=True,
         )
         second = ensure_valid_token(
             oidc_url,
             client_id=client_id,
-            scopes=os.environ.get("LIVEPEER_OIDC_SCOPES", "openid sign:job offline_access"),
+            scopes=os.environ.get(
+                "LIVEPEER_OIDC_SCOPES", "openid sign:job offline_access"
+            ),
             audience=os.environ.get("LIVEPEER_OIDC_AUDIENCE", "livepeer-clearinghouse"),
             headless=True,
         )
@@ -147,7 +157,9 @@ def check_cached_oidc_reuse() -> SignerCheckResult:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Validate signer session setup for MCP.")
+    parser = argparse.ArgumentParser(
+        description="Validate signer session setup for MCP."
+    )
     parser.add_argument("--json", action="store_true", help="Emit JSON results")
     args = parser.parse_args()
 

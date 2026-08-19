@@ -1,9 +1,9 @@
 # GPU overlay — enable NVIDIA GPU acceleration by layering this on the base (and
 # optionally the on-chain) compose:
 #
-#   docker compose -f docker-compose.yml -f docker-compose.gpu.yml up -d --build
+#   docker compose -f compose.yml -f compose.gpu.yml up -d --build
 #   # with payments too:
-#   docker compose -f docker-compose.yml -f docker-compose.onchain.yml -f docker-compose.gpu.yml up -d --build
+#   docker compose -f compose.yml -f compose.onchain.yml -f compose.gpu.yml up -d --build
 #
 # It only *adds* GPU access and makes h264_nvenc the default encoder, so it
 # composes cleanly with the other files (no `command` override to clash with the

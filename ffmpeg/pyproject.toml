@@ -4,12 +4,11 @@ version = "0.1.0"
 description = "Multi-op ffmpeg tool example app (tool -> agent) for the Livepeer network."
 requires-python = ">=3.12"
 dependencies = [
-    "livepeer-gateway",
+    "livepeer-gateway>=1.0.0",
     "livepeer-gateway-client",
     "mcp",  # for mcp_server.py — the Claude (MCP) integration
 ]
 
-# Neither package is on PyPI yet; pull them from git by pinned commit.
+# livepeer-gateway-client isn't on PyPI yet; pin the Clearinghouse Builder API client.
 [tool.uv.sources]
-livepeer-gateway = { git = "https://github.com/livepeer/livepeer-python-gateway", rev = "81ee7bee7932afe94c882a560e5a8bdba1f2cb04" }
 livepeer-gateway-client = { git = "https://github.com/pymthouse/livepeer-gateway-client", rev = "8035d8514bf5048f380e48b98849472492de2e27" }
