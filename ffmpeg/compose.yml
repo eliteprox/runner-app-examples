@@ -1,11 +1,10 @@
-# Offchain demo: orchestrator + a multi-op ffmpeg tool app that self-registers
-# (dynamic) and runs an ffmpeg op on a posted file.
+# End-to-end offchain demo: orchestrator + a multi-op ffmpeg tool app.
 #
+# The orchestrator service is defined once in ../compose.orchestrator.yml and
+# pulled in with `extends`; this file only adds the app. Once up, call it from
+# the host with the SDK:
 #   docker compose up -d --build
 #   uv run client.py --op transcode --height 480 --input clip.mp4 --output out.mp4
-#
-# The orchestrator is defined once in ../compose.orchestrator.yml and pulled in
-# with `extends`. The app embeds the SDK and registers itself, like hello-world.
 # CPU (libx264) by default; see the README to enable GPU (h264_nvenc).
 
 services:
@@ -15,6 +14,9 @@ services:
       service: orchestrator
 
   app:
+    # `up` always builds; `--pull always` runs the published image instead.
+    image: ghcr.io/livepeer/runner-example-ffmpeg:latest
+    pull_policy: build
     build: .
     container_name: example_apps_ffmpeg
     # Wait for the orchestrator's healthcheck so registration doesn't race its boot.
@@ -22,10 +24,8 @@ services:
       orchestrator:
         condition: service_healthy
     command:
-      - python
-      - runner.py
       - --host=0.0.0.0
       - --orchestrator=https://orchestrator:8935
       - --orchSecret=abcdef
       - --runner-url=http://app:5000
-    # GPU: layer docker-compose.gpu.yml — no edits here (see that file / README).
+    # GPU: layer compose.gpu.yml — no edits here (see that file / README).

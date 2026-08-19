@@ -4,14 +4,14 @@ Validated: 2026-07-01. Branch: `rs/ffmpeg` (worktree at `live-runner-example-app
 
 ## Prerequisites
 
-| Item | Command / value |
-|------|-----------------|
-| Branch | `git fetch origin rs/ffmpeg && git worktree add ../live-runner-example-apps-rs-ffmpeg origin/rs/ffmpeg` |
-| Docker stack | `cd ffmpeg && docker compose up -d --build` |
-| Discovery | `curl -sk https://localhost:8935/discovery \| jq '.[].runners[].app'` → `"livepeer/ffmpeg"` |
-| Test clip | `docker run --rm -v $PWD:/out jrottenberg/ffmpeg:4.4-alpine -f lavfi -i testsrc=duration=3:size=640x480:rate=24 -pix_fmt yuv420p -y /out/clip.mp4` |
-| Claude Code | `claude --version` |
-| Clearinghouse stack (signer path) | `docker compose up -d` in `clearinghouse` repo → Builder API `:8095`, remote-signer `127.0.0.1:8081` |
+| Item                              | Command / value                                                                                                                                    |
+| --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Branch                            | `git fetch origin rs/ffmpeg && git worktree add ../live-runner-example-apps-rs-ffmpeg origin/rs/ffmpeg`                                            |
+| Docker stack                      | `cd ffmpeg && docker compose up -d --build`                                                                                                        |
+| Discovery                         | `curl -sk https://localhost:8935/discovery \| jq '.[].runners[].app'` → `"livepeer/ffmpeg"`                                                        |
+| Test clip                         | `docker run --rm -v $PWD:/out jrottenberg/ffmpeg:4.4-alpine -f lavfi -i testsrc=duration=3:size=640x480:rate=24 -pix_fmt yuv420p -y /out/clip.mp4` |
+| Claude Code                       | `claude --version`                                                                                                                                 |
+| Clearinghouse stack (signer path) | `docker compose up -d` in `clearinghouse` repo → Builder API `:8095`, remote-signer `127.0.0.1:8081`                                               |
 
 ## 1. Offchain smoke test (PASS)
 
@@ -63,12 +63,12 @@ export LIVEPEER_EXTERNAL_USER_ID=demo-user
 uv run python scripts/validate_signer_session.py
 ```
 
-| Check | Expected |
-|-------|----------|
-| `signer_reachability` | PASS (HTTP 404 on root = reachable) |
-| `cached_oidc_reuse` | PASS (same access_token on second call) |
-| `auth0_m2m_mint` | PASS (token_len > 0) |
-| `oidc_exchange` | **FAIL** if OpenMeter misconfigured (see below) |
+| Check                 | Expected                                        |
+| --------------------- | ----------------------------------------------- |
+| `signer_reachability` | PASS (HTTP 404 on root = reachable)             |
+| `cached_oidc_reuse`   | PASS (same access_token on second call)         |
+| `auth0_m2m_mint`      | PASS (token_len > 0)                            |
+| `oidc_exchange`       | **FAIL** if OpenMeter misconfigured (see below) |
 
 ## 3. Clearinghouse signer-backed MCP via Builder API exchange (PASS)
 
@@ -150,11 +150,11 @@ M2M branch in `mcp_server._resolve_signer_auth`, bypassing billing).
 
 ## 4. Auth cache + refresh (PASS)
 
-| Test | Result |
-|------|--------|
-| OIDC cache reuse | Same `access_token` on consecutive `ensure_valid_token()` calls |
-| Signer auth error detection | `"exp" claim expiration is past` → `is_signer_auth_error()` = true |
-| MCP retry on 401 | `mcp_server._call()` re-mints via `SignerTokenProvider.refresh()` when provider is set |
+| Test                        | Result                                                                                 |
+| --------------------------- | -------------------------------------------------------------------------------------- |
+| OIDC cache reuse            | Same `access_token` on consecutive `ensure_valid_token()` calls                        |
+| Signer auth error detection | `"exp" claim expiration is past` → `is_signer_auth_error()` = true                     |
+| MCP retry on 401            | `mcp_server._call()` re-mints via `SignerTokenProvider.refresh()` when provider is set |
 
 Force fresh device login:
 
@@ -169,11 +169,11 @@ uv run examples/device_login.py \
 
 PymtHouse shares the Auth0 issuer (`pymthouse.us.auth0.com`). MCP registration is **env-only** — no code changes.
 
-| Billing endpoint | Status |
-|------------------|--------|
+| Billing endpoint                                    | Status                                |
+| --------------------------------------------------- | ------------------------------------- |
 | `http://localhost:8095` (Clearinghouse Builder API) | Up; exchange blocked by OpenMeter 404 |
-| `https://staging.pymthouse.com` | 404 on `/api/v1/apps/.../oidc/token` |
-| `https://pymthouse.com` | 404 on token exchange route |
+| `https://staging.pymthouse.com`                     | 404 on `/api/v1/apps/.../oidc/token`  |
+| `https://pymthouse.com`                             | 404 on token exchange route           |
 
 **Parity verified:** same MCP server + Auth0 M2M env works under `livepeer-ffmpeg-pymthouse` name:
 
@@ -200,37 +200,37 @@ Exchange should return `signer_url` (e.g. `https://pymthouse-preview.up.railway.
 
 ## Failure signatures
 
-| Symptom | Cause | Fix |
-|---------|-------|-----|
-| `No such tool available` | MCP server crashed at import (auth resolve at module load) | Fixed: lazy auth in `mcp_server.py`; re-register MCP |
-| `openmeter customer provisioning failed` / `list customers 404` | `builder-api` inherited the events-mutated `OPENMETER_URL` → hit `…/events/customers` | Launch `builder-api` with un-mutated mgmt base (entrypoint fix in §3a) |
-| `builder-api: skipped — AUTH0_MGMT_* not set` | `.env.livepeer` not mounted into collector | Add `.env.livepeer:/service/.env.livepeer:ro` mount (compose fix in §3a) |
-| `invalid_grant` on exchange | JWT `azp` ≠ path `{clientId}` | Match `LIVEPEER_OIDC_CLIENT_ID` to Auth0 app |
-| Signer 401 / exp claim | Short-lived signer JWT expired | Auto-refresh via provider; or re-run device login |
-| `No runners available` on production discovery | `livepeer/ffmpeg` not on network orchestrators | Use local stack for ffmpeg MCP; production for streamdiffusion/vllm |
-| Container name conflict | Stale `example_apps_orchestrator` | `docker rm example_apps_orchestrator` then re-up |
+| Symptom                                                         | Cause                                                                                 | Fix                                                                      |
+| --------------------------------------------------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| `No such tool available`                                        | MCP server crashed at import (auth resolve at module load)                            | Fixed: lazy auth in `mcp_server.py`; re-register MCP                     |
+| `openmeter customer provisioning failed` / `list customers 404` | `builder-api` inherited the events-mutated `OPENMETER_URL` → hit `…/events/customers` | Launch `builder-api` with un-mutated mgmt base (entrypoint fix in §3a)   |
+| `builder-api: skipped — AUTH0_MGMT_* not set`                   | `.env.livepeer` not mounted into collector                                            | Add `.env.livepeer:/service/.env.livepeer:ro` mount (compose fix in §3a) |
+| `invalid_grant` on exchange                                     | JWT `azp` ≠ path `{clientId}`                                                         | Match `LIVEPEER_OIDC_CLIENT_ID` to Auth0 app                             |
+| Signer 401 / exp claim                                          | Short-lived signer JWT expired                                                        | Auto-refresh via provider; or re-run device login                        |
+| `No runners available` on production discovery                  | `livepeer/ffmpeg` not on network orchestrators                                        | Use local stack for ffmpeg MCP; production for streamdiffusion/vllm      |
+| Container name conflict                                         | Stale `example_apps_orchestrator`                                                     | `docker rm example_apps_orchestrator` then re-up                         |
 
 ## MCP env reference
 
-| Variable | Purpose |
-|----------|---------|
-| `LIVEPEER_DISCOVERY` | Orchestrator discovery URL |
-| `LIVEPEER_SIGNER` | Remote signer base URL (fallback) |
-| `LIVEPEER_OIDC_URL` | Auth0 issuer |
-| `LIVEPEER_BILLING_URL` | Builder / PymtHouse billing API |
-| `LIVEPEER_OIDC_CLIENT_ID` | Public app client for device login + exchange |
-| `LIVEPEER_API_KEY` | `sk_*` or `pmth_cs_*` for non-interactive exchange |
-| `LIVEPEER_CLIENT_ID` | Public client for API-key exchange |
-| `LIVEPEER_AUTH0_M2M_CLIENT_ID` | Direct Auth0 M2M (bypass billing) |
-| `LIVEPEER_AUTH0_M2M_CLIENT_SECRET` | M2M secret |
-| `LIVEPEER_EXTERNAL_USER_ID` | End-user scope for M2M mint |
-| `LIVEPEER_OIDC_AUDIENCE` | Default `livepeer-clearinghouse` |
+| Variable                           | Purpose                                            |
+| ---------------------------------- | -------------------------------------------------- |
+| `LIVEPEER_DISCOVERY`               | Orchestrator discovery URL                         |
+| `LIVEPEER_SIGNER`                  | Remote signer base URL (fallback)                  |
+| `LIVEPEER_OIDC_URL`                | Auth0 issuer                                       |
+| `LIVEPEER_BILLING_URL`             | Builder / PymtHouse billing API                    |
+| `LIVEPEER_OIDC_CLIENT_ID`          | Public app client for device login + exchange      |
+| `LIVEPEER_API_KEY`                 | `sk_*` or `pmth_cs_*` for non-interactive exchange |
+| `LIVEPEER_CLIENT_ID`               | Public client for API-key exchange                 |
+| `LIVEPEER_AUTH0_M2M_CLIENT_ID`     | Direct Auth0 M2M (bypass billing)                  |
+| `LIVEPEER_AUTH0_M2M_CLIENT_SECRET` | M2M secret                                         |
+| `LIVEPEER_EXTERNAL_USER_ID`        | End-user scope for M2M mint                        |
+| `LIVEPEER_OIDC_AUDIENCE`           | Default `livepeer-clearinghouse`                   |
 
 ## Recommended auth mode for Claude Code
 
-| Mode | When |
-|------|------|
-| **Offchain** | Local dev, no payment |
-| **Device login + exchange** | Interactive dev with working Builder API |
-| **Auth0 M2M direct** | Headless MCP when OpenMeter/billing exchange is down |
-| **API key / pmth_cs_*** | CI / unattended when billing API is reachable |
+| Mode                        | When                                                 |
+| --------------------------- | ---------------------------------------------------- |
+| **Offchain**                | Local dev, no payment                                |
+| **Device login + exchange** | Interactive dev with working Builder API             |
+| **Auth0 M2M direct**        | Headless MCP when OpenMeter/billing exchange is down |
+| **API key / pmth*cs*\***    | CI / unattended when billing API is reachable        |

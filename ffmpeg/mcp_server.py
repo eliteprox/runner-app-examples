@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 """Local MCP server exposing the livepeer/ffmpeg capability to Claude as tools.
 
-Each tool reserves a session on your orchestrator, sends a *local* file to the
-`livepeer/ffmpeg` runner, and writes the result back to a local path. Batch ops
-on a persistent runner (single-shot payment isn't wired yet, go-livepeer#3955).
+Each tool discovers the `livepeer/ffmpeg` runner, sends a *local* file as a
+single-shot call, and writes the result back to a local path.
 
 Offchain by default. For paid / Clearinghouse / PymtHouse sessions, configure
 signer auth via env (see README-mcp.md and MCP-TEST-RUNBOOK.md).
@@ -37,8 +36,9 @@ except ImportError:  # newer SDK rename (MCPServer == FastMCP)
     from mcp.server import MCPServer as FastMCP  # type: ignore
 
 from livepeer_gateway.errors import LivepeerGatewayError
-from livepeer_gateway.live_runner import call_runner, stop_runner_session
-from livepeer_gateway.selection import reserve_session
+from livepeer_gateway.live_runner import call_runner
+from livepeer_gateway.selection import runner_selector
+from livepeer_gateway_client.errors import is_signer_auth_error
 
 if TYPE_CHECKING:
     from livepeer_gateway_client.signer_provider import SignerTokenProvider
@@ -168,23 +168,23 @@ def _refresh_signer_auth() -> None:
 
 
 async def _call(payload: dict) -> dict:
-    """Reserve a session, POST /run, return the runner's response data."""
-    from livepeer_gateway_client.errors import is_signer_auth_error
-
+    """Discover a runner, POST /run as a single-shot call, return response data."""
     signer_url = _get_auth().signer_url
     signer_headers = _get_auth().signer_headers
     discovery_url = _get_auth().discovery_url
 
     for attempt in range(3):
-        session = await reserve_session(
-            discovery_url=discovery_url,
-            app=APP_ID,
-            signer_url=signer_url,
-            signer_headers=signer_headers,
-        )
         try:
+            cursor = await runner_selector(
+                discovery_url=discovery_url,
+                app=APP_ID,
+                signer_url=signer_url,
+                signer_headers=signer_headers,
+            )
+            runner = cursor.candidates[0]
             result = await call_runner(
-                runner_url=session.app_url.rstrip("/") + "/run",
+                runner=runner,
+                runner_url=runner.url.rstrip("/") + "/run",
                 payload=payload,
                 signer_url=signer_url,
                 signer_headers=signer_headers,
@@ -192,23 +192,26 @@ async def _call(payload: dict) -> dict:
             )
             return result.data
         except LivepeerGatewayError as exc:
-            if attempt < 2 and is_signer_auth_error(exc) and _get_auth().provider is not None:
-                log.warning("signer token rejected; re-minting (attempt %d)", attempt + 1)
+            if (
+                attempt < 2
+                and is_signer_auth_error(exc)
+                and _get_auth().provider is not None
+            ):
+                log.warning(
+                    "signer token rejected; re-minting (attempt %d)", attempt + 1
+                )
                 _refresh_signer_auth()
                 signer_url = _get_auth().signer_url
                 signer_headers = _get_auth().signer_headers
                 discovery_url = _get_auth().discovery_url
                 continue
             raise
-        finally:
-            try:
-                await stop_runner_session(session)
-            except Exception:
-                pass
     raise LivepeerGatewayError("exhausted signer auth retries")
 
 
-async def _run_media(op: str, input_path: str, output_path: str, **params: object) -> str:
+async def _run_media(
+    op: str, input_path: str, output_path: str, **params: object
+) -> str:
     """Run a media op and save the base64 output to output_path."""
     if not os.path.isfile(input_path):
         return f"error: input file not found: {input_path}"
@@ -226,7 +229,9 @@ async def _run_media(op: str, input_path: str, output_path: str, **params: objec
 
 
 @mcp.tool()
-async def ffmpeg_transcode(input_path: str, height: int = 0, quality: int = 23, output_path: str = "out.mp4") -> str:
+async def ffmpeg_transcode(
+    input_path: str, height: int = 0, quality: int = 23, output_path: str = "out.mp4"
+) -> str:
     """Re-encode a video to H.264/mp4. height: target height in px (0 = keep the source resolution, e.g. keep 4K). quality: CRF/CQ, lower is higher quality (18 = high, 23 = default, 28 = small). Returns a status string with the output path."""
     params: dict = {"quality": quality}
     if height:
@@ -235,13 +240,17 @@ async def ffmpeg_transcode(input_path: str, height: int = 0, quality: int = 23, 
 
 
 @mcp.tool()
-async def ffmpeg_clip(input_path: str, start: float, end: float, output_path: str = "clip_out.mp4") -> str:
+async def ffmpeg_clip(
+    input_path: str, start: float, end: float, output_path: str = "clip_out.mp4"
+) -> str:
     """Cut [start, end] seconds out of a video without re-encoding (fast). Returns a status string with the output path."""
     return await _run_media("clip", input_path, output_path, start=start, end=end)
 
 
 @mcp.tool()
-async def ffmpeg_thumbnail(input_path: str, at: float = 0.0, output_path: str = "thumb.jpg") -> str:
+async def ffmpeg_thumbnail(
+    input_path: str, at: float = 0.0, output_path: str = "thumb.jpg"
+) -> str:
     """Extract a single JPEG frame from a video at a timestamp (seconds). Returns a status string with the output path."""
     return await _run_media("thumbnail", input_path, output_path, at=at)
 
@@ -253,21 +262,40 @@ async def ffmpeg_extract_audio(input_path: str, output_path: str = "audio.m4a") 
 
 
 @mcp.tool()
-async def ffmpeg_gif(input_path: str, fps: int = 12, height: int = 240, output_path: str = "out.gif") -> str:
+async def ffmpeg_gif(
+    input_path: str, fps: int = 12, height: int = 240, output_path: str = "out.gif"
+) -> str:
     """Convert a (short) video to an animated GIF, palette-optimized. Returns a status string with the output path."""
     return await _run_media("gif", input_path, output_path, fps=fps, height=height)
 
 
 @mcp.tool()
-async def ffmpeg_crop(input_path: str, width: int, height: int, x: int = 0, y: int = 0, output_path: str = "crop.mp4") -> str:
+async def ffmpeg_crop(
+    input_path: str,
+    width: int,
+    height: int,
+    x: int = 0,
+    y: int = 0,
+    output_path: str = "crop.mp4",
+) -> str:
     """Crop a video to width x height at offset (x, y), re-encoded H.264. Returns a status string with the output path."""
-    return await _run_media("crop", input_path, output_path, width=width, height=height, x=x, y=y)
+    return await _run_media(
+        "crop", input_path, output_path, width=width, height=height, x=x, y=y
+    )
 
 
 @mcp.tool()
-async def ffmpeg_convert(input_path: str, format: str = "mp4", quality: int = 23, output_path: str = "") -> str:
+async def ffmpeg_convert(
+    input_path: str, format: str = "mp4", quality: int = 23, output_path: str = ""
+) -> str:
     """Change a video's container format (mp4, mkv, or mov). mkv remuxes fast (keeps codecs); mp4/mov re-encode to H.264/AAC so any input (e.g. webm) works. quality: CRF/CQ for the re-encode, lower is higher quality. Returns a status string with the output path."""
-    return await _run_media("convert", input_path, output_path or f"out.{format}", format=format, quality=quality)
+    return await _run_media(
+        "convert",
+        input_path,
+        output_path or f"out.{format}",
+        format=format,
+        quality=quality,
+    )
 
 
 @mcp.tool()

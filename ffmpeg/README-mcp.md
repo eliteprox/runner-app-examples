@@ -19,15 +19,16 @@ curl -sk https://localhost:8935/discovery | jq '.[].runners[].app'   # expect li
 ## 2. Register the MCP server with Claude Code
 
 Use the **absolute path** to this `ffmpeg/` dir. Config is passed as
-**environment variables** — this is a local *stdio* server, so use `--env`, not
+**environment variables** — this is a local _stdio_ server, so use `--env`, not
 headers (headers are only for remote HTTP MCP servers):
 
-| env | meaning |
-| --- | --- |
+| env                  | meaning                                                                 |
+| -------------------- | ----------------------------------------------------------------------- |
 | `LIVEPEER_DISCOVERY` | orchestrator discovery URL (default `https://localhost:8935/discovery`) |
-| `LIVEPEER_SIGNER` | remote signer URL for the **paid** path; omit for offchain |
+| `LIVEPEER_SIGNER`    | remote signer URL for the **paid** path; omit for offchain              |
 
 **a) CLI — offchain:**
+
 ```sh
 claude mcp add livepeer-ffmpeg \
   --env LIVEPEER_DISCOVERY=https://localhost:8935/discovery \
@@ -35,6 +36,7 @@ claude mcp add livepeer-ffmpeg \
 ```
 
 **On-chain (paid)** — add the signer (your running `signer` service on port 7936):
+
 ```sh
 claude mcp add livepeer-ffmpeg \
   --env LIVEPEER_DISCOVERY=https://localhost:8935/discovery \
@@ -46,6 +48,7 @@ claude mcp add livepeer-ffmpeg \
 > `claude mcp remove livepeer-ffmpeg`, then re-add. Check with `claude mcp list`.
 
 **b) `.mcp.json`** (project-scoped):
+
 ```json
 {
   "mcpServers": {
@@ -62,7 +65,7 @@ claude mcp add livepeer-ffmpeg \
 ```
 
 `uv run --directory …` uses this folder's `pyproject.toml`, so it pulls `mcp` and
-the `livepeer-gateway` SDK (from the `ja/live-runner` branch) automatically.
+the `livepeer-gateway` SDK automatically.
 
 ## 3. Use it in Claude
 
@@ -98,21 +101,23 @@ Claude **already knows** the tools — the MCP server reports them automatically
 file-reading agents). To discover or use them:
 
 - **List them** — run `/mcp` in Claude Code, or just ask:
+
   > "What livepeer ffmpeg tools do you have, and what parameters do they take?"
 
   Claude answers from its live tool list — no extra wiring.
+
 - **Use them by intent** — describe the task; you don't name the tool:
 
-  | Ask Claude… | tool it calls |
-  | --- | --- |
-  | "transcode clip.mp4 to 480p" | `ffmpeg_transcode` |
-  | "clip 1–3s of clip.mp4" | `ffmpeg_clip` |
-  | "grab a thumbnail of clip.mp4 at 1.5s" | `ffmpeg_thumbnail` |
-  | "extract the audio from clip.mp4" | `ffmpeg_extract_audio` |
-  | "make a gif of clip.mp4" | `ffmpeg_gif` |
-  | "crop clip.mp4 to 640×360" | `ffmpeg_crop` |
-  | "convert clip.mp4 to mkv" | `ffmpeg_convert` |
-  | "what codec / resolution / duration is clip.mp4?" | `ffmpeg_probe` |
+  | Ask Claude…                                       | tool it calls          |
+  | ------------------------------------------------- | ---------------------- |
+  | "transcode clip.mp4 to 480p"                      | `ffmpeg_transcode`     |
+  | "clip 1–3s of clip.mp4"                           | `ffmpeg_clip`          |
+  | "grab a thumbnail of clip.mp4 at 1.5s"            | `ffmpeg_thumbnail`     |
+  | "extract the audio from clip.mp4"                 | `ffmpeg_extract_audio` |
+  | "make a gif of clip.mp4"                          | `ffmpeg_gif`           |
+  | "crop clip.mp4 to 640×360"                        | `ffmpeg_crop`          |
+  | "convert clip.mp4 to mkv"                         | `ffmpeg_convert`       |
+  | "what codec / resolution / duration is clip.mp4?" | `ffmpeg_probe`         |
 
 In headless `-p` mode, pre-allow the tools you expect (comma-separated):
 `--allowedTools "mcp__livepeer-ffmpeg__ffmpeg_transcode,mcp__livepeer-ffmpeg__ffmpeg_probe"`.
@@ -125,7 +130,7 @@ In headless `-p` mode, pre-allow the tools you expect (comma-separated):
 
 - **Offchain by default; paid with `LIVEPEER_SIGNER`.** Unset = no payment. The paid
   path needs a **funded** remote signer (deposit + reserve) and the runner must
-  advertise a price (run it on-chain via `docker-compose.onchain.yml`). Verify the
+  advertise a price (run it on-chain via `compose.onchain.yml`). Verify the
   paid path works first with
   `uv run client.py --op transcode --height 480 --input clip.mp4 --output out.mp4 --signer http://localhost:7936`
   — if that succeeds, the MCP with `LIVEPEER_SIGNER` will too.
