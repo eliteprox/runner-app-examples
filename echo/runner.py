@@ -1,0 +1,300 @@
+#!/usr/bin/env python3
+"""echo app: a realtime trickle video service, made live on the Livepeer network.
+
+Receives a live video stream over trickle `in`/`out` channels, optionally transforms
+each frame (gray / invert / blur), and echoes it back.
+
+Livepeer integration (grep `# Livepeer:`):
+  1. register_runner()          — announce the app to the orchestrator (startup)
+  2. create_trickle_channels()  — open the session's trickle in/out channels
+  3. registration.close()       — deregister (cleanup)
+
+Media I/O over trickle uses MediaOutput (read frames) and MediaPublish (write frames).
+/echo and /update are ordinary HTTP handlers; being on the network doesn't change how
+you write them.
+"""
+
+from __future__ import annotations
+
+import argparse
+import asyncio
+import json
+import logging
+from contextlib import suppress
+from dataclasses import dataclass
+from typing import Any
+
+import av
+import numpy as np
+from aiohttp import web
+
+from livepeer_gateway.live_runner import register_runner
+from livepeer_gateway.media_decode import AudioDecodedMediaFrame, VideoDecodedMediaFrame
+from livepeer_gateway.media_output import MediaOutput
+from livepeer_gateway.media_publish import (
+    AudioOutputConfig,
+    MediaPublish,
+    MediaPublishConfig,
+    VideoOutputConfig,
+)
+
+log = logging.getLogger("echo")
+
+DEFAULT_HOST = "127.0.0.1"
+DEFAULT_PORT = 8989
+MODES = frozenset({"echo", "gray", "invert", "blur", "robot"})
+# "robot" multiplies each sample by a sine at this frequency; the sample count is
+# unchanged, so audio stays in sync with video.
+ROBOT_HZ = 220.0
+
+state: EchoSession | None = None
+
+
+@dataclass
+class ModeState:
+    mode: str = "echo"
+    radius: int = 7
+
+
+@dataclass
+class EchoSession:
+    session_id: str
+    in_url: str
+    out_url: str
+    mode: ModeState
+    output: MediaOutput
+    publisher: MediaPublish
+
+    def to_json(self) -> dict[str, Any]:
+        data = {
+            "session": self.session_id,
+            "in": self.in_url,
+            "out": self.out_url,
+            "mode": self.mode.mode,
+        }
+        if self.mode.mode == "blur":
+            data["radius"] = self.mode.radius
+        return data
+
+
+async def _close_pipeline() -> None:
+    global state
+    if state is None:
+        return
+    current = state
+    state = None
+    with suppress(Exception):
+        await current.publisher.close()
+    with suppress(Exception):
+        await current.output.close()
+
+
+def _parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Live Runner echo app demo.")
+    parser.add_argument("--orchestrator", default="https://localhost:8935")
+    parser.add_argument("--orchSecret", default="abcdef")
+    parser.add_argument("--runner-url", default=f"http://{DEFAULT_HOST}:{DEFAULT_PORT}")
+    parser.add_argument("--host", default=DEFAULT_HOST)
+    parser.add_argument(
+        "--price",
+        type=float,
+        default=0,
+        help="Runner price in USD per hour (0 = free, the offchain default).",
+    )
+    return parser.parse_args()
+
+
+def _session_id(request: web.Request) -> str:
+    session_id = request.headers.get("Livepeer-Session-Id", "").strip()
+    if not session_id:
+        raise web.HTTPBadRequest(text="missing Livepeer-Session-Id header")
+    return session_id
+
+
+def _parse_mode(payload: dict[str, Any]) -> ModeState:
+    mode = str(payload.get("mode", "echo")).strip().lower()
+    if mode not in MODES:
+        raise web.HTTPBadRequest(text=f"mode must be one of {sorted(MODES)}")
+    radius = payload.get("radius", 7)
+    try:
+        radius_int = int(radius)
+    except (TypeError, ValueError) as exc:
+        raise web.HTTPBadRequest(text="radius must be an integer") from exc
+    return ModeState(mode=mode, radius=max(1, min(99, radius_int)))
+
+
+def _odd_kernel(radius: int) -> int:
+    kernel = max(1, int(radius))
+    if kernel % 2 == 0:
+        kernel += 1
+    return min(kernel, 99)
+
+
+def _robot_audio(frame: av.AudioFrame) -> av.AudioFrame:
+    # sample[i] *= sin(2*pi*ROBOT_HZ*t[i]). The carrier phase comes from the frame's
+    # own timestamp, so it stays continuous across frames (no clicks) without keeping
+    # state, and |carrier| <= 1 means it cannot clip.
+    samples = frame.to_ndarray()
+    t0 = float(frame.pts * frame.time_base) if frame.pts is not None else 0.0
+    t = t0 + np.arange(samples.shape[-1], dtype=np.float32) / frame.sample_rate
+    carrier = np.sin(2.0 * np.pi * ROBOT_HZ * t).astype(np.float32)
+    out = av.AudioFrame.from_ndarray(
+        (samples.astype(np.float32) * carrier).astype(samples.dtype),
+        format=frame.format.name,
+        layout=frame.layout.name,
+    )
+    out.sample_rate = frame.sample_rate
+    out.pts = frame.pts
+    out.time_base = frame.time_base
+    return out
+
+
+def _transform_frame(
+    decoded: AudioDecodedMediaFrame | VideoDecodedMediaFrame,
+    mode: ModeState,
+) -> av.VideoFrame | av.AudioFrame | None:
+    frame = decoded.frame
+    if decoded.kind == "audio":
+        # Audio rides along untouched; only "robot" transforms it.
+        return _robot_audio(frame) if mode.mode == "robot" else frame
+    if decoded.kind != "video":
+        return None
+
+    if mode.mode in ("echo", "robot"):  # robot changes audio only
+        return frame
+
+    import cv2
+
+    img = frame.to_ndarray(format="bgr24")
+    if mode.mode == "gray":
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        img = cv2.cvtColor(gray, cv2.COLOR_GRAY2BGR)
+    elif mode.mode == "invert":
+        img = 255 - img
+    elif mode.mode == "blur":
+        kernel = _odd_kernel(mode.radius)
+        img = cv2.GaussianBlur(img, (kernel, kernel), 0)
+
+    out = av.VideoFrame.from_ndarray(img, format="bgr24")
+    out.pts = frame.pts
+    out.time_base = frame.time_base
+    return out
+
+
+async def _handle_echo(request: web.Request) -> web.Response:
+    global state
+    session_id = _session_id(request)
+
+    if state is not None:
+        if state.session_id != session_id:
+            raise web.HTTPConflict(text="echo runner already has an active session")
+        return web.json_response(state.to_json())
+
+    # Pass the request so the SDK opens channels using the orchestrator's
+    # Session-Control header, whose URLs are reachable from the runner's network.
+    channels = await request.app["registration"].create_trickle_channels(  # Livepeer: 2
+        request,
+        [
+            {"name": "in", "mime_type": "video/mp2t"},
+            {"name": "out", "mime_type": "video/mp2t"},
+        ],
+    )
+    by_name = {channel["name"]: channel for channel in channels}
+    if "in" not in by_name or "out" not in by_name:
+        raise web.HTTPInternalServerError(
+            text="orchestrator did not return in/out channels"
+        )
+
+    # for production apps, handle errors
+    payload = json.loads(await request.read())
+    mode = _parse_mode(payload)
+    # Tracks are declared upfront and the container waits for a first frame on each,
+    # so only declare audio when the client says it is sending some.
+    tracks: list[VideoOutputConfig | AudioOutputConfig] = [VideoOutputConfig()]
+    send_audio = payload.get("audio", False)
+    if not isinstance(send_audio, bool):
+        raise web.HTTPBadRequest(text="audio must be a boolean")
+    if send_audio:
+        tracks.append(AudioOutputConfig())
+    # internal_url: runner-reachable address (same as the public url on a shared net).
+    publisher = MediaPublish(
+        by_name["out"].get("internal_url", by_name["out"]["url"]),
+        config=MediaPublishConfig(tracks=tracks),
+    )
+
+    async def _on_frame(decoded) -> None:
+        frame = _transform_frame(decoded, mode)
+        if frame is not None:
+            await publisher.write_frame(frame)
+
+    output = MediaOutput(
+        by_name["in"].get("internal_url", by_name["in"]["url"]), on_frame=_on_frame
+    )
+
+    # Hand public channel urls to the client, so it can send/receive media.
+    state = EchoSession(
+        session_id=session_id,
+        in_url=by_name["in"]["url"],
+        out_url=by_name["out"]["url"],
+        mode=mode,
+        output=output,
+        publisher=publisher,
+    )
+    for task in output.callback_tasks():
+        task.add_done_callback(lambda _task: asyncio.create_task(_close_pipeline()))
+    log.info("started echo session %s", session_id)
+    return web.json_response(state.to_json())
+
+
+async def _handle_update(request: web.Request) -> web.Response:
+    session_id = _session_id(request)
+    if state is None:
+        raise web.HTTPNotFound(text="echo session not started")
+    if state.session_id != session_id:
+        raise web.HTTPConflict(text="echo runner has a different active session")
+
+    # for production apps, handle errors
+    mode = _parse_mode(json.loads(await request.read()))
+    state.mode.mode = mode.mode
+    state.mode.radius = mode.radius
+    return web.json_response(state.to_json())
+
+
+def main() -> None:
+    logging.basicConfig(
+        level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s"
+    )
+    args = _parse_args()
+
+    async def _on_startup(app: web.Application) -> None:
+        app["registration"] = await register_runner(  # Livepeer: 1
+            args.orchestrator,
+            secret=args.orchSecret,
+            runner_url=args.runner_url,
+            app="livepeer-example/echo",
+            mode="persistent",  # realtime trickle streaming is a held-open session
+            # Metered: the session is billed per second of wall-clock for as long
+            # as the client holds it, which is what a live stream costs.
+            price=args.price,  # USD per hour
+        )
+        log.info(
+            "registered runner_id=%s orchestrator=%s",
+            app["registration"].runner_id,
+            app["registration"].orchestrator_url,
+        )
+
+    async def _on_cleanup(app: web.Application) -> None:
+        await _close_pipeline()
+        with suppress(Exception):
+            await app["registration"].close()  # Livepeer: 3
+
+    app = web.Application()
+    app.router.add_post("/echo", _handle_echo)
+    app.router.add_post("/update", _handle_update)
+    app.on_startup.append(_on_startup)
+    app.on_cleanup.append(_on_cleanup)
+    web.run_app(app, host=args.host, port=DEFAULT_PORT)
+
+
+if __name__ == "__main__":
+    main()
