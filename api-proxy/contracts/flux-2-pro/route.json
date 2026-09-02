@@ -1,0 +1,32 @@
+{
+  "credential": {
+    "authorization_scheme": "Key",
+    "environment_variable": "FAL_KEY",
+    "owner": "operator"
+  },
+  "format": "livepeer.fal.runner-route.v1",
+  "identity": {
+    "app_id": "livepeer-example/fal-flux-2-pro",
+    "capability": "flux-2-pro",
+    "endpoint_id": "fal-ai/flux-2-pro",
+    "queue_app_id": "fal-ai/flux-2-pro"
+  },
+  "input_policy": {
+    "caller_authorization": "drop",
+    "endpoint_selection": "pinned",
+    "request_body": "provider_native_json"
+  },
+  "runner": {
+    "mode": "single-shot",
+    "routes": {
+      "execute": "./proxy",
+      "health": "./health",
+      "schema": "./schema"
+    },
+    "transport_profile": "fal_queue_blocking_v1"
+  },
+  "schema": {
+    "path": "./schema.json",
+    "sha256": "8004a03b90297a34d3e46f0af876f037fa815336699adb7cdf9dc542ba3a45de"
+  }
+}

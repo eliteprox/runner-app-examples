@@ -1,0 +1,32 @@
+{
+  "credential": {
+    "authorization_scheme": "Key",
+    "environment_variable": "FAL_KEY",
+    "owner": "operator"
+  },
+  "format": "livepeer.fal.runner-route.v1",
+  "identity": {
+    "app_id": "livepeer-example/fal-kling-o3-ref2v",
+    "capability": "kling-o3-ref2v",
+    "endpoint_id": "fal-ai/kling-video/o3/standard/reference-to-video",
+    "queue_app_id": "fal-ai/kling-video"
+  },
+  "input_policy": {
+    "caller_authorization": "drop",
+    "endpoint_selection": "pinned",
+    "request_body": "provider_native_json"
+  },
+  "runner": {
+    "mode": "single-shot",
+    "routes": {
+      "execute": "./proxy",
+      "health": "./health",
+      "schema": "./schema"
+    },
+    "transport_profile": "fal_queue_blocking_v1"
+  },
+  "schema": {
+    "path": "./schema.json",
+    "sha256": "cf16690a8899e76eb532f3051ec94f6e6723cf26ae4c09dd7699c432a2af415a"
+  }
+}

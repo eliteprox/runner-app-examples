@@ -1,0 +1,32 @@
+{
+  "credential": {
+    "authorization_scheme": "Key",
+    "environment_variable": "FAL_KEY",
+    "owner": "operator"
+  },
+  "format": "livepeer.fal.runner-route.v1",
+  "identity": {
+    "app_id": "livepeer-example/fal-veo-31-i2v",
+    "capability": "veo-31-i2v",
+    "endpoint_id": "fal-ai/veo3.1/image-to-video",
+    "queue_app_id": "fal-ai/veo3.1"
+  },
+  "input_policy": {
+    "caller_authorization": "drop",
+    "endpoint_selection": "pinned",
+    "request_body": "provider_native_json"
+  },
+  "runner": {
+    "mode": "single-shot",
+    "routes": {
+      "execute": "./proxy",
+      "health": "./health",
+      "schema": "./schema"
+    },
+    "transport_profile": "fal_queue_blocking_v1"
+  },
+  "schema": {
+    "path": "./schema.json",
+    "sha256": "38de3e7c11d723a257caf2bcd516769c54c61065cc92df334a50df21ae7c5624"
+  }
+}

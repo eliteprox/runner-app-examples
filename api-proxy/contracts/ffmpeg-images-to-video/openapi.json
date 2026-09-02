@@ -1,0 +1,366 @@
+{
+  "components": {
+    "schemas": {
+      "FfmpegApiImagesToVideoInput": {
+        "properties": {
+          "fps": {
+            "default": 24,
+            "description": "Frames per second of the output video.",
+            "maximum": 120,
+            "minimum": 1,
+            "title": "Fps",
+            "type": "number"
+          },
+          "images": {
+            "description": "Ordered list of images to play as video frames. Each image is held for its specified number of frames before cutting to the next image.",
+            "examples": [
+              [
+                {
+                  "frames": 4,
+                  "url": "https://v3.fal.media/files/koala/oei_-iPIYFnhdB8SxojND_qwen-edit-res.png"
+                },
+                {
+                  "frames": 2,
+                  "url": "https://v3.fal.media/files/tiger/c8VSfX5XtJ3DCzV-4Bxg8_kid_image.png"
+                },
+                {
+                  "frames": 4,
+                  "url": "https://v3.fal.media/files/koala/oei_-iPIYFnhdB8SxojND_qwen-edit-res.png"
+                }
+              ]
+            ],
+            "items": {
+              "$ref": "#/components/schemas/ImageFrame"
+            },
+            "maxItems": 200,
+            "minItems": 1,
+            "title": "Images",
+            "type": "array"
+          }
+        },
+        "required": [
+          "images"
+        ],
+        "title": "ImagesToVideoInput",
+        "type": "object",
+        "x-fal-order-properties": [
+          "images",
+          "fps"
+        ]
+      },
+      "FfmpegApiImagesToVideoOutput": {
+        "properties": {
+          "video": {
+            "$ref": "#/components/schemas/File",
+            "description": "Output MP4 video."
+          }
+        },
+        "required": [
+          "video"
+        ],
+        "title": "ImagesToVideoOutput",
+        "type": "object",
+        "x-fal-order-properties": [
+          "video"
+        ]
+      },
+      "File": {
+        "properties": {
+          "content_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The mime type of the file.",
+            "examples": [
+              "image/png"
+            ],
+            "title": "Content Type"
+          },
+          "file_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The name of the file. It will be auto-generated if not provided.",
+            "examples": [
+              "z9RV14K95DvU.png"
+            ],
+            "title": "File Name"
+          },
+          "file_size": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The size of the file in bytes.",
+            "examples": [
+              4404019
+            ],
+            "title": "File Size"
+          },
+          "url": {
+            "description": "The URL where the file can be downloaded from.",
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "title": "File",
+        "type": "object",
+        "x-fal-order-properties": [
+          "url",
+          "content_type",
+          "file_name",
+          "file_size"
+        ]
+      },
+      "ImageFrame": {
+        "properties": {
+          "frames": {
+            "description": "Number of frames this image is held for in the output video. The on-screen duration is `frames / fps` seconds.",
+            "maximum": 1000,
+            "minimum": 1,
+            "title": "Frames",
+            "type": "integer"
+          },
+          "url": {
+            "description": "URL where the image file can be accessed",
+            "examples": [
+              "https://v3.fal.media/files/koala/oei_-iPIYFnhdB8SxojND_qwen-edit-res.png"
+            ],
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "url",
+          "frames"
+        ],
+        "title": "ImageFrame",
+        "type": "object",
+        "x-fal-order-properties": [
+          "url",
+          "frames"
+        ]
+      },
+      "QueueStatus": {
+        "properties": {
+          "cancel_url": {
+            "description": "The cancel url.",
+            "type": "string"
+          },
+          "logs": {
+            "additionalProperties": true,
+            "description": "The logs.",
+            "type": "object"
+          },
+          "metrics": {
+            "additionalProperties": true,
+            "description": "The metrics.",
+            "type": "object"
+          },
+          "queue_position": {
+            "description": "The queue position.",
+            "type": "integer"
+          },
+          "request_id": {
+            "description": "The request id.",
+            "type": "string"
+          },
+          "response_url": {
+            "description": "The response url.",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "IN_QUEUE",
+              "IN_PROGRESS",
+              "COMPLETED"
+            ],
+            "type": "string"
+          },
+          "status_url": {
+            "description": "The status url.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "request_id"
+        ],
+        "type": "object"
+      }
+    },
+    "securitySchemes": {
+      "apiKeyAuth": {
+        "description": "Fal Key",
+        "in": "header",
+        "name": "Authorization",
+        "type": "apiKey"
+      }
+    }
+  },
+  "info": {
+    "description": "The OpenAPI schema for the fal-ai/ffmpeg-api/images-to-video queue.",
+    "title": "Queue OpenAPI for fal-ai/ffmpeg-api/images-to-video",
+    "version": "1.0.0",
+    "x-fal-metadata": {
+      "about": "Build an MP4 from a list of images with per-image frame holds.\n\nEach entry in ``images`` specifies a URL and a number of frames to\nhold that image before cutting to the next entry. The images are\nconcatenated into a single MP4 rendered at the requested ``fps``.",
+      "category": "image-to-video",
+      "documentationUrl": "https://fal.ai/models/fal-ai/ffmpeg-api/images-to-video/api",
+      "endpointId": "fal-ai/ffmpeg-api/images-to-video",
+      "playgroundUrl": "https://fal.ai/models/fal-ai/ffmpeg-api/images-to-video",
+      "thumbnailUrl": "https://v3b.fal.media/files/b/0a99021f/66-TU4tuGYUlScYEZCwkp_f2989ba3ae084e379f0a4362f6f54e9c.jpg"
+    }
+  },
+  "openapi": "3.0.4",
+  "paths": {
+    "/fal-ai/ffmpeg-api/images-to-video": {
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FfmpegApiImagesToVideoInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueueStatus"
+                }
+              }
+            },
+            "description": "The request status."
+          }
+        }
+      }
+    },
+    "/fal-ai/ffmpeg-api/images-to-video/requests/{request_id}": {
+      "get": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "request_id",
+            "required": true,
+            "schema": {
+              "description": "Request ID",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FfmpegApiImagesToVideoOutput"
+                }
+              }
+            },
+            "description": "Result of the request."
+          }
+        }
+      }
+    },
+    "/fal-ai/ffmpeg-api/images-to-video/requests/{request_id}/cancel": {
+      "put": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "request_id",
+            "required": true,
+            "schema": {
+              "description": "Request ID",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "success": {
+                      "description": "Whether the request was cancelled successfully.",
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "The request was cancelled."
+          }
+        }
+      }
+    },
+    "/fal-ai/ffmpeg-api/images-to-video/requests/{request_id}/status": {
+      "get": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "request_id",
+            "required": true,
+            "schema": {
+              "description": "Request ID",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "logs",
+            "required": false,
+            "schema": {
+              "description": "Whether to include logs (`1`) in the response or not (`0`).",
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueueStatus"
+                }
+              }
+            },
+            "description": "The request status."
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "apiKeyAuth": []
+    }
+  ],
+  "servers": [
+    {
+      "url": "https://queue.fal.run"
+    }
+  ]
+}

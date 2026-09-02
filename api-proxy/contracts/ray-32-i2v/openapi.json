@@ -1,0 +1,452 @@
+{
+  "components": {
+    "schemas": {
+      "AgentRayV32ImageToVideoInput": {
+        "properties": {
+          "aspect_ratio": {
+            "default": "16:9",
+            "description": "Aspect ratio of the generated video.",
+            "enum": [
+              "3:4",
+              "4:3",
+              "1:1",
+              "9:16",
+              "16:9",
+              "21:9"
+            ],
+            "examples": [
+              "16:9"
+            ],
+            "title": "Aspect Ratio",
+            "type": "string"
+          },
+          "duration": {
+            "default": "5s",
+            "description": "Duration of the generated video. 10s requires multi-keyframe input (keyframes / keyframe_indexes); it is not supported with a single image_url / end_image_url anchor.",
+            "enum": [
+              "5s",
+              "10s"
+            ],
+            "title": "Duration",
+            "type": "string"
+          },
+          "end_image_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Optional URL of an image used as the last frame. When set, the model interpolates between image_url and end_image_url. Cannot be combined with keyframes.",
+            "title": "End Image Url"
+          },
+          "exr_export": {
+            "default": false,
+            "description": "Also export an EXR file alongside the MP4. Requires hdr=true and HDR access.",
+            "title": "Exr Export",
+            "type": "boolean"
+          },
+          "hdr": {
+            "default": false,
+            "description": "Generate an HDR-encoded MP4. Requires HDR access on the account and a resolution of 720p or 1080p; not supported with loop.",
+            "title": "Hdr",
+            "type": "boolean"
+          },
+          "image_url": {
+            "anyOf": [
+              {
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "URL of the image used as the first frame of the video. Provide either image_url (optionally with end_image_url) or keyframes \u2014 the two anchoring modes are mutually exclusive.",
+            "examples": [
+              "https://storage.googleapis.com/falserverless/gallery/example_inputs_liuyifei.png"
+            ],
+            "title": "Image Url"
+          },
+          "keyframe_indexes": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "integer"
+                },
+                "maxItems": 64,
+                "minItems": 1,
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Output-frame positions (duration x 24fps: 5s -> 0-120, 10s -> 0-240) where each keyframes[i] is anchored. Non-negative, unique, and the same length as keyframes.",
+            "title": "Keyframe Indexes"
+          },
+          "keyframes": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "maxItems": 64,
+                "minItems": 1,
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Multi-keyframe image-to-video guide frames: 1-64 image URLs pinned at the positions given by keyframe_indexes. Mutually exclusive with image_url, end_image_url, and loop; unlocks 10s and HDR. Provide keyframes and keyframe_indexes together (same length).",
+            "title": "Keyframes"
+          },
+          "loop": {
+            "default": false,
+            "description": "Generate a seamless loop. Only valid for standard-dynamic-range generations without an end frame or keyframes.",
+            "title": "Loop",
+            "type": "boolean"
+          },
+          "prompt": {
+            "description": "Text prompt describing the motion/scene to generate.",
+            "examples": [
+              "Low-angle shot of a majestic tiger prowling through a snowy landscape, leaving paw prints on the white blanket."
+            ],
+            "maxLength": 6000,
+            "minLength": 1,
+            "title": "Prompt",
+            "type": "string"
+          },
+          "resolution": {
+            "default": "540p",
+            "description": "Resolution of the generated video. Higher resolutions cost more.",
+            "enum": [
+              "540p",
+              "720p",
+              "1080p"
+            ],
+            "title": "Resolution",
+            "type": "string"
+          }
+        },
+        "required": [
+          "prompt"
+        ],
+        "title": "RayImageToVideoRequest",
+        "type": "object",
+        "x-fal-order-properties": [
+          "prompt",
+          "image_url",
+          "end_image_url",
+          "aspect_ratio",
+          "resolution",
+          "duration",
+          "loop",
+          "hdr",
+          "exr_export",
+          "keyframes",
+          "keyframe_indexes"
+        ]
+      },
+      "AgentRayV32ImageToVideoOutput": {
+        "properties": {
+          "exr_file": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/File"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The generated EXR sidecar when exr_export is true. This may be a single EXR file or a ZIP package depending on Luma's export shape."
+          },
+          "video": {
+            "$ref": "#/components/schemas/File",
+            "description": "The generated video."
+          }
+        },
+        "required": [
+          "video"
+        ],
+        "title": "VideoOutput",
+        "type": "object",
+        "x-fal-order-properties": [
+          "video",
+          "exr_file"
+        ]
+      },
+      "File": {
+        "properties": {
+          "content_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The mime type of the file.",
+            "examples": [
+              "image/png"
+            ],
+            "title": "Content Type"
+          },
+          "file_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The name of the file. It will be auto-generated if not provided.",
+            "examples": [
+              "z9RV14K95DvU.png"
+            ],
+            "title": "File Name"
+          },
+          "file_size": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The size of the file in bytes.",
+            "examples": [
+              4404019
+            ],
+            "title": "File Size"
+          },
+          "url": {
+            "description": "The URL where the file can be downloaded from.",
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "title": "File",
+        "type": "object",
+        "x-fal-order-properties": [
+          "url",
+          "content_type",
+          "file_name",
+          "file_size"
+        ]
+      },
+      "QueueStatus": {
+        "properties": {
+          "cancel_url": {
+            "description": "The cancel url.",
+            "type": "string"
+          },
+          "logs": {
+            "additionalProperties": true,
+            "description": "The logs.",
+            "type": "object"
+          },
+          "metrics": {
+            "additionalProperties": true,
+            "description": "The metrics.",
+            "type": "object"
+          },
+          "queue_position": {
+            "description": "The queue position.",
+            "type": "integer"
+          },
+          "request_id": {
+            "description": "The request id.",
+            "type": "string"
+          },
+          "response_url": {
+            "description": "The response url.",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "IN_QUEUE",
+              "IN_PROGRESS",
+              "COMPLETED"
+            ],
+            "type": "string"
+          },
+          "status_url": {
+            "description": "The status url.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "request_id"
+        ],
+        "type": "object"
+      }
+    },
+    "securitySchemes": {
+      "apiKeyAuth": {
+        "description": "Fal Key",
+        "in": "header",
+        "name": "Authorization",
+        "type": "apiKey"
+      }
+    }
+  },
+  "info": {
+    "description": "The OpenAPI schema for the luma/agent/ray/v3.2/image-to-video queue.",
+    "title": "Queue OpenAPI for luma/agent/ray/v3.2/image-to-video",
+    "version": "1.0.0",
+    "x-fal-metadata": {
+      "about": "ray-3.2 image-to-video generation via the Luma Agents API.",
+      "category": "image-to-video",
+      "documentationUrl": "https://fal.ai/models/luma/agent/ray/v3.2/image-to-video/api",
+      "endpointId": "luma/agent/ray/v3.2/image-to-video",
+      "playgroundUrl": "https://fal.ai/models/luma/agent/ray/v3.2/image-to-video",
+      "thumbnailUrl": "https://v3b.fal.media/files/b/0a9d98c5/bGUKcElNU84zDuONbJcfm_72859703947a48629cc1b9773d784260.jpg"
+    }
+  },
+  "openapi": "3.0.4",
+  "paths": {
+    "/luma/agent/ray/v3.2/image-to-video": {
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AgentRayV32ImageToVideoInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueueStatus"
+                }
+              }
+            },
+            "description": "The request status."
+          }
+        }
+      }
+    },
+    "/luma/agent/ray/v3.2/image-to-video/requests/{request_id}": {
+      "get": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "request_id",
+            "required": true,
+            "schema": {
+              "description": "Request ID",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentRayV32ImageToVideoOutput"
+                }
+              }
+            },
+            "description": "Result of the request."
+          }
+        }
+      }
+    },
+    "/luma/agent/ray/v3.2/image-to-video/requests/{request_id}/cancel": {
+      "put": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "request_id",
+            "required": true,
+            "schema": {
+              "description": "Request ID",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "success": {
+                      "description": "Whether the request was cancelled successfully.",
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "The request was cancelled."
+          }
+        }
+      }
+    },
+    "/luma/agent/ray/v3.2/image-to-video/requests/{request_id}/status": {
+      "get": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "request_id",
+            "required": true,
+            "schema": {
+              "description": "Request ID",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "logs",
+            "required": false,
+            "schema": {
+              "description": "Whether to include logs (`1`) in the response or not (`0`).",
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueueStatus"
+                }
+              }
+            },
+            "description": "The request status."
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "apiKeyAuth": []
+    }
+  ],
+  "servers": [
+    {
+      "url": "https://queue.fal.run"
+    }
+  ]
+}

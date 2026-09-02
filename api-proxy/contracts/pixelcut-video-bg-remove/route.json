@@ -1,0 +1,32 @@
+{
+  "credential": {
+    "authorization_scheme": "Key",
+    "environment_variable": "FAL_KEY",
+    "owner": "operator"
+  },
+  "format": "livepeer.fal.runner-route.v1",
+  "identity": {
+    "app_id": "livepeer-example/fal-pixelcut-video-bg-remove",
+    "capability": "pixelcut-video-bg-remove",
+    "endpoint_id": "Pixelcut/video-background-removal",
+    "queue_app_id": "Pixelcut/video-background-removal"
+  },
+  "input_policy": {
+    "caller_authorization": "drop",
+    "endpoint_selection": "pinned",
+    "request_body": "provider_native_json"
+  },
+  "runner": {
+    "mode": "single-shot",
+    "routes": {
+      "execute": "./proxy",
+      "health": "./health",
+      "schema": "./schema"
+    },
+    "transport_profile": "fal_queue_blocking_v1"
+  },
+  "schema": {
+    "path": "./schema.json",
+    "sha256": "a486105bc4a5e16cd86991488727e2dd2cabd9ab26860b4662fc69eb7253e304"
+  }
+}

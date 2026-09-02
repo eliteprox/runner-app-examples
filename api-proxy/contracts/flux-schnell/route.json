@@ -1,0 +1,32 @@
+{
+  "credential": {
+    "authorization_scheme": "Key",
+    "environment_variable": "FAL_KEY",
+    "owner": "operator"
+  },
+  "format": "livepeer.fal.runner-route.v1",
+  "identity": {
+    "app_id": "livepeer-example/fal-flux-schnell",
+    "capability": "flux-schnell",
+    "endpoint_id": "fal-ai/flux/schnell",
+    "queue_app_id": "fal-ai/flux"
+  },
+  "input_policy": {
+    "caller_authorization": "drop",
+    "endpoint_selection": "pinned",
+    "request_body": "provider_native_json"
+  },
+  "runner": {
+    "mode": "single-shot",
+    "routes": {
+      "execute": "./proxy",
+      "health": "./health",
+      "schema": "./schema"
+    },
+    "transport_profile": "fal_queue_blocking_v1"
+  },
+  "schema": {
+    "path": "./schema.json",
+    "sha256": "6a5103a47bb61b39ffadcc8f6ea6f98d1027cc8ba14d1723883dd6c4a6a06658"
+  }
+}

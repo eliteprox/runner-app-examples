@@ -1,0 +1,361 @@
+{
+  "components": {
+    "schemas": {
+      "FluxProV1EraseInput": {
+        "description": "Input for the FLUX Erase endpoint.\n\nFLUX Erase removes content from images using a black/white mask.",
+        "properties": {
+          "dilate_pixels": {
+            "default": 10,
+            "description": "Number of pixels to expand the mask edges by. Higher values produce cleaner erase results around the masked region.",
+            "maximum": 100,
+            "minimum": 0,
+            "title": "Dilate Pixels",
+            "type": "integer"
+          },
+          "image_url": {
+            "description": "The URL of the input image to erase content from.",
+            "examples": [
+              "https://storage.googleapis.com/falserverless/flux-lora/example-images/knight.jpeg"
+            ],
+            "title": "Image URL",
+            "type": "string"
+          },
+          "mask_url": {
+            "description": "The URL of a black/white mask image where white (255) marks pixels to erase and black (0) marks pixels to keep. Needs to match the dimensions of the input image.",
+            "examples": [
+              "https://storage.googleapis.com/falserverless/flux-lora/example-images/mask_knight.jpeg"
+            ],
+            "title": "Mask URL",
+            "type": "string"
+          },
+          "output_format": {
+            "default": "jpeg",
+            "description": "The format of the generated image.",
+            "enum": [
+              "jpeg",
+              "png"
+            ],
+            "title": "Output Format",
+            "type": "string"
+          },
+          "sync_mode": {
+            "default": false,
+            "description": "If `True`, the media will be returned as a data URI and the output data won't be available in the request history.",
+            "title": "Sync Mode",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "image_url",
+          "mask_url"
+        ],
+        "title": "FluxProEraseInput",
+        "type": "object",
+        "x-fal-order-properties": [
+          "image_url",
+          "mask_url",
+          "dilate_pixels",
+          "sync_mode",
+          "output_format"
+        ]
+      },
+      "FluxProV1EraseOutput": {
+        "properties": {
+          "has_nsfw_concepts": {
+            "description": "Whether the generated images contain NSFW concepts.",
+            "items": {
+              "type": "boolean"
+            },
+            "title": "Has Nsfw Concepts",
+            "type": "array"
+          },
+          "images": {
+            "description": "The generated image files info.",
+            "items": {
+              "$ref": "#/components/schemas/registry__image__fast_sdxl__models__Image"
+            },
+            "title": "Images",
+            "type": "array"
+          },
+          "prompt": {
+            "description": "The prompt used for generating the image.",
+            "title": "Prompt",
+            "type": "string"
+          },
+          "seed": {
+            "description": "\n            Seed of the generated Image. It will be the same value of the one passed in the\n            input or the randomly generated that was used in case none was passed.\n        ",
+            "title": "Seed",
+            "type": "integer"
+          },
+          "timings": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "title": "Timings",
+            "type": "object"
+          }
+        },
+        "required": [
+          "images",
+          "timings",
+          "seed",
+          "has_nsfw_concepts",
+          "prompt"
+        ],
+        "title": "Output",
+        "type": "object",
+        "x-fal-order-properties": [
+          "images",
+          "timings",
+          "seed",
+          "has_nsfw_concepts",
+          "prompt"
+        ]
+      },
+      "QueueStatus": {
+        "properties": {
+          "cancel_url": {
+            "description": "The cancel url.",
+            "type": "string"
+          },
+          "logs": {
+            "additionalProperties": true,
+            "description": "The logs.",
+            "type": "object"
+          },
+          "metrics": {
+            "additionalProperties": true,
+            "description": "The metrics.",
+            "type": "object"
+          },
+          "queue_position": {
+            "description": "The queue position.",
+            "type": "integer"
+          },
+          "request_id": {
+            "description": "The request id.",
+            "type": "string"
+          },
+          "response_url": {
+            "description": "The response url.",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "IN_QUEUE",
+              "IN_PROGRESS",
+              "COMPLETED"
+            ],
+            "type": "string"
+          },
+          "status_url": {
+            "description": "The status url.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "request_id"
+        ],
+        "type": "object"
+      },
+      "registry__image__fast_sdxl__models__Image": {
+        "properties": {
+          "content_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": "image/jpeg",
+            "title": "Content Type"
+          },
+          "height": {
+            "title": "Height",
+            "type": "integer"
+          },
+          "url": {
+            "title": "Url",
+            "type": "string"
+          },
+          "width": {
+            "title": "Width",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "url",
+          "width",
+          "height"
+        ],
+        "title": "Image",
+        "type": "object",
+        "x-fal-order-properties": [
+          "url",
+          "width",
+          "height",
+          "content_type"
+        ]
+      }
+    },
+    "securitySchemes": {
+      "apiKeyAuth": {
+        "description": "Fal Key",
+        "in": "header",
+        "name": "Authorization",
+        "type": "apiKey"
+      }
+    }
+  },
+  "info": {
+    "description": "The OpenAPI schema for the fal-ai/flux-pro/v1/erase queue.",
+    "title": "Queue OpenAPI for fal-ai/flux-pro/v1/erase",
+    "version": "1.0.0",
+    "x-fal-metadata": {
+      "about": "FLUX Erase [pro] API \u2014 remove objects from images using a mask.\n\nThe mask is a black/white image where white (255) pixels mark the\nregion to erase and black (0) pixels mark the region to keep. The\nmask must match the dimensions of the input image.\n\nSafety: a fal-side ``@safety_checker_all`` decorator screens the\ninput image (the mask is excluded via ``ignore_fields`` because it\nis a binary B/W shape, not real content). BFL's erase API also\nperforms its own server-side content moderation and surfaces\n\"Content Moderated\" / \"Request Moderated\" polling statuses, which\n``submit_and_poll`` translates into the standard NSFW response.\nThe BFL erase API does not accept a ``safety_tolerance``\nparameter, so the BFL-side moderation uses its server default.\n\nAll usages of this model must comply with [FLUX.1 PRO Terms of Service](https://blackforestlabs.ai/terms-of-service/).",
+      "category": "image-to-image",
+      "documentationUrl": "https://fal.ai/models/fal-ai/flux-pro/v1/erase/api",
+      "endpointId": "fal-ai/flux-pro/v1/erase",
+      "playgroundUrl": "https://fal.ai/models/fal-ai/flux-pro/v1/erase",
+      "thumbnailUrl": "https://v3b.fal.media/files/b/0a9b202c/YGjsDrgyeEZOfCM1_iVVF_afd5d6b09ebb42989964c331657d5587.jpg"
+    }
+  },
+  "openapi": "3.0.4",
+  "paths": {
+    "/fal-ai/flux-pro/v1/erase": {
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FluxProV1EraseInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueueStatus"
+                }
+              }
+            },
+            "description": "The request status."
+          }
+        }
+      }
+    },
+    "/fal-ai/flux-pro/v1/erase/requests/{request_id}": {
+      "get": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "request_id",
+            "required": true,
+            "schema": {
+              "description": "Request ID",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FluxProV1EraseOutput"
+                }
+              }
+            },
+            "description": "Result of the request."
+          }
+        }
+      }
+    },
+    "/fal-ai/flux-pro/v1/erase/requests/{request_id}/cancel": {
+      "put": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "request_id",
+            "required": true,
+            "schema": {
+              "description": "Request ID",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "success": {
+                      "description": "Whether the request was cancelled successfully.",
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "The request was cancelled."
+          }
+        }
+      }
+    },
+    "/fal-ai/flux-pro/v1/erase/requests/{request_id}/status": {
+      "get": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "request_id",
+            "required": true,
+            "schema": {
+              "description": "Request ID",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "logs",
+            "required": false,
+            "schema": {
+              "description": "Whether to include logs (`1`) in the response or not (`0`).",
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueueStatus"
+                }
+              }
+            },
+            "description": "The request status."
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "apiKeyAuth": []
+    }
+  ],
+  "servers": [
+    {
+      "url": "https://queue.fal.run"
+    }
+  ]
+}

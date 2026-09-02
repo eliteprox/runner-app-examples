@@ -1,0 +1,380 @@
+{
+  "components": {
+    "schemas": {
+      "File": {
+        "properties": {
+          "content_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The mime type of the file.",
+            "examples": [
+              "image/png"
+            ],
+            "title": "Content Type"
+          },
+          "file_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The name of the file. It will be auto-generated if not provided.",
+            "examples": [
+              "z9RV14K95DvU.png"
+            ],
+            "title": "File Name"
+          },
+          "file_size": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The size of the file in bytes.",
+            "examples": [
+              4404019
+            ],
+            "title": "File Size"
+          },
+          "url": {
+            "description": "The URL where the file can be downloaded from.",
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "title": "File",
+        "type": "object",
+        "x-fal-order-properties": [
+          "url",
+          "content_type",
+          "file_name",
+          "file_size"
+        ]
+      },
+      "QueueStatus": {
+        "properties": {
+          "cancel_url": {
+            "description": "The cancel url.",
+            "type": "string"
+          },
+          "logs": {
+            "additionalProperties": true,
+            "description": "The logs.",
+            "type": "object"
+          },
+          "metrics": {
+            "additionalProperties": true,
+            "description": "The metrics.",
+            "type": "object"
+          },
+          "queue_position": {
+            "description": "The queue position.",
+            "type": "integer"
+          },
+          "request_id": {
+            "description": "The request id.",
+            "type": "string"
+          },
+          "response_url": {
+            "description": "The response url.",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "IN_QUEUE",
+              "IN_PROGRESS",
+              "COMPLETED"
+            ],
+            "type": "string"
+          },
+          "status_url": {
+            "description": "The status url.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "request_id"
+        ],
+        "type": "object"
+      },
+      "WorkflowUtilitiesTrimVideoInput": {
+        "description": "Input model for trimming a video to a specified time range",
+        "properties": {
+          "duration": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": 2,
+            "description": "Duration in seconds from start_time. Ignored if end_time is provided.",
+            "title": "Duration"
+          },
+          "end_time": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "End time in seconds. If not provided, uses duration instead.",
+            "examples": [
+              3
+            ],
+            "title": "End Time"
+          },
+          "start_time": {
+            "default": 1,
+            "description": "Start time in seconds",
+            "minimum": 0,
+            "title": "Start Time",
+            "type": "number"
+          },
+          "video_url": {
+            "description": "URL of the video file to trim",
+            "examples": [
+              "https://storage.googleapis.com/falserverless/example_outputs/wan-25-i2v-output.mp4"
+            ],
+            "max_file_size": 500000000,
+            "title": "Video Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "video_url"
+        ],
+        "title": "TrimVideoInput",
+        "type": "object",
+        "x-fal-order-properties": [
+          "video_url",
+          "start_time",
+          "end_time",
+          "duration"
+        ]
+      },
+      "WorkflowUtilitiesTrimVideoOutput": {
+        "description": "Output model for trimmed video",
+        "properties": {
+          "original_duration": {
+            "description": "Duration of the original video in seconds",
+            "examples": [
+              5.041667
+            ],
+            "title": "Original Duration",
+            "type": "number"
+          },
+          "trimmed_duration": {
+            "description": "Duration of the trimmed video in seconds",
+            "examples": [
+              2
+            ],
+            "title": "Trimmed Duration",
+            "type": "number"
+          },
+          "video": {
+            "$ref": "#/components/schemas/File",
+            "description": "The trimmed video",
+            "examples": [
+              {
+                "content_type": "application/octet-stream",
+                "file_name": "output.mp4",
+                "file_size": 2550671,
+                "url": "https://v3b.fal.media/files/b/0a8dcc60/sIg2GuYYYrmYAa2lUVgum_output.mp4"
+              }
+            ]
+          }
+        },
+        "required": [
+          "video",
+          "original_duration",
+          "trimmed_duration"
+        ],
+        "title": "TrimVideoOutput",
+        "type": "object",
+        "x-fal-order-properties": [
+          "video",
+          "original_duration",
+          "trimmed_duration"
+        ]
+      }
+    },
+    "securitySchemes": {
+      "apiKeyAuth": {
+        "description": "Fal Key",
+        "in": "header",
+        "name": "Authorization",
+        "type": "apiKey"
+      }
+    }
+  },
+  "info": {
+    "description": "The OpenAPI schema for the fal-ai/workflow-utilities/trim-video queue.",
+    "title": "Queue OpenAPI for fal-ai/workflow-utilities/trim-video",
+    "version": "1.0.0",
+    "x-fal-metadata": {
+      "about": "Trim a video to a specified time range.\n\nSupports trimming by start/end time or start time with duration.\nUses stream copy for fast, lossless trimming when possible,\nfalling back to re-encoding if needed.",
+      "category": "video-to-video",
+      "documentationUrl": "https://fal.ai/models/fal-ai/workflow-utilities/trim-video/api",
+      "endpointId": "fal-ai/workflow-utilities/trim-video",
+      "playgroundUrl": "https://fal.ai/models/fal-ai/workflow-utilities/trim-video",
+      "thumbnailUrl": "https://v3b.fal.media/files/b/0a8e11aa/xIakBiV0_r7glqzDfsJ2k_775564bd78674a0fbda370d0faea9e58.jpg"
+    }
+  },
+  "openapi": "3.0.4",
+  "paths": {
+    "/fal-ai/workflow-utilities/trim-video": {
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkflowUtilitiesTrimVideoInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueueStatus"
+                }
+              }
+            },
+            "description": "The request status."
+          }
+        }
+      }
+    },
+    "/fal-ai/workflow-utilities/trim-video/requests/{request_id}": {
+      "get": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "request_id",
+            "required": true,
+            "schema": {
+              "description": "Request ID",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkflowUtilitiesTrimVideoOutput"
+                }
+              }
+            },
+            "description": "Result of the request."
+          }
+        }
+      }
+    },
+    "/fal-ai/workflow-utilities/trim-video/requests/{request_id}/cancel": {
+      "put": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "request_id",
+            "required": true,
+            "schema": {
+              "description": "Request ID",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "success": {
+                      "description": "Whether the request was cancelled successfully.",
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "The request was cancelled."
+          }
+        }
+      }
+    },
+    "/fal-ai/workflow-utilities/trim-video/requests/{request_id}/status": {
+      "get": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "request_id",
+            "required": true,
+            "schema": {
+              "description": "Request ID",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "logs",
+            "required": false,
+            "schema": {
+              "description": "Whether to include logs (`1`) in the response or not (`0`).",
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueueStatus"
+                }
+              }
+            },
+            "description": "The request status."
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "apiKeyAuth": []
+    }
+  ],
+  "servers": [
+    {
+      "url": "https://queue.fal.run"
+    }
+  ]
+}

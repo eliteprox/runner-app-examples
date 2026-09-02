@@ -1,0 +1,398 @@
+{
+  "components": {
+    "schemas": {
+      "QueueStatus": {
+        "properties": {
+          "cancel_url": {
+            "description": "The cancel url.",
+            "type": "string"
+          },
+          "logs": {
+            "additionalProperties": true,
+            "description": "The logs.",
+            "type": "object"
+          },
+          "metrics": {
+            "additionalProperties": true,
+            "description": "The metrics.",
+            "type": "object"
+          },
+          "queue_position": {
+            "description": "The queue position.",
+            "type": "integer"
+          },
+          "request_id": {
+            "description": "The request id.",
+            "type": "string"
+          },
+          "response_url": {
+            "description": "The response url.",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "IN_QUEUE",
+              "IN_PROGRESS",
+              "COMPLETED"
+            ],
+            "type": "string"
+          },
+          "status_url": {
+            "description": "The status url.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "request_id"
+        ],
+        "type": "object"
+      },
+      "RGBColor": {
+        "description": "RGB color. Model name is a FAL convention \u2014 renders as a color picker.",
+        "properties": {
+          "b": {
+            "default": 0,
+            "maximum": 255,
+            "minimum": 0,
+            "title": "B",
+            "type": "integer"
+          },
+          "g": {
+            "default": 0,
+            "maximum": 255,
+            "minimum": 0,
+            "title": "G",
+            "type": "integer"
+          },
+          "r": {
+            "default": 0,
+            "maximum": 255,
+            "minimum": 0,
+            "title": "R",
+            "type": "integer"
+          }
+        },
+        "title": "RGBColor",
+        "type": "object",
+        "x-fal-order-properties": [
+          "r",
+          "g",
+          "b"
+        ]
+      },
+      "Video": {
+        "properties": {
+          "content_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The mime type of the file.",
+            "examples": [
+              "image/png"
+            ],
+            "title": "Content Type"
+          },
+          "file_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The name of the file. It will be auto-generated if not provided.",
+            "examples": [
+              "z9RV14K95DvU.png"
+            ],
+            "title": "File Name"
+          },
+          "file_size": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The size of the file in bytes.",
+            "examples": [
+              4404019
+            ],
+            "title": "File Size"
+          },
+          "url": {
+            "description": "The URL where the file can be downloaded from.",
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "title": "Video",
+        "type": "object",
+        "x-fal-order-properties": [
+          "url",
+          "content_type",
+          "file_name",
+          "file_size"
+        ]
+      },
+      "VideoBackgroundRemovalInput": {
+        "description": "Input model for video background removal.",
+        "properties": {
+          "background": {
+            "default": "transparent",
+            "description": "Output background: transparent, a named preset color, or 'custom' to use the background_color color picker.",
+            "enum": [
+              "transparent",
+              "black",
+              "white",
+              "green",
+              "blue",
+              "magenta",
+              "custom"
+            ],
+            "title": "Background",
+            "type": "string"
+          },
+          "background_color": {
+            "$ref": "#/components/schemas/RGBColor",
+            "description": "Custom solid background color (only used when background='custom')."
+          },
+          "output_format": {
+            "anyOf": [
+              {
+                "enum": [
+                  "webm_vp9",
+                  "mp4_h264",
+                  "mp4_h265",
+                  "mov_proresks",
+                  "mov_h265",
+                  "mkv_h264",
+                  "mkv_h265",
+                  "mkv_vp9",
+                  "gif"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Output video format. Auto-detected if not set (defaults to webm_vp9 for transparent).",
+            "title": "Output Format"
+          },
+          "video_url": {
+            "description": "URL of the input video",
+            "examples": [
+              "https://cdn3.pixelcut.app/fal/video-background-removal/sample.mp4"
+            ],
+            "title": "Video Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "video_url"
+        ],
+        "title": "VideoBgrmInput",
+        "type": "object",
+        "x-fal-order-properties": [
+          "video_url",
+          "background",
+          "background_color",
+          "output_format"
+        ]
+      },
+      "VideoBackgroundRemovalOutput": {
+        "description": "Output model for video background removal.",
+        "properties": {
+          "video": {
+            "$ref": "#/components/schemas/Video",
+            "description": "Output video file",
+            "examples": [
+              {
+                "content_type": "video/webm",
+                "file_name": "sample_result.webm",
+                "file_size": 5489205,
+                "url": "https://cdn3.pixelcut.app/fal/video-background-removal/sample_result.webm"
+              }
+            ]
+          }
+        },
+        "required": [
+          "video"
+        ],
+        "title": "VideoBgrmOutput",
+        "type": "object",
+        "x-fal-order-properties": [
+          "video"
+        ]
+      }
+    },
+    "securitySchemes": {
+      "apiKeyAuth": {
+        "description": "Fal Key",
+        "in": "header",
+        "name": "Authorization",
+        "type": "apiKey"
+      }
+    }
+  },
+  "info": {
+    "description": "The OpenAPI schema for the Pixelcut/video-background-removal queue.",
+    "title": "Queue OpenAPI for Pixelcut/video-background-removal",
+    "version": "1.0.0",
+    "x-fal-metadata": {
+      "about": "Synchronous endpoint for video processing. This is the path the FAL queue\n(and therefore marketplace callers) hit, so it reports billable units.",
+      "category": "video-to-video",
+      "documentationUrl": "https://fal.ai/models/Pixelcut/video-background-removal/api",
+      "endpointId": "Pixelcut/video-background-removal",
+      "playgroundUrl": "https://fal.ai/models/Pixelcut/video-background-removal",
+      "thumbnailUrl": "https://v3b.fal.media/files/b/0a9de071/4KSnVL4HHDmFy5Ty4paA7_83e32f5de65c4f8bbc5611c87c1defa4.jpg"
+    }
+  },
+  "openapi": "3.0.4",
+  "paths": {
+    "/Pixelcut/video-background-removal": {
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VideoBackgroundRemovalInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueueStatus"
+                }
+              }
+            },
+            "description": "The request status."
+          }
+        }
+      }
+    },
+    "/Pixelcut/video-background-removal/requests/{request_id}": {
+      "get": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "request_id",
+            "required": true,
+            "schema": {
+              "description": "Request ID",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VideoBackgroundRemovalOutput"
+                }
+              }
+            },
+            "description": "Result of the request."
+          }
+        }
+      }
+    },
+    "/Pixelcut/video-background-removal/requests/{request_id}/cancel": {
+      "put": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "request_id",
+            "required": true,
+            "schema": {
+              "description": "Request ID",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "success": {
+                      "description": "Whether the request was cancelled successfully.",
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "The request was cancelled."
+          }
+        }
+      }
+    },
+    "/Pixelcut/video-background-removal/requests/{request_id}/status": {
+      "get": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "request_id",
+            "required": true,
+            "schema": {
+              "description": "Request ID",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "logs",
+            "required": false,
+            "schema": {
+              "description": "Whether to include logs (`1`) in the response or not (`0`).",
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueueStatus"
+                }
+              }
+            },
+            "description": "The request status."
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "apiKeyAuth": []
+    }
+  ],
+  "servers": [
+    {
+      "url": "https://queue.fal.run"
+    }
+  ]
+}

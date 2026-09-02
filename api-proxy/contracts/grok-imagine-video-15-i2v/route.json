@@ -1,0 +1,32 @@
+{
+  "credential": {
+    "authorization_scheme": "Key",
+    "environment_variable": "FAL_KEY",
+    "owner": "operator"
+  },
+  "format": "livepeer.fal.runner-route.v1",
+  "identity": {
+    "app_id": "livepeer-example/fal-grok-imagine-video-15-i2v",
+    "capability": "grok-imagine-video-15-i2v",
+    "endpoint_id": "xai/grok-imagine-video/v1.5/image-to-video",
+    "queue_app_id": "xai/grok-imagine-video"
+  },
+  "input_policy": {
+    "caller_authorization": "drop",
+    "endpoint_selection": "pinned",
+    "request_body": "provider_native_json"
+  },
+  "runner": {
+    "mode": "single-shot",
+    "routes": {
+      "execute": "./proxy",
+      "health": "./health",
+      "schema": "./schema"
+    },
+    "transport_profile": "fal_queue_blocking_v1"
+  },
+  "schema": {
+    "path": "./schema.json",
+    "sha256": "6691ab92e9cc3b83bdcb67d990407dbea7e3f3344bf70bd35c01c359f2433b8a"
+  }
+}

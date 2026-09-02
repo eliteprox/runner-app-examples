@@ -1,0 +1,319 @@
+{
+  "components": {
+    "schemas": {
+      "NemotronAsrMultilingualAsrInput": {
+        "properties": {
+          "acceleration": {
+            "default": "regular",
+            "description": "Controls the speed/accuracy trade-off. 'none' = best accuracy (1.12s chunks), 'regular' = balanced (0.56s chunks), 'high' = faster (0.32s chunks), 'full' = fastest (0.08s chunks).",
+            "enum": [
+              "none",
+              "regular",
+              "high",
+              "full"
+            ],
+            "title": "Acceleration",
+            "type": "string"
+          },
+          "audio_url": {
+            "description": "URL of the audio file to transcribe.",
+            "examples": [
+              "https://v3b.fal.media/files/b/0a9c95c6/qxxx5skDQl8fPqbkjpxBc_speech.mp3"
+            ],
+            "title": "Audio URL",
+            "type": "string"
+          },
+          "language": {
+            "default": "auto",
+            "description": "Target language for transcription (language-ID prompt). 'auto' lets the model detect the language.",
+            "enum": [
+              "auto",
+              "en-US",
+              "en-GB",
+              "es-US",
+              "es-ES",
+              "de-DE",
+              "fr-FR",
+              "fr-CA",
+              "it-IT",
+              "ar-AR",
+              "ja-JP",
+              "ko-KR",
+              "pt-BR",
+              "pt-PT",
+              "ru-RU",
+              "hi-IN",
+              "zh-CN",
+              "vi-VN",
+              "he-IL",
+              "nl-NL",
+              "cs-CZ",
+              "da-DK",
+              "pl-PL",
+              "nn-NO",
+              "nb-NO",
+              "sv-SE",
+              "th-TH",
+              "tr-TR",
+              "bg-BG",
+              "el-GR",
+              "et-EE",
+              "fi-FI",
+              "hr-HR",
+              "hu-HU",
+              "lt-LT",
+              "lv-LV",
+              "ro-RO",
+              "sk-SK",
+              "uk-UA",
+              "mt-MT",
+              "sl-SI"
+            ],
+            "title": "Language",
+            "type": "string"
+          }
+        },
+        "required": [
+          "audio_url"
+        ],
+        "title": "SpeechInput",
+        "type": "object",
+        "x-fal-order-properties": [
+          "audio_url",
+          "language",
+          "acceleration"
+        ]
+      },
+      "NemotronAsrMultilingualAsrOutput": {
+        "properties": {
+          "output": {
+            "description": "The transcribed text from the audio.",
+            "examples": [
+              "Actually, I'm second guessing myself a single coherent passage might be cleaner and more representative of real world speech performance, which is what benchmarking typically uses. I'll write an engaging flowing piece on something like a journey or a day in a tech forward city. That weaves in all the varied elements naturally, rather than splitting it into sections. I'm deciding to keep the targeted tricky sentences section after all. It'll directly test homophones and number heavy lines that are most prone to errors, so I'll include it as a concise, clearly marked addition at the end now. I'm drafting the full passage, starting with a detailed travel narrative that weaves in dates, times, currency, and specific details by the time we pulled into Waverley Station, my phone had buzzed forty seven times, mostly from doctor Amara Akon Reyes at Neurosynt Technologies fretting over our board presentation. We'd spent three weeks refining a transformer model with one point three billion parameters, and the improvements were stunning. Our word error rate plummeted from fourteen point two percent down to three point eight percent. There's something surreal about watching those number shift like that. They're not just metrics they're the payoff from countless late nights and too much coffee."
+            ],
+            "title": "Transcribed Text",
+            "type": "string"
+          },
+          "partial": {
+            "default": false,
+            "description": "True if this is an intermediate result during streaming.",
+            "title": "Partial Result",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "output"
+        ],
+        "title": "SpeechOutput",
+        "type": "object",
+        "x-fal-order-properties": [
+          "output",
+          "partial"
+        ]
+      },
+      "QueueStatus": {
+        "properties": {
+          "cancel_url": {
+            "description": "The cancel url.",
+            "type": "string"
+          },
+          "logs": {
+            "additionalProperties": true,
+            "description": "The logs.",
+            "type": "object"
+          },
+          "metrics": {
+            "additionalProperties": true,
+            "description": "The metrics.",
+            "type": "object"
+          },
+          "queue_position": {
+            "description": "The queue position.",
+            "type": "integer"
+          },
+          "request_id": {
+            "description": "The request id.",
+            "type": "string"
+          },
+          "response_url": {
+            "description": "The response url.",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "IN_QUEUE",
+              "IN_PROGRESS",
+              "COMPLETED"
+            ],
+            "type": "string"
+          },
+          "status_url": {
+            "description": "The status url.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "request_id"
+        ],
+        "type": "object"
+      }
+    },
+    "securitySchemes": {
+      "apiKeyAuth": {
+        "description": "Fal Key",
+        "in": "header",
+        "name": "Authorization",
+        "type": "apiKey"
+      }
+    }
+  },
+  "info": {
+    "description": "The OpenAPI schema for the nvidia/nemotron-asr-multilingual/asr queue.",
+    "title": "Queue OpenAPI for nvidia/nemotron-asr-multilingual/asr",
+    "version": "1.0.0",
+    "x-fal-metadata": {
+      "about": "Run",
+      "category": "speech-to-text",
+      "documentationUrl": "https://fal.ai/models/nvidia/nemotron-asr-multilingual/asr/api",
+      "endpointId": "nvidia/nemotron-asr-multilingual/asr",
+      "playgroundUrl": "https://fal.ai/models/nvidia/nemotron-asr-multilingual/asr",
+      "thumbnailUrl": "https://v3b.fal.media/files/b/0a9c2fbf/6-zNQDwpy54LnxDQx2dEO_a053aeaf6ad14a4fb4bce191086d95f1.jpg"
+    }
+  },
+  "openapi": "3.0.4",
+  "paths": {
+    "/nvidia/nemotron-asr-multilingual/asr": {
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NemotronAsrMultilingualAsrInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueueStatus"
+                }
+              }
+            },
+            "description": "The request status."
+          }
+        }
+      }
+    },
+    "/nvidia/nemotron-asr-multilingual/asr/requests/{request_id}": {
+      "get": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "request_id",
+            "required": true,
+            "schema": {
+              "description": "Request ID",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NemotronAsrMultilingualAsrOutput"
+                }
+              }
+            },
+            "description": "Result of the request."
+          }
+        }
+      }
+    },
+    "/nvidia/nemotron-asr-multilingual/asr/requests/{request_id}/cancel": {
+      "put": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "request_id",
+            "required": true,
+            "schema": {
+              "description": "Request ID",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "success": {
+                      "description": "Whether the request was cancelled successfully.",
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "The request was cancelled."
+          }
+        }
+      }
+    },
+    "/nvidia/nemotron-asr-multilingual/asr/requests/{request_id}/status": {
+      "get": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "request_id",
+            "required": true,
+            "schema": {
+              "description": "Request ID",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "logs",
+            "required": false,
+            "schema": {
+              "description": "Whether to include logs (`1`) in the response or not (`0`).",
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueueStatus"
+                }
+              }
+            },
+            "description": "The request status."
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "apiKeyAuth": []
+    }
+  ],
+  "servers": [
+    {
+      "url": "https://queue.fal.run"
+    }
+  ]
+}

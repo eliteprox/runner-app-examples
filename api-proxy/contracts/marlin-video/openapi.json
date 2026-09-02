@@ -1,0 +1,362 @@
+{
+  "components": {
+    "schemas": {
+      "EventSegment": {
+        "properties": {
+          "end": {
+            "description": "End time in seconds.",
+            "examples": [
+              12.5
+            ],
+            "title": "End",
+            "type": "number"
+          },
+          "start": {
+            "description": "Start time in seconds.",
+            "examples": [
+              10.4
+            ],
+            "title": "Start",
+            "type": "number"
+          },
+          "text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Short description of the event (caption mode only).",
+            "title": "Text"
+          }
+        },
+        "required": [
+          "start",
+          "end"
+        ],
+        "title": "EventSegment",
+        "type": "object",
+        "x-fal-order-properties": [
+          "start",
+          "end",
+          "text"
+        ]
+      },
+      "MarlinInput": {
+        "properties": {
+          "do_sample": {
+            "default": false,
+            "description": "If true, sample with temperature/top_p; if false, use greedy decoding.",
+            "title": "Do Sample",
+            "type": "boolean"
+          },
+          "max_tokens": {
+            "default": 2048,
+            "description": "Maximum number of tokens to generate for the caption.",
+            "maximum": 4096,
+            "minimum": 64,
+            "title": "Max Tokens",
+            "type": "integer"
+          },
+          "prompt": {
+            "description": "Caption prompt sent to the model. The example value is Marlin's canonical training prompt \u2014 overriding usually degrades output quality.",
+            "examples": [
+              "Provide a spatial description of this clip followed by time-ranged events.\nFor each event, give the time range as <start - end> and a short description."
+            ],
+            "maxLength": 2000,
+            "title": "Prompt",
+            "type": "string"
+          },
+          "temperature": {
+            "default": 1,
+            "description": "Sampling temperature. Only used when do_sample is true.",
+            "maximum": 2,
+            "minimum": 0,
+            "title": "Temperature",
+            "type": "number"
+          },
+          "top_p": {
+            "default": 1,
+            "description": "Nucleus sampling threshold. Only used when do_sample is true.",
+            "exclusiveMinimum": 0,
+            "maximum": 1,
+            "title": "Top P",
+            "type": "number"
+          },
+          "video_url": {
+            "_fal_ui_field": "video",
+            "description": "URL of the video to caption. Up to ~2 minutes is supported.",
+            "examples": [
+              "https://v3b.fal.media/files/b/0a913346/ZbEaRKcU1dMNYkHl9g1Zz_T4QEyOJ3R3WzuQS9.mp4"
+            ],
+            "max_file_size": 524288000,
+            "title": "Video Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "video_url",
+          "prompt"
+        ],
+        "title": "CaptionInput",
+        "type": "object",
+        "x-fal-order-properties": [
+          "video_url",
+          "prompt",
+          "max_tokens",
+          "do_sample",
+          "temperature",
+          "top_p"
+        ]
+      },
+      "MarlinOutput": {
+        "properties": {
+          "events": {
+            "description": "Time-ranged events parsed from the caption.",
+            "examples": [
+              [
+                {
+                  "end": 1.5,
+                  "start": 0,
+                  "text": "a person waves"
+                }
+              ]
+            ],
+            "items": {
+              "$ref": "#/components/schemas/EventSegment"
+            },
+            "title": "Events",
+            "type": "array"
+          },
+          "scene": {
+            "description": "Spatial description of the clip.",
+            "title": "Scene",
+            "type": "string"
+          },
+          "text": {
+            "description": "Full post-thinking caption text (Scene + Events) as returned by the model.",
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "scene",
+          "events",
+          "text"
+        ],
+        "title": "CaptionOutput",
+        "type": "object",
+        "x-fal-order-properties": [
+          "scene",
+          "events",
+          "text"
+        ]
+      },
+      "QueueStatus": {
+        "properties": {
+          "cancel_url": {
+            "description": "The cancel url.",
+            "type": "string"
+          },
+          "logs": {
+            "additionalProperties": true,
+            "description": "The logs.",
+            "type": "object"
+          },
+          "metrics": {
+            "additionalProperties": true,
+            "description": "The metrics.",
+            "type": "object"
+          },
+          "queue_position": {
+            "description": "The queue position.",
+            "type": "integer"
+          },
+          "request_id": {
+            "description": "The request id.",
+            "type": "string"
+          },
+          "response_url": {
+            "description": "The response url.",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "IN_QUEUE",
+              "IN_PROGRESS",
+              "COMPLETED"
+            ],
+            "type": "string"
+          },
+          "status_url": {
+            "description": "The status url.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "request_id"
+        ],
+        "type": "object"
+      }
+    },
+    "securitySchemes": {
+      "apiKeyAuth": {
+        "description": "Fal Key",
+        "in": "header",
+        "name": "Authorization",
+        "type": "apiKey"
+      }
+    }
+  },
+  "info": {
+    "description": "The OpenAPI schema for the fal-ai/marlin queue.",
+    "title": "Queue OpenAPI for fal-ai/marlin",
+    "version": "1.0.0",
+    "x-fal-metadata": {
+      "about": "Caption",
+      "category": "vision",
+      "documentationUrl": "https://fal.ai/models/fal-ai/marlin/api",
+      "endpointId": "fal-ai/marlin",
+      "playgroundUrl": "https://fal.ai/models/fal-ai/marlin",
+      "thumbnailUrl": "https://v3b.fal.media/files/b/0a9afefa/fAcqvrcTMMrzjksn9pCE8_d52c68d7c1694395b67cbb22280a919e.jpg"
+    }
+  },
+  "openapi": "3.0.4",
+  "paths": {
+    "/fal-ai/marlin": {
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MarlinInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueueStatus"
+                }
+              }
+            },
+            "description": "The request status."
+          }
+        }
+      }
+    },
+    "/fal-ai/marlin/requests/{request_id}": {
+      "get": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "request_id",
+            "required": true,
+            "schema": {
+              "description": "Request ID",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MarlinOutput"
+                }
+              }
+            },
+            "description": "Result of the request."
+          }
+        }
+      }
+    },
+    "/fal-ai/marlin/requests/{request_id}/cancel": {
+      "put": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "request_id",
+            "required": true,
+            "schema": {
+              "description": "Request ID",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "success": {
+                      "description": "Whether the request was cancelled successfully.",
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "The request was cancelled."
+          }
+        }
+      }
+    },
+    "/fal-ai/marlin/requests/{request_id}/status": {
+      "get": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "request_id",
+            "required": true,
+            "schema": {
+              "description": "Request ID",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "logs",
+            "required": false,
+            "schema": {
+              "description": "Whether to include logs (`1`) in the response or not (`0`).",
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueueStatus"
+                }
+              }
+            },
+            "description": "The request status."
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "apiKeyAuth": []
+    }
+  ],
+  "servers": [
+    {
+      "url": "https://queue.fal.run"
+    }
+  ]
+}

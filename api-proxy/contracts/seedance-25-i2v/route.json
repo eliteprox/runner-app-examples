@@ -1,0 +1,32 @@
+{
+  "credential": {
+    "authorization_scheme": "Key",
+    "environment_variable": "FAL_KEY",
+    "owner": "operator"
+  },
+  "format": "livepeer.fal.runner-route.v1",
+  "identity": {
+    "app_id": "livepeer-example/fal-seedance-25-i2v",
+    "capability": "seedance-25-i2v",
+    "endpoint_id": "bytedance/seedance-2.5/image-to-video",
+    "queue_app_id": "bytedance/seedance-2.5"
+  },
+  "input_policy": {
+    "caller_authorization": "drop",
+    "endpoint_selection": "pinned",
+    "request_body": "provider_native_json"
+  },
+  "runner": {
+    "mode": "single-shot",
+    "routes": {
+      "execute": "./proxy",
+      "health": "./health",
+      "schema": "./schema"
+    },
+    "transport_profile": "fal_queue_blocking_v1"
+  },
+  "schema": {
+    "path": "./schema.json",
+    "sha256": "eb8544f6ad89e54d9411dc1ac0e72aea82c72ae72a7eb1069c0f605d4d777f62"
+  }
+}
