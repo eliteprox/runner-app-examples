@@ -16,9 +16,9 @@ repos:
     hooks:
       - id: prettier # md/yaml/json formatter (won't rewrap prose)
         types_or: [markdown, yaml, json]
-        # These bytes are owned by generate_schema.py and its drift check. The
-        # compact schema bytes are also the public contract hashed in discovery.
-        exclude: ^api-proxy/(contracts/(report\.json|.*/(openapi|route|schema)\.json)|deployments/.*/generated/.*\.json)$
+        # These bytes are owned by generators and their drift checks. Compact
+        # schema bytes are also the public contract hashed in discovery.
+        exclude: ^api-proxy/(routes/INVENTORY\.md|contracts/(report\.json|.*/(openapi|route|schema)\.json)|deployments/.*/generated/.*\.json)$
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0

@@ -33,6 +33,10 @@ fixed route identities. Each route generates a self-contained contract pack in
 process starts with exactly one `--endpoint-key`, one deadline, and one request
 size limit.
 
+[`routes/INVENTORY.md`](routes/INVENTORY.md) is the generated reviewer index for
+all 73 mappings. It links each capability to its route, schema, and OpenAPI
+artifact without creating a served catalog or runtime routing surface.
+
 **A capability is a registration, not a caller parameter.** A caller can choose
 among the separately registered Live Runner app IDs that an operator publishes.
 After the caller selects an app, that app's adapter process is pinned to one
@@ -153,7 +157,9 @@ local demonstration policy, not production economics or provider facts.
 ## The 73 modeled route contracts
 
 Every mapping in [`routes/index.json`](routes/index.json) has a generated
-directory under `contracts/<capability>/`:
+directory under `contracts/<capability>/`. The complete human-readable list is
+in the generated [`routes/INVENTORY.md`](routes/INVENTORY.md). Each directory
+contains:
 
 - `openapi.json`: committed official queue OpenAPI snapshot;
 - `schema.json`: request/result schemas and transitive OpenAPI components;

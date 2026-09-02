@@ -101,6 +101,11 @@ class ContractFleetTest(unittest.TestCase):
         self.assertTrue((contract_root / "openapi.json").is_file())
         self.assertTrue((contract_root / "route.json").is_file())
         self.assertTrue((contract_root / "schema.json").is_file())
+        _, items = generate_contracts._route_items(self.route_index_path)
+        self.assertEqual(
+            (self.root / "routes" / "INVENTORY.md").read_bytes(),
+            generate_contracts._inventory_bytes(items),
+        )
         self.assertEqual(list(self.root.rglob("runners.json")), [])
 
         with mock.patch.object(
@@ -181,6 +186,32 @@ class ContractFleetTest(unittest.TestCase):
             1,
         )
 
+    def test_offline_check_detects_inventory_drift(self) -> None:
+        entry = self._entry()
+        self._write_route_index(entry)
+        document = self._document_for(entry["endpoint_id"])
+        self.assertEqual(
+            generate_contracts.refresh_routes(
+                route_index_path=self.route_index_path,
+                report_path=self.report_path,
+                root=self.root,
+                fetch_document=lambda route: document,
+                jobs=1,
+            ),
+            0,
+        )
+        (self.root / "routes" / "INVENTORY.md").write_text(
+            "stale inventory\n", encoding="utf-8"
+        )
+        self.assertEqual(
+            generate_contracts.check_routes(
+                route_index_path=self.route_index_path,
+                report_path=self.report_path,
+                root=self.root,
+            ),
+            1,
+        )
+
     def test_projection_requires_submit_status_result_and_cancel(self) -> None:
         endpoint_id = "vendor/example/generate"
         route = RouteDefinition.from_index_entry(self._entry(endpoint_id))
@@ -208,6 +239,10 @@ class ContractFleetTest(unittest.TestCase):
         self.assertEqual(len(report_by_endpoint), 73)
         self.assertEqual(report["provenance"]["contract_authority"], "fal")
         self.assertEqual(report["route_index_format"], index["format"])
+        self.assertEqual(
+            (API_PROXY / "routes" / "INVENTORY.md").read_bytes(),
+            generate_contracts._inventory_bytes(items),
+        )
 
         for item in items:
             with self.subTest(endpoint_id=item.route.endpoint_id):

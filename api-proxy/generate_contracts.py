@@ -34,6 +34,7 @@ from fal_adapter import (
 
 ROOT = Path(__file__).resolve().parent
 DEFAULT_REPORT_PATH = ROOT / "contracts" / "report.json"
+INVENTORY_FILENAME = "INVENTORY.md"
 REPORT_FORMAT = "livepeer.fal.contract-report.v3"
 CONTRACT_AUTHORITY = "fal"
 CONTRACT_KIND = "queue_openapi"
@@ -147,6 +148,37 @@ def _route_items(route_index_path: Path) -> tuple[dict[str, Any], list[RouteItem
             seen.add(value)
         items.append(RouteItem(entry=entry, route=route))
     return index, items
+
+
+def _inventory_path(root: Path) -> Path:
+    return root / "routes" / INVENTORY_FILENAME
+
+
+def _markdown_code(value: str) -> str:
+    escaped = value.replace("\\", "\\\\").replace("|", "\\|").replace("`", "\\`")
+    return f"`{escaped}`"
+
+
+def _inventory_bytes(items: list[RouteItem]) -> bytes:
+    """Render a deterministic reviewer view of the canonical route index."""
+
+    lines = [
+        "# Route inventory",
+        "",
+        "> Generated from [`index.json`](index.json) by `generate_contracts.py`.",
+        "> Regenerate with `uv run python generate_contracts.py --generate`.",
+        "",
+        "This index lists 73 modeled route contracts. Each capability links to its",
+        "generated `route.json`; the schema and OpenAPI snapshot are stored beside it.",
+        "",
+    ]
+    for position, item in enumerate(items, start=1):
+        capability = item.route.capability
+        contract_root = f"../contracts/{capability}"
+        lines.append(
+            f"{position}. [{_markdown_code(capability)}]({contract_root}/route.json)"
+        )
+    return ("\n".join(lines) + "\n").encode()
 
 
 def _report_bytes(report: dict[str, Any]) -> bytes:
@@ -403,6 +435,7 @@ def refresh_routes(
 
     report = _report(index, results)
     _atomic_write(report_path, _report_bytes(report))
+    _atomic_write(_inventory_path(root), _inventory_bytes(items))
     summary = report["summary"]
     print(
         f"routes total={summary['total']} "
@@ -438,6 +471,7 @@ def generate_routes(
 
     report = _report(index, results)
     _atomic_write(report_path, _report_bytes(report))
+    _atomic_write(_inventory_path(root), _inventory_bytes(items))
     summary = report["summary"]
     print(
         f"routes total={summary['total']} "
@@ -475,6 +509,14 @@ def check_routes(
         actual = b""
     if actual != expected:
         print(f"drift: {report_path}", file=sys.stderr)
+        return 1
+    inventory_path = _inventory_path(root)
+    try:
+        actual_inventory = inventory_path.read_bytes()
+    except OSError:
+        actual_inventory = b""
+    if actual_inventory != _inventory_bytes(items):
+        print(f"drift: {inventory_path}", file=sys.stderr)
         return 1
     summary = json.loads(expected)["summary"]
     print(
