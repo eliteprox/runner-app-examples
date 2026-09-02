@@ -64,7 +64,18 @@ class RouteRunnerExecutionTest(unittest.IsolatedAsyncioTestCase):
         self.server = TestServer(self.fake.app)
         await self.server.start_server()
         self.session = aiohttp.ClientSession()
-        self.runner = SimpleNamespace(url=str(self.server.make_url("")))
+        self.metadata = {
+            "endpoint_id": self.route.endpoint_id,
+            "provider": "fal",
+            "schema_sha256": self.route.schema_sha256,
+            "schema_url": "./schema",
+            "transport": "queue",
+        }
+        self.runner = SimpleNamespace(
+            app=self.route.app_id,
+            raw={"metadata": json.dumps(self.metadata)},
+            url=str(self.server.make_url("")),
+        )
 
     async def asyncTearDown(self) -> None:
         await self.session.close()
@@ -98,6 +109,40 @@ class RouteRunnerExecutionTest(unittest.IsolatedAsyncioTestCase):
         with (
             mock.patch("fal_adapter.route_client.call_runner", call),
             self.assertRaisesRegex(RouteContractError, "schema hash"),
+        ):
+            await run_route_arguments(
+                self.session,
+                runner=self.runner,
+                route=self.route,
+                arguments_bytes=b"{}",
+                timeout_seconds=210,
+            )
+        call.assert_not_awaited()
+
+    async def test_discovery_metadata_hash_drift_refuses_before_execution(self) -> None:
+        self.metadata["schema_sha256"] = "0" * 64
+        self.runner.raw["metadata"] = json.dumps(self.metadata)
+        call = mock.AsyncMock()
+        with (
+            mock.patch("fal_adapter.route_client.call_runner", call),
+            self.assertRaisesRegex(RouteContractError, "metadata schema_sha256 drift"),
+        ):
+            await run_route_arguments(
+                self.session,
+                runner=self.runner,
+                route=self.route,
+                arguments_bytes=b"{}",
+                timeout_seconds=210,
+            )
+        call.assert_not_awaited()
+
+    async def test_discovery_metadata_schema_url_is_pinned(self) -> None:
+        self.metadata["schema_url"] = "https://other.example/schema"
+        self.runner.raw["metadata"] = json.dumps(self.metadata)
+        call = mock.AsyncMock()
+        with (
+            mock.patch("fal_adapter.route_client.call_runner", call),
+            self.assertRaisesRegex(RouteContractError, "metadata schema_url drift"),
         ):
             await run_route_arguments(
                 self.session,

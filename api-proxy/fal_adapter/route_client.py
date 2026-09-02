@@ -31,6 +31,8 @@ class RunnerRoute:
     capability: str
     app_id: str
     endpoint_id: str
+    execute_url: str
+    schema_url: str
     schema_sha256: str
     document: dict[str, Any]
 
@@ -77,6 +79,17 @@ def load_runner_route(
         or identity.get("queue_app_id") != route.queue_app_id
     ):
         raise RouteContractError(f"route contract {capability} identity drift")
+    expected_runner = {
+        "mode": "single-shot",
+        "routes": {
+            "execute": "./proxy",
+            "health": "./health",
+            "schema": "./schema",
+        },
+        "transport_profile": "fal_queue_blocking_v1",
+    }
+    if runner != expected_runner:
+        raise RouteContractError(f"route contract {capability} Runner paths drift")
     schema_sha256 = schema.get("sha256")
     if (
         not isinstance(schema_sha256, str)
@@ -93,6 +106,8 @@ def load_runner_route(
         capability=route.capability,
         app_id=route.app_id,
         endpoint_id=route.endpoint_id,
+        execute_url=expected_runner["routes"]["execute"],
+        schema_url=expected_runner["routes"]["schema"],
         schema_sha256=schema_sha256,
         document=document,
     )
@@ -102,14 +117,45 @@ def _runner_url(base_url: str, relative_path: str) -> str:
     return urljoin(base_url.rstrip("/") + "/", relative_path)
 
 
+def _discovery_metadata(runner: Any, route: RunnerRoute) -> dict[str, Any]:
+    if getattr(runner, "app", None) != route.app_id:
+        raise RouteContractError("discovered Runner app identity drift")
+    raw = getattr(runner, "raw", None)
+    if not isinstance(raw, dict):
+        raise RouteContractError("discovered Runner is missing its raw entry")
+    encoded = raw.get("metadata")
+    if not isinstance(encoded, str) or not encoded:
+        raise RouteContractError("discovered Runner is missing route metadata")
+    try:
+        metadata = json.loads(encoded)
+    except json.JSONDecodeError as error:
+        raise RouteContractError(
+            "discovered Runner metadata is not valid JSON"
+        ) from error
+    if not isinstance(metadata, dict):
+        raise RouteContractError("discovered Runner metadata must be a JSON object")
+    expected = {
+        "endpoint_id": route.endpoint_id,
+        "provider": "fal",
+        "schema_sha256": route.schema_sha256,
+        "schema_url": route.schema_url,
+        "transport": "queue",
+    }
+    for key, value in expected.items():
+        if metadata.get(key) != value:
+            raise RouteContractError(f"discovered Runner metadata {key} drift")
+    return metadata
+
+
 async def verify_runner_schema(
     session: aiohttp.ClientSession,
     *,
     runner_url: str,
+    schema_url: str,
     route: RunnerRoute,
     ssl: bool | None = None,
 ) -> None:
-    async with session.get(_runner_url(runner_url, "./schema"), ssl=ssl) as response:
+    async with session.get(_runner_url(runner_url, schema_url), ssl=ssl) as response:
         raw = await response.read()
         if response.status != 200:
             raise RouteContractError(f"Runner schema returned HTTP {response.status}")
@@ -141,10 +187,17 @@ async def run_route_arguments(
     runner_url = getattr(runner, "url", None)
     if not isinstance(runner_url, str) or not runner_url:
         raise RouteContractError("discovered Runner is missing its URL")
-    await verify_runner_schema(session, runner_url=runner_url, route=route, ssl=ssl)
+    metadata = _discovery_metadata(runner, route)
+    await verify_runner_schema(
+        session,
+        runner_url=runner_url,
+        schema_url=metadata["schema_url"],
+        route=route,
+        ssl=ssl,
+    )
     result = await call_runner(
         runner=runner,
-        runner_url=_runner_url(runner_url, "./proxy"),
+        runner_url=_runner_url(runner_url, route.execute_url),
         payload=arguments,
         signer_url=signer_url,
         timeout=timeout_seconds,

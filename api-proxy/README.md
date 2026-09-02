@@ -34,8 +34,8 @@ process starts with exactly one `--endpoint-key`, one deadline, and one request
 size limit.
 
 [`routes/INVENTORY.md`](routes/INVENTORY.md) is the generated reviewer index for
-all 73 mappings. It links each capability to its route, schema, and OpenAPI
-artifact without creating a served catalog or runtime routing surface.
+all 73 mappings. Each capability links to its route contract; the corresponding
+schema and OpenAPI snapshot are stored beside it.
 
 **A capability is a registration, not a caller parameter.** A caller can choose
 among the separately registered Live Runner app IDs that an operator publishes.

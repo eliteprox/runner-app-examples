@@ -6,9 +6,9 @@ operator-selected Runner configuration. It is not served as a catalog and is
 not evidence that any endpoint is currently available on an orchestrator.
 
 [`INVENTORY.md`](INVENTORY.md) is the generated human-readable view for
-reviewing all 73 mappings and opening each route, schema, and OpenAPI artifact.
-It is regenerated and drift-checked from `index.json`; it adds no runtime
-catalog behavior.
+reviewing all 73 mappings and opening each route contract. The schema and
+OpenAPI snapshot are stored beside the linked file. The inventory is regenerated
+and drift-checked from `index.json`.
 
 Every entry fixes:
 
