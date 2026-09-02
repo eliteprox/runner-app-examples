@@ -4,9 +4,9 @@
 # Adds the shared remote signer and re-points the orchestrator on-chain (see
 # ../compose.onchain.yml), with runners.json mounted so the statically attached
 # runner advertises its fixed price and the orchestrator issues a payment
-# challenge. Requires a local .env (gitignored); copy .env.example and fill it
+# challenge. Requires a local .env.local (gitignored); copy .env.example and fill it
 # in. Then pay through the signer:
-#   uv run client.py --prompt "..." \
+#   uv run client.py run flux-schnell --input-json request.json \
 #     --discovery https://localhost:8935/discovery \
 #     --signer http://localhost:7936
 
@@ -24,4 +24,4 @@ services:
       service: orchestrator
     volumes:
       - ${ORCH_KEYSTORE_DIR}:/keystore:ro
-      - ./runners.json:/config/runners.json:ro
+      - ./deployments/local-offchain-flux/generated/runners.json:/config/runners.json:ro

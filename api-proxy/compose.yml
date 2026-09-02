@@ -1,12 +1,9 @@
-# End-to-end offchain demo: orchestrator + the api-proxy "app" — a stock nginx
-# attached as two static runners via runners.json (-liveRunnerConfig). There is
-# no app code at all: nginx.conf.template is the whole runner, and it serves two
-# capabilities from one process because a capability is a registration.
+# Local offchain example: local orchestrator + the Flux Schnell fal queue
+# adapter attached statically through runners.json (-liveRunnerConfig).
 #
-# Needs HF_TOKEN (the upstream credential nginx injects) in a local .env — copy
-# .env.example. Once up, call it from the host with the SDK:
-#   docker compose up -d
-#   uv run client.py --prompt "..." --discovery https://localhost:8935/discovery
+# The operator-held FAL_KEY belongs in .env.local. Run with:
+#   docker compose --env-file .env.local up -d --build
+#   uv run client.py run flux-schnell --input-json request.json
 
 services:
   orchestrator:
@@ -14,13 +11,13 @@ services:
       file: ../compose.orchestrator.static.yml
       service: orchestrator
     volumes:
-      - ./runners.json:/config/runners.json:ro
+      - ./deployments/local-offchain-flux/generated/runners.json:/config/runners.json:ro
 
   app:
-    image: nginx:1.27-alpine
+    image: ghcr.io/livepeer/runner-example-api-proxy:latest
+    pull_policy: build
+    build: .
     container_name: example_apps_api_proxy
     environment:
-      # The operator-held upstream credential (huggingface.co → settings → tokens).
-      - HF_TOKEN=${HF_TOKEN:?set HF_TOKEN in .env (copy .env.example)}
-    volumes:
-      - ./nginx.conf.template:/etc/nginx/templates/default.conf.template:ro
+      # The key stays in the adapter; it is never accepted from callers.
+      - FAL_KEY=${FAL_KEY:?set FAL_KEY in .env.local (copy .env.example)}

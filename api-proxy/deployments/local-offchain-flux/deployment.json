@@ -1,0 +1,22 @@
+{
+  "adapter_image": "runner-example-fal-adapter:local",
+  "deployment_id": "fal-flux-schnell-example",
+  "routes": [
+    {
+      "capability": "flux-schnell",
+      "capacity": 4,
+      "deadline_seconds": 180,
+      "label": "fal-flux-schnell",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "service": "fal-flux-schnell"
+    }
+  ],
+  "format": "livepeer.fal.deployment.v2",
+  "network": "offchain",
+  "pricing_scope": "local_demo_only"
+}

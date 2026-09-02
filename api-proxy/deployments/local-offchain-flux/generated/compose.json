@@ -1,0 +1,49 @@
+{
+  "name": "livepeer-fal-flux-schnell-example",
+  "services": {
+    "fal-flux-schnell": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=flux-schnell",
+        "--deadline-seconds=180",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "orchestrator": {
+      "depends_on": {
+        "fal-flux-schnell": {
+          "condition": "service_healthy"
+        }
+      },
+      "extends": {
+        "file": "../../../../compose.orchestrator.static.yml",
+        "service": "orchestrator"
+      },
+      "volumes": [
+        "./runners.json:/config/runners.json:ro"
+      ]
+    }
+  }
+}

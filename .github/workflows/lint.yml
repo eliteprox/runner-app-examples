@@ -22,7 +22,7 @@ jobs:
   compose:
     runs-on: ubuntu-latest
     env:
-      HF_TOKEN: dummy # api-proxy requires it; every other variable has a default
+      FAL_KEY: dummy # api-proxy requires it; every other variable has a default
     steps:
       - uses: actions/checkout@v7
       - name: Validate every example's compose file
@@ -41,3 +41,18 @@ jobs:
               config --quiet || status=1
           done
           exit $status
+
+  api-proxy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install "aiohttp>=3.10,<4"
+      - run: python api-proxy/generate_schema.py --check
+      - run: python api-proxy/generate_contracts.py --check
+      - run: >-
+          python api-proxy/generate_deployment.py
+          api-proxy/deployments/local-offchain-flux/deployment.json --check
+      - run: python -m unittest discover -s api-proxy/tests -v

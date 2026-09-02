@@ -1,0 +1,26 @@
+{
+  "deployment_id": "fal-flux-schnell-example",
+  "format": "livepeer.fal.generated-deployment.v2",
+  "network": "offchain",
+  "pricing_scope": "local_demo_only",
+  "route_index_format": "livepeer.fal.route-index.v1",
+  "routes": [
+    {
+      "app_id": "livepeer-example/fal-flux-schnell",
+      "capability": "flux-schnell",
+      "capacity": 4,
+      "deadline_seconds": 180,
+      "endpoint_id": "fal-ai/flux/schnell",
+      "label": "fal-flux-schnell",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/flux-schnell/route.json",
+      "schema_sha256": "6a5103a47bb61b39ffadcc8f6ea6f98d1027cc8ba14d1723883dd6c4a6a06658",
+      "service": "fal-flux-schnell"
+    }
+  ]
+}

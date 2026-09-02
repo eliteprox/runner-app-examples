@@ -1,67 +1,203 @@
-# API-proxy app (a runner that is pure config)
+# Pinned fal queue routes for Live Runner
 
-The live runner can also **pass calls through to an API that runs somewhere else** — here the **Hugging Face text-to-image inference API**. This example's runner is a **stock nginx**: [nginx.conf.template](nginx.conf.template) forwards each call to its route's pinned model URL and injects the operator's token. There is **no app code at all** — the orchestrator operator offers two hosted models ([Stable Diffusion 3 medium](https://huggingface.co/stabilityai/stable-diffusion-3-medium-diffusers) and [FLUX.1 schnell](https://huggingface.co/black-forest-labs/FLUX.1-schnell)) as **two separately priced capabilities**, with nothing but config.
+This example models 73 fal queue endpoints in the same shape as the worked Flux
+Schnell Runner. It gives an orchestrator operator concrete route definitions to
+select from without turning the adapter into a catalog or arbitrary proxy.
 
-|              |                                                                                 |
-| ------------ | ------------------------------------------------------------------------------- |
-| App ids      | `livepeer-example/stable-diffusion-3-medium`, `livepeer-example/flux-1-schnell` |
-| Runner mode  | single-shot                                                                     |
-| Registration | static (orchestrator config + health poll)                                      |
-| Transport    | HTTP (HF payload in, JPEG bytes out)                                            |
-| Pricing      | fixed, per capability (0.0001 and 0.00004 USD per image)                        |
-| Port         | 8989                                                                            |
+One adapter image is reused. Every adapter process starts with one
+`--endpoint-key`, one deadline and one request-size limit. The caller cannot
+choose or override the upstream endpoint.
 
-Prerequisites (Docker, `uv`, and the [`livepeer-gateway` SDK](https://pypi.org/project/livepeer-gateway/)) and the shared on-chain/payment setup live in the [repo README](../README.md). The demo upstream additionally needs a **Hugging Face API token** (`HF_TOKEN`, from [huggingface.co → settings → tokens](https://huggingface.co/settings/tokens)) with inference-provider credits.
+## What is modeled
 
-## How it's wired
+[`routes/index.json`](routes/index.json) contains 73 fixed mappings. Every
+mapping has a generated directory under `contracts/<capability>/`:
 
-The apps are attached as **static runners**: the orchestrator reads [runners.json](runners.json) via `-liveRunnerConfig` — app id, runner URL, single-shot mode, and the fixed price, one entry per capability — and health-polls `/health` (an nginx `return 200`). Each `<model>/proxy` location proxies to its pinned model URL with `Authorization: Bearer <HF_TOKEN>` added. The caller's body is the [Hugging Face text-to-image payload](https://huggingface.co/docs/inference-providers/tasks/text-to-image) forwarded verbatim — `{"inputs": "<prompt>"}` — and the image comes back as **raw JPEG bytes**. The client calls it with `runner_selector` → `call_runner` ([client.py](client.py)) — discover, then one **single-shot** call per image, reading the bytes from `result.content`; the orchestrator reserves a session per call and releases it when the response returns. Grep `# Livepeer:` in client.py to see the exact calls.
+- `openapi.json`: committed official queue OpenAPI snapshot;
+- `schema.json`: exact request/result schemas and transitive components;
+- `route.json`: the Live Runner app identity, fixed queue identity, credential
+  ownership, request policy, Runner paths and schema hash.
 
-**A capability is a registration, not a container.** One nginx serves both: each `runners.json` entry points its app id at its own path (`http://app:8989/sd3`), and the orchestrator preserves that path when it forwards, so the two registrations land on different `location` blocks with different pinned models and different prices. `--app` on the client picks which one to call.
+All 73 `route.json` files use the same implementation format as Flux Schnell.
+They contain no capacity, price, publication status or deployment-readiness
+label. Those values do not come from fal and are not properties of an API
+contract.
 
-The shared `/health` is deliberate: it reports that nginx is up and nothing more. [nginx.conf.template](nginx.conf.template) says why a real upstream check does not belong there.
+The snapshots were retrieved on 2026-09-01 using:
 
-## Offering an API as a capability — what this shows
-
-Everything is operator-side config. `runners.json` names each capability and sets its **fixed per-image price**; the nginx config pins the model URL and holds the credential (`HF_TOKEN`, from `.env`). The pinned URL is also the security model: the operator's credential can only be spent on exactly the models offered. The config pins the method to `POST` and drops the caller's query string too, so the body is the only thing a caller controls: they choose nothing but the prompt, and never see an API key. They discover a capability and pay **per image through Livepeer**, while the operator pays the upstream and prices above the per-image upstream cost.
-
-**A capability is a product, not a parameter.** FLUX.1 schnell is faster and cheaper than SD3 medium, so it is its own app id at its own price rather than a flag on one shared endpoint. Callers pick between them the same way they pick between orchestrators: discovery filters on `app`, matched exactly, so the app id has to say what you get. Swapping a model means renaming its app id with it, and offering a third is the same change once more: one `location` block, one `runners.json` entry.
-
-**Each entry carries its own capacity.** That is the right shape here: the two capabilities do not contend, because the work happens upstream at Hugging Face and nginx is only forwarding bytes. Capacity is exposure control rather than a local limit, since payment is taken when the session is reserved: it caps how many paid calls can be in flight against the operator's credential, so size it to the upstream quota rather than to this machine. Runners that genuinely share a resource — several models resident on one GPU — are a different problem, since the orchestrator has no way to know that two registrations sit on the same card ([go-livepeer#4015](https://github.com/livepeer/go-livepeer/issues/4015)).
-
-**Fixed pricing** is the natural fit: one call is one bounded unit of work, so the runner bills one flat price per call instead of metering time.
-
-## Pinned here, dynamic in livepeer/api-proxy
-
-Both capabilities here are fixed at deploy time: two `location` blocks and two `runners.json` entries, changed by editing config and restarting. That is the whole point of a **static** runner, and it is the right trade when the offering is stable.
-
-Registration can also be **dynamic**. [livepeer/api-proxy](https://github.com/livepeer/api-proxy) is the same one-process-many-endpoints shape, except endpoints are added at runtime with a CLI or a dashboard: one `register_runner` each, each its own priced capability, with no orchestrator config to touch and no restart. It also stores the upstream keys encrypted and reports per-endpoint request stats, which is what an operator running more than a handful of these actually needs.
-
-## Run offchain (free)
-
-```sh
-cp .env.example .env   # fill in HF_TOKEN; ignore the on-chain block
-docker compose up -d
-curl -sk https://localhost:8935/discovery | jq '.[].runners[] | {app, price_info}'   # both capabilities, each with its price
-uv run client.py --prompt "a watercolor painting of a llama writing code"
-uv run client.py --app livepeer-example/flux-1-schnell \
-  --prompt "a watercolor painting of a llama writing code" --output flux-out.jpg
-docker compose down
+```text
+https://fal.ai/api/openapi/queue/openapi.json?endpoint_id=<endpoint_id>
 ```
 
-`compose.yml` brings up an orchestrator (`-useLiveRunners -liveRunnerConfig`) and the nginx runner, which registers as two capabilities. The client sends one prompt through the orchestrator per call and writes the image; `--app` chooses the model and `--output` keeps the two results apart.
+`contracts/report.json` verifies only the committed endpoint identity, queue
+operations, schema projection and generated bytes. It makes no claim about
+current orchestrator availability or provider execution.
 
-## Run on-chain (paid)
+## What the operator selects
 
-Layer `compose.onchain.yml` to run the orchestrator on-chain with a remote signer paying each call — one fixed payment per image, at the price `runners.json` advertises for the capability called. For the required RPC and wallets see [On-chain (paid) setup](../README.md#on-chain-paid-setup) in the repo README.
+A deployment file chooses which modeled routes to offer and supplies operator
+policy for each instance:
+
+```json
+{
+  "capability": "flux-schnell",
+  "service": "fal-flux-schnell",
+  "label": "fal-flux-schnell",
+  "deadline_seconds": 180,
+  "max_request_bytes": 1048576,
+  "capacity": 4,
+  "price_info": {
+    "currency": "usd",
+    "price": 0.0001,
+    "unit": "fixed"
+  }
+}
+```
+
+The checked-in `0.0001 USD` and capacity `4` values are local demonstration
+policy, not production economics or provider facts. To model a larger operator
+deployment, add more entries to the deployment's `routes` array and regenerate.
 
 ```sh
-cp .env.example .env   # fill in HF_TOKEN, RPC, network, keystore paths, accounts
-docker compose -f compose.yml -f compose.onchain.yml up -d
-uv run client.py --prompt "a watercolor painting of a llama writing code" \
+python generate_deployment.py \
+  deployments/local-offchain-flux/deployment.json
+```
+
+The generator writes:
+
+- `generated/compose.json`: one pinned adapter service per selected route;
+- `generated/runners.json`: one static Live Runner registration per service;
+- `generated/deployment.json`: the resolved route identity and operator policy.
+
+This explicit selection is the boundary: the 73-route inventory is never
+registered wholesale by the adapter and caller input never selects a route.
+
+## Adapter interface
+
+Each selected service exposes:
+
+- `GET /health`: local credential, route and schema readiness;
+- `GET /schema`: the selected route's deterministic schema bytes;
+- `POST /proxy`: blocking execution through that route's fal queue.
+
+`POST /proxy` drops caller authorization and query parameters, adds the
+operator-held `Authorization: Key <FAL_KEY>`, and submits the body bytes it
+receives unchanged with `Content-Type: application/json`. Livepeer clients and
+the gateway may parse and reserialize caller JSON before it reaches the adapter,
+so the public contract guarantees provider-native JSON fields without semantic
+transformation, not byte identity with the caller's source file. The adapter
+does not validate inputs, apply defaults, rewrite prompts, choose models or
+retry submissions.
+
+The adapter requires fal's `request_id`, derives status/result URLs from the
+fixed route model, polls until completion, and returns:
+
+```json
+{
+  "request_id": "provider-request-id",
+  "endpoint_id": "fixed-provider-endpoint",
+  "schema_sha256": "route-schema-hash",
+  "output": {
+    "provider_native_fields": "unchanged"
+  }
+}
+```
+
+Errors retain endpoint/schema identity and use
+`error.stage=submit|status|result|timeout`. A timeout does not resubmit or cancel
+the upstream job. Logs contain only request ID, stage, status and elapsed time.
+
+## Credential ownership
+
+`FAL_KEY` belongs to the orchestrator operator. Keep it in the ignored
+`.env.local`; it is never accepted from callers, written to route contracts or
+placed in discovery metadata.
+
+```sh
+cp .env.example .env.local
+# Set FAL_KEY in .env.local.
+```
+
+## Run the worked Flux Schnell example
+
+```sh
+python generate_contracts.py --check
+python generate_deployment.py \
+  deployments/local-offchain-flux/deployment.json --check
+docker compose --env-file .env.local up -d --build
+```
+
+Confirm its static Runner registration:
+
+```sh
+curl -sk https://localhost:8935/discovery |
+  jq '.[].runners[] | select(.app == "livepeer-example/fal-flux-schnell") |
+      {app, mode, metadata, capacity_available, price_info}'
+```
+
+Call it with a complete fal input object:
+
+```sh
+uv run client.py run flux-schnell \
+  --input-json request.json \
   --discovery https://localhost:8935/discovery \
-  --signer http://localhost:7936
-docker compose -f compose.yml -f compose.onchain.yml down
+  --insecure \
+  --receipt-output receipt.json
 ```
 
-Each call is one paid single-shot session: the orchestrator reserves it, takes one fixed payment, and releases it when the response returns. `--app` picks which price you pay. The signer's `MAX_PRICE_PER_UNIT` is one cap across both capabilities, so it has to clear the **highest** price in `runners.json`.
+The client discovers only the app named by `route.json`, fetches `/schema`,
+verifies its SHA-256, then calls `/proxy`. Use `--timeout` when the selected
+deployment has a longer operator deadline. Add `--signer` only for the separately
+configured paid path.
+
+```sh
+docker compose --env-file .env.local down
+```
+
+## Use another modeled route
+
+1. Inspect `contracts/<capability>/route.json` and `schema.json`.
+2. Add the capability to an operator deployment's `routes` array.
+3. Choose that instance's deadline, request limit, capacity, price, service and
+   label.
+4. Run `generate_deployment.py` and use the generated Compose and
+   `runners.json` files.
+5. Exercise the endpoint with a schema-valid full JSON object through the same
+   client and Runner paths used by Flux Schnell.
+
+File uploads and provider-accessible URL preparation remain caller
+responsibilities. Long-running routes need an operator deadline and client
+timeout appropriate to that model.
+
+## Refresh and verify
+
+Normal checks are offline:
+
+```sh
+python generate_contracts.py --generate
+python generate_contracts.py --check
+python generate_schema.py --check
+python generate_deployment.py \
+  deployments/local-offchain-flux/deployment.json --check
+uv run --no-project --with 'aiohttp>=3.10,<4' \
+  python -m unittest discover -s tests -v
+docker compose --env-file .env.local config --quiet
+docker compose --env-file .env.example \
+  -f compose.yml -f compose.onchain.yml config --quiet
+docker build .
+```
+
+Refresh official OpenAPI only as an intentional network operation. Refresh one
+route while developing; omit `--route` to refresh all 73:
+
+```sh
+python generate_contracts.py --refresh --route flux-schnell
+```
+
+## Scope
+
+This repository demonstrates how fal queue endpoints map to pinned Live Runner
+applications. It does not implement public capability discovery, categorization,
+ranking, model selection, prompt rewriting, fallback, webhook handling, durable
+recovery after adapter restart, production pricing or arbitrary provider
+routing.
