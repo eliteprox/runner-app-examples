@@ -1,2 +1,8 @@
 # Client output
 api-proxy-out.jpg
+
+# Operator-held credentials
+.env
+.env.local
+.venv/
+__pycache__/
