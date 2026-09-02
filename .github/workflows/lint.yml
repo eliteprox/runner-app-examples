@@ -49,10 +49,14 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
-      - run: pip install "aiohttp>=3.10,<4"
-      - run: python api-proxy/generate_schema.py --check
-      - run: python api-proxy/generate_contracts.py --check
+      # Run inside the locked api-proxy project so tests receive every declared
+      # dependency, including the livepeer-gateway client used by route_client.py.
+      - run: pip install uv
+      - run: uv run --project api-proxy --frozen python api-proxy/generate_schema.py --check
+      - run: uv run --project api-proxy --frozen python api-proxy/generate_contracts.py --check
       - run: >-
-          python api-proxy/generate_deployment.py
+          uv run --project api-proxy --frozen python api-proxy/generate_deployment.py
           api-proxy/deployments/local-offchain-flux/deployment.json --check
-      - run: python -m unittest discover -s api-proxy/tests -v
+      - run: >-
+          uv run --project api-proxy --frozen python -m unittest discover
+          -s api-proxy/tests -v
