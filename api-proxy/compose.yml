@@ -1,5 +1,5 @@
-# Local offchain example: local orchestrator + the Flux Schnell fal queue
-# adapter attached statically through runners.json (-liveRunnerConfig).
+# Local offchain example: local orchestrator + pinned fal queue adapters
+# attached statically through runners.json (-liveRunnerConfig).
 #
 # The operator-held FAL_KEY belongs in .env.local. Run with:
 #   docker compose --env-file .env.local up -d --build

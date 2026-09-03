@@ -1,6 +1,606 @@
 {
   "name": "livepeer-fal-flux-schnell-example",
   "services": {
+    "fal-bernini-r-edit": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=bernini-r-edit",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-bg-remove": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=bg-remove",
+        "--deadline-seconds=180",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-ffmpeg-compose": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=ffmpeg-compose",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-ffmpeg-extract-frame": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=ffmpeg-extract-frame",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-ffmpeg-images-to-video": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=ffmpeg-images-to-video",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-ffmpeg-loudnorm": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=ffmpeg-loudnorm",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-ffmpeg-merge-audio-video": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=ffmpeg-merge-audio-video",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-ffmpeg-merge-videos": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=ffmpeg-merge-videos",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-ffmpeg-metadata": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=ffmpeg-metadata",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-ffmpeg-scale-video": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=ffmpeg-scale-video",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-ffmpeg-trim-video": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=ffmpeg-trim-video",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-flux-2-edit": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=flux-2-edit",
+        "--deadline-seconds=180",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-flux-2-pro": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=flux-2-pro",
+        "--deadline-seconds=180",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-flux-3-extend": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=flux-3-extend",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-flux-3-i2v": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=flux-3-i2v",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-flux-3-keyframes": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=flux-3-keyframes",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-flux-3-t2v": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=flux-3-t2v",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-flux-3-transition": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=flux-3-transition",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-flux-erase": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=flux-erase",
+        "--deadline-seconds=180",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-flux-fill": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=flux-fill",
+        "--deadline-seconds=180",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
     "fal-flux-schnell": {
       "build": {
         "context": "../../.."
@@ -31,9 +631,1785 @@
       "image": "runner-example-fal-adapter:local",
       "pull_policy": "build"
     },
+    "fal-flux-video-upscale": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=flux-video-upscale",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-gemini-tts": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=gemini-tts",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-gpt-image-2": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=gpt-image-2",
+        "--deadline-seconds=180",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-gpt-image-2-edit": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=gpt-image-2-edit",
+        "--deadline-seconds=180",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-grok-image-2": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=grok-image-2",
+        "--deadline-seconds=180",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-grok-image-2-edit": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=grok-image-2-edit",
+        "--deadline-seconds=180",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-grok-imagine-video-15-i2v": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=grok-imagine-video-15-i2v",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-grok-imagine-video-15-ref2v": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=grok-imagine-video-15-ref2v",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-grok-imagine-video-15-t2v": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=grok-imagine-video-15-t2v",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-ideogram-v4": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=ideogram-v4",
+        "--deadline-seconds=180",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-kling-o3-ref2v": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=kling-o3-ref2v",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-kling-v3-pro-i2v": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=kling-v3-pro-i2v",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-kling-v3-pro-t2v": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=kling-v3-pro-t2v",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-ltx-25-a2v-pro": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=ltx-25-a2v-pro",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-ltx-25-i2v-fast": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=ltx-25-i2v-fast",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-ltx-25-i2v-pro": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=ltx-25-i2v-pro",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-ltx-25-t2v-fast": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=ltx-25-t2v-fast",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-ltx-25-t2v-pro": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=ltx-25-t2v-pro",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-marlin-video": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=marlin-video",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-meshy-v7-i3d": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=meshy-v7-i3d",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-minimax-h3-max-i2v": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=minimax-h3-max-i2v",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-minimax-h3-max-ref2v": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=minimax-h3-max-ref2v",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-minimax-h3-max-t2v": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=minimax-h3-max-t2v",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-minimax-music-3": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=minimax-music-3",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-mirelo-sfx": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=mirelo-sfx",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-mmaudio-v2-video-soundtrack": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=mmaudio-v2-video-soundtrack",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-nemotron-asr": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=nemotron-asr",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-pixelcut-video-bg-remove": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=pixelcut-video-bg-remove",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-ray-32-i2v": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=ray-32-i2v",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-ray-32-reframe": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=ray-32-reframe",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-ray-32-t2v": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=ray-32-t2v",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-ray-32-v2v": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=ray-32-v2v",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-recraft-v4": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=recraft-v4",
+        "--deadline-seconds=180",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-seedance-20-i2v": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=seedance-20-i2v",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-seedance-20-ref2v": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=seedance-20-ref2v",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-seedance-20-t2v": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=seedance-20-t2v",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-seedance-25-i2v": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=seedance-25-i2v",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-seedance-25-ref2v": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=seedance-25-ref2v",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-seedance-25-t2v": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=seedance-25-t2v",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-seedream-5-pro": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=seedream-5-pro",
+        "--deadline-seconds=180",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-seedream-5-pro-edit": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=seedream-5-pro-edit",
+        "--deadline-seconds=180",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-sonilo-v2m": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=sonilo-v2m",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-subtitles-veed": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=subtitles-veed",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-sync-lipsync-v3": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=sync-lipsync-v3",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-talking-head": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=talking-head",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-topaz-image-upscale": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=topaz-image-upscale",
+        "--deadline-seconds=180",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-tripo-h31-t3d": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=tripo-h31-t3d",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-veo-31-i2v": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=veo-31-i2v",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-veo-31-t2v": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=veo-31-t2v",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-veo-31-transition": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=veo-31-transition",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-void-inpaint": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=void-inpaint",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
+    "fal-whisper-transcribe": {
+      "build": {
+        "context": "../../.."
+      },
+      "command": [
+        "--endpoint-key=whisper-transcribe",
+        "--deadline-seconds=600",
+        "--max-request-bytes=1048576"
+      ],
+      "environment": [
+        "FAL_KEY=${FAL_KEY:?set FAL_KEY in an ignored .env.local}"
+      ],
+      "expose": [
+        "8989"
+      ],
+      "healthcheck": {
+        "interval": "3s",
+        "retries": 40,
+        "start_period": "5s",
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8989/health', timeout=2).read()"
+        ],
+        "timeout": "3s"
+      },
+      "image": "runner-example-fal-adapter:local",
+      "pull_policy": "build"
+    },
     "orchestrator": {
       "depends_on": {
+        "fal-bernini-r-edit": {
+          "condition": "service_healthy"
+        },
+        "fal-bg-remove": {
+          "condition": "service_healthy"
+        },
+        "fal-ffmpeg-compose": {
+          "condition": "service_healthy"
+        },
+        "fal-ffmpeg-extract-frame": {
+          "condition": "service_healthy"
+        },
+        "fal-ffmpeg-images-to-video": {
+          "condition": "service_healthy"
+        },
+        "fal-ffmpeg-loudnorm": {
+          "condition": "service_healthy"
+        },
+        "fal-ffmpeg-merge-audio-video": {
+          "condition": "service_healthy"
+        },
+        "fal-ffmpeg-merge-videos": {
+          "condition": "service_healthy"
+        },
+        "fal-ffmpeg-metadata": {
+          "condition": "service_healthy"
+        },
+        "fal-ffmpeg-scale-video": {
+          "condition": "service_healthy"
+        },
+        "fal-ffmpeg-trim-video": {
+          "condition": "service_healthy"
+        },
+        "fal-flux-2-edit": {
+          "condition": "service_healthy"
+        },
+        "fal-flux-2-pro": {
+          "condition": "service_healthy"
+        },
+        "fal-flux-3-extend": {
+          "condition": "service_healthy"
+        },
+        "fal-flux-3-i2v": {
+          "condition": "service_healthy"
+        },
+        "fal-flux-3-keyframes": {
+          "condition": "service_healthy"
+        },
+        "fal-flux-3-t2v": {
+          "condition": "service_healthy"
+        },
+        "fal-flux-3-transition": {
+          "condition": "service_healthy"
+        },
+        "fal-flux-erase": {
+          "condition": "service_healthy"
+        },
+        "fal-flux-fill": {
+          "condition": "service_healthy"
+        },
         "fal-flux-schnell": {
+          "condition": "service_healthy"
+        },
+        "fal-flux-video-upscale": {
+          "condition": "service_healthy"
+        },
+        "fal-gemini-tts": {
+          "condition": "service_healthy"
+        },
+        "fal-gpt-image-2": {
+          "condition": "service_healthy"
+        },
+        "fal-gpt-image-2-edit": {
+          "condition": "service_healthy"
+        },
+        "fal-grok-image-2": {
+          "condition": "service_healthy"
+        },
+        "fal-grok-image-2-edit": {
+          "condition": "service_healthy"
+        },
+        "fal-grok-imagine-video-15-i2v": {
+          "condition": "service_healthy"
+        },
+        "fal-grok-imagine-video-15-ref2v": {
+          "condition": "service_healthy"
+        },
+        "fal-grok-imagine-video-15-t2v": {
+          "condition": "service_healthy"
+        },
+        "fal-ideogram-v4": {
+          "condition": "service_healthy"
+        },
+        "fal-kling-o3-ref2v": {
+          "condition": "service_healthy"
+        },
+        "fal-kling-v3-pro-i2v": {
+          "condition": "service_healthy"
+        },
+        "fal-kling-v3-pro-t2v": {
+          "condition": "service_healthy"
+        },
+        "fal-ltx-25-a2v-pro": {
+          "condition": "service_healthy"
+        },
+        "fal-ltx-25-i2v-fast": {
+          "condition": "service_healthy"
+        },
+        "fal-ltx-25-i2v-pro": {
+          "condition": "service_healthy"
+        },
+        "fal-ltx-25-t2v-fast": {
+          "condition": "service_healthy"
+        },
+        "fal-ltx-25-t2v-pro": {
+          "condition": "service_healthy"
+        },
+        "fal-marlin-video": {
+          "condition": "service_healthy"
+        },
+        "fal-meshy-v7-i3d": {
+          "condition": "service_healthy"
+        },
+        "fal-minimax-h3-max-i2v": {
+          "condition": "service_healthy"
+        },
+        "fal-minimax-h3-max-ref2v": {
+          "condition": "service_healthy"
+        },
+        "fal-minimax-h3-max-t2v": {
+          "condition": "service_healthy"
+        },
+        "fal-minimax-music-3": {
+          "condition": "service_healthy"
+        },
+        "fal-mirelo-sfx": {
+          "condition": "service_healthy"
+        },
+        "fal-mmaudio-v2-video-soundtrack": {
+          "condition": "service_healthy"
+        },
+        "fal-nemotron-asr": {
+          "condition": "service_healthy"
+        },
+        "fal-pixelcut-video-bg-remove": {
+          "condition": "service_healthy"
+        },
+        "fal-ray-32-i2v": {
+          "condition": "service_healthy"
+        },
+        "fal-ray-32-reframe": {
+          "condition": "service_healthy"
+        },
+        "fal-ray-32-t2v": {
+          "condition": "service_healthy"
+        },
+        "fal-ray-32-v2v": {
+          "condition": "service_healthy"
+        },
+        "fal-recraft-v4": {
+          "condition": "service_healthy"
+        },
+        "fal-seedance-20-i2v": {
+          "condition": "service_healthy"
+        },
+        "fal-seedance-20-ref2v": {
+          "condition": "service_healthy"
+        },
+        "fal-seedance-20-t2v": {
+          "condition": "service_healthy"
+        },
+        "fal-seedance-25-i2v": {
+          "condition": "service_healthy"
+        },
+        "fal-seedance-25-ref2v": {
+          "condition": "service_healthy"
+        },
+        "fal-seedance-25-t2v": {
+          "condition": "service_healthy"
+        },
+        "fal-seedream-5-pro": {
+          "condition": "service_healthy"
+        },
+        "fal-seedream-5-pro-edit": {
+          "condition": "service_healthy"
+        },
+        "fal-sonilo-v2m": {
+          "condition": "service_healthy"
+        },
+        "fal-subtitles-veed": {
+          "condition": "service_healthy"
+        },
+        "fal-sync-lipsync-v3": {
+          "condition": "service_healthy"
+        },
+        "fal-talking-head": {
+          "condition": "service_healthy"
+        },
+        "fal-topaz-image-upscale": {
+          "condition": "service_healthy"
+        },
+        "fal-tripo-h31-t3d": {
+          "condition": "service_healthy"
+        },
+        "fal-veo-31-i2v": {
+          "condition": "service_healthy"
+        },
+        "fal-veo-31-t2v": {
+          "condition": "service_healthy"
+        },
+        "fal-veo-31-transition": {
+          "condition": "service_healthy"
+        },
+        "fal-void-inpaint": {
+          "condition": "service_healthy"
+        },
+        "fal-whisper-transcribe": {
           "condition": "service_healthy"
         }
       },

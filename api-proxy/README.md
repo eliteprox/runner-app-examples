@@ -204,8 +204,9 @@ The generator writes:
 - `generated/runners.json`: one static Live Runner registration per service;
 - `generated/deployment.json`: resolved route identity and operator policy.
 
-The checked-in deployment intentionally selects only Flux Schnell. The adapter
-never registers the entire 73-route inventory on its own.
+The checked-in local offchain deployment selects all modeled routes. Each
+selected capability still gets its own pinned adapter process; the adapter
+never registers the inventory on its own.
 
 To work through another route:
 

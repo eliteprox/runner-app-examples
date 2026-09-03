@@ -21,6 +21,1230 @@
       "route_model": "contracts/flux-schnell/route.json",
       "schema_sha256": "6a5103a47bb61b39ffadcc8f6ea6f98d1027cc8ba14d1723883dd6c4a6a06658",
       "service": "fal-flux-schnell"
+    },
+    {
+      "app_id": "livepeer-example/fal-flux-2-pro",
+      "capability": "flux-2-pro",
+      "capacity": 4,
+      "deadline_seconds": 180,
+      "endpoint_id": "fal-ai/flux-2-pro",
+      "label": "fal-flux-2-pro",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/flux-2-pro/route.json",
+      "schema_sha256": "8004a03b90297a34d3e46f0af876f037fa815336699adb7cdf9dc542ba3a45de",
+      "service": "fal-flux-2-pro"
+    },
+    {
+      "app_id": "livepeer-example/fal-flux-2-edit",
+      "capability": "flux-2-edit",
+      "capacity": 4,
+      "deadline_seconds": 180,
+      "endpoint_id": "fal-ai/flux-2/edit",
+      "label": "fal-flux-2-edit",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/flux-2-edit/route.json",
+      "schema_sha256": "0d85797f0ec03f738115e07da4511ab9d1fe41ef8813b80a200e70d6f3816a2a",
+      "service": "fal-flux-2-edit"
+    },
+    {
+      "app_id": "livepeer-example/fal-gpt-image-2",
+      "capability": "gpt-image-2",
+      "capacity": 4,
+      "deadline_seconds": 180,
+      "endpoint_id": "openai/gpt-image-2",
+      "label": "fal-gpt-image-2",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/gpt-image-2/route.json",
+      "schema_sha256": "03e41db91e4e99678848c0312a2c302349d3f78a85c43cce84996b8f332dfcb4",
+      "service": "fal-gpt-image-2"
+    },
+    {
+      "app_id": "livepeer-example/fal-gpt-image-2-edit",
+      "capability": "gpt-image-2-edit",
+      "capacity": 4,
+      "deadline_seconds": 180,
+      "endpoint_id": "openai/gpt-image-2/edit",
+      "label": "fal-gpt-image-2-edit",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/gpt-image-2-edit/route.json",
+      "schema_sha256": "ffef180c58f5af0e99f7aad58de9a338ba7cedf95706397557aa1328e81ec123",
+      "service": "fal-gpt-image-2-edit"
+    },
+    {
+      "app_id": "livepeer-example/fal-grok-image-2",
+      "capability": "grok-image-2",
+      "capacity": 4,
+      "deadline_seconds": 180,
+      "endpoint_id": "xai/grok-imagine-image/v2.0/text-to-image",
+      "label": "fal-grok-image-2",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/grok-image-2/route.json",
+      "schema_sha256": "ccb9a3c4082af2f27196cedb3cdf2e5c2aeba4d8a374b67a134b7a6d092fd563",
+      "service": "fal-grok-image-2"
+    },
+    {
+      "app_id": "livepeer-example/fal-grok-image-2-edit",
+      "capability": "grok-image-2-edit",
+      "capacity": 4,
+      "deadline_seconds": 180,
+      "endpoint_id": "xai/grok-imagine-image/v2.0/edit",
+      "label": "fal-grok-image-2-edit",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/grok-image-2-edit/route.json",
+      "schema_sha256": "b12a1a9c2c1c13e53bce89a4d5720d4b8d849cb01ab26238d57f29fcc0972ef0",
+      "service": "fal-grok-image-2-edit"
+    },
+    {
+      "app_id": "livepeer-example/fal-seedream-5-pro",
+      "capability": "seedream-5-pro",
+      "capacity": 4,
+      "deadline_seconds": 180,
+      "endpoint_id": "bytedance/seedream/v5/pro/text-to-image",
+      "label": "fal-seedream-5-pro",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/seedream-5-pro/route.json",
+      "schema_sha256": "bef86ecc21f8936e1ce0e96a6b1fca3b75d6e0e969662557743b6d5619a8331e",
+      "service": "fal-seedream-5-pro"
+    },
+    {
+      "app_id": "livepeer-example/fal-seedream-5-pro-edit",
+      "capability": "seedream-5-pro-edit",
+      "capacity": 4,
+      "deadline_seconds": 180,
+      "endpoint_id": "bytedance/seedream/v5/pro/edit",
+      "label": "fal-seedream-5-pro-edit",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/seedream-5-pro-edit/route.json",
+      "schema_sha256": "41f3b15ecf42b1e222f6336a9eb50abf9f31a789382a28a68c49b069af0c3b23",
+      "service": "fal-seedream-5-pro-edit"
+    },
+    {
+      "app_id": "livepeer-example/fal-ideogram-v4",
+      "capability": "ideogram-v4",
+      "capacity": 4,
+      "deadline_seconds": 180,
+      "endpoint_id": "ideogram/v4",
+      "label": "fal-ideogram-v4",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/ideogram-v4/route.json",
+      "schema_sha256": "f20f37457fb45154eeebd6692274f5473964500bd75d03b19e4057538d528727",
+      "service": "fal-ideogram-v4"
+    },
+    {
+      "app_id": "livepeer-example/fal-recraft-v4",
+      "capability": "recraft-v4",
+      "capacity": 4,
+      "deadline_seconds": 180,
+      "endpoint_id": "fal-ai/recraft/v4/pro/text-to-image",
+      "label": "fal-recraft-v4",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/recraft-v4/route.json",
+      "schema_sha256": "fa2cbd66c51d31e89da0fb218c69a1711061e84df393c9bdfe7372fa9cb0968f",
+      "service": "fal-recraft-v4"
+    },
+    {
+      "app_id": "livepeer-example/fal-bg-remove",
+      "capability": "bg-remove",
+      "capacity": 4,
+      "deadline_seconds": 180,
+      "endpoint_id": "fal-ai/birefnet",
+      "label": "fal-bg-remove",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/bg-remove/route.json",
+      "schema_sha256": "d67b3cba3adfd498b568d9aaf8fd1a2f616bb352bee4d7ad117eaf5a728f9823",
+      "service": "fal-bg-remove"
+    },
+    {
+      "app_id": "livepeer-example/fal-flux-fill",
+      "capability": "flux-fill",
+      "capacity": 4,
+      "deadline_seconds": 180,
+      "endpoint_id": "fal-ai/flux-pro/v1/fill",
+      "label": "fal-flux-fill",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/flux-fill/route.json",
+      "schema_sha256": "78fb1496e170f2bca91eae17791ad65eea25738c812b8229733eb01a40c08907",
+      "service": "fal-flux-fill"
+    },
+    {
+      "app_id": "livepeer-example/fal-flux-erase",
+      "capability": "flux-erase",
+      "capacity": 4,
+      "deadline_seconds": 180,
+      "endpoint_id": "fal-ai/flux-pro/v1/erase",
+      "label": "fal-flux-erase",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/flux-erase/route.json",
+      "schema_sha256": "422fa1b28027aff5b2673f1231fa68facea71bac7d24d7f02242df294455af4d",
+      "service": "fal-flux-erase"
+    },
+    {
+      "app_id": "livepeer-example/fal-topaz-image-upscale",
+      "capability": "topaz-image-upscale",
+      "capacity": 4,
+      "deadline_seconds": 180,
+      "endpoint_id": "topaz/upscale/image/precision",
+      "label": "fal-topaz-image-upscale",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/topaz-image-upscale/route.json",
+      "schema_sha256": "77c940126cd211765f75e51695b98a3339fc75c9feeb7b726b8a79fa05fb495b",
+      "service": "fal-topaz-image-upscale"
+    },
+    {
+      "app_id": "livepeer-example/fal-flux-3-t2v",
+      "capability": "flux-3-t2v",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "blackforestlabs/flux-3/text-to-video",
+      "label": "fal-flux-3-t2v",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/flux-3-t2v/route.json",
+      "schema_sha256": "671c513df2c8cbd771ca676d235e40e321dae327558f3f71d0b606b1b86493a6",
+      "service": "fal-flux-3-t2v"
+    },
+    {
+      "app_id": "livepeer-example/fal-flux-3-i2v",
+      "capability": "flux-3-i2v",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "blackforestlabs/flux-3/image-to-video",
+      "label": "fal-flux-3-i2v",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/flux-3-i2v/route.json",
+      "schema_sha256": "36c95aa7163037ff1c19457e6e437155d921495185d2655698595aeafe998682",
+      "service": "fal-flux-3-i2v"
+    },
+    {
+      "app_id": "livepeer-example/fal-flux-3-transition",
+      "capability": "flux-3-transition",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "blackforestlabs/flux-3/first-last-frame-to-video",
+      "label": "fal-flux-3-transition",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/flux-3-transition/route.json",
+      "schema_sha256": "e038e79cce3edb3b4363e7d8b61d24a3609e83541568d06e3dc2f16fa64e0cb8",
+      "service": "fal-flux-3-transition"
+    },
+    {
+      "app_id": "livepeer-example/fal-flux-3-keyframes",
+      "capability": "flux-3-keyframes",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "blackforestlabs/flux-3/keyframes-to-video",
+      "label": "fal-flux-3-keyframes",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/flux-3-keyframes/route.json",
+      "schema_sha256": "19b08c5d80003b10a28a93ea39a62e80c26532d05b0034fcc9e41b37299cb5a7",
+      "service": "fal-flux-3-keyframes"
+    },
+    {
+      "app_id": "livepeer-example/fal-flux-3-extend",
+      "capability": "flux-3-extend",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "blackforestlabs/flux-3/extend-video",
+      "label": "fal-flux-3-extend",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/flux-3-extend/route.json",
+      "schema_sha256": "59d6ee45e70ee3f50b5e8d2f55801086ab56ee6a04ce606b0ae2ffbdaf93e982",
+      "service": "fal-flux-3-extend"
+    },
+    {
+      "app_id": "livepeer-example/fal-ltx-25-t2v-pro",
+      "capability": "ltx-25-t2v-pro",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "lightricks/ltx-2.5/text-to-video/pro",
+      "label": "fal-ltx-25-t2v-pro",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/ltx-25-t2v-pro/route.json",
+      "schema_sha256": "5367453552de4127886297931fc6964a06d298a825bf2fb9bad76fac67fab06b",
+      "service": "fal-ltx-25-t2v-pro"
+    },
+    {
+      "app_id": "livepeer-example/fal-ltx-25-t2v-fast",
+      "capability": "ltx-25-t2v-fast",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "lightricks/ltx-2.5/text-to-video/fast",
+      "label": "fal-ltx-25-t2v-fast",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/ltx-25-t2v-fast/route.json",
+      "schema_sha256": "1a5d4ad33c76bd102f344f69bb474b687fd7d1e9b531c61303c6376fea4f30de",
+      "service": "fal-ltx-25-t2v-fast"
+    },
+    {
+      "app_id": "livepeer-example/fal-ltx-25-i2v-pro",
+      "capability": "ltx-25-i2v-pro",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "lightricks/ltx-2.5/image-to-video/pro",
+      "label": "fal-ltx-25-i2v-pro",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/ltx-25-i2v-pro/route.json",
+      "schema_sha256": "405296a9181f79f50295ffb9f2b18905a37aee75ae5ee9d8eb328492cc0f32e0",
+      "service": "fal-ltx-25-i2v-pro"
+    },
+    {
+      "app_id": "livepeer-example/fal-ltx-25-i2v-fast",
+      "capability": "ltx-25-i2v-fast",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "lightricks/ltx-2.5/image-to-video/fast",
+      "label": "fal-ltx-25-i2v-fast",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/ltx-25-i2v-fast/route.json",
+      "schema_sha256": "e3fbfbffa21f3c785fc336701558995af2fd7d7ee6a56fb553ec794fb5001e58",
+      "service": "fal-ltx-25-i2v-fast"
+    },
+    {
+      "app_id": "livepeer-example/fal-ltx-25-a2v-pro",
+      "capability": "ltx-25-a2v-pro",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "lightricks/ltx-2.5/audio-to-video/pro",
+      "label": "fal-ltx-25-a2v-pro",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/ltx-25-a2v-pro/route.json",
+      "schema_sha256": "367df86faab2efa18200b2f7133f276be0e3b6bbdcca684c5ca6fd6b85025425",
+      "service": "fal-ltx-25-a2v-pro"
+    },
+    {
+      "app_id": "livepeer-example/fal-ray-32-t2v",
+      "capability": "ray-32-t2v",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "luma/agent/ray/v3.2/text-to-video",
+      "label": "fal-ray-32-t2v",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/ray-32-t2v/route.json",
+      "schema_sha256": "b92c339a52874ebd859ad89919159f2a6365dad20966f563ae2ae344f523ee96",
+      "service": "fal-ray-32-t2v"
+    },
+    {
+      "app_id": "livepeer-example/fal-ray-32-i2v",
+      "capability": "ray-32-i2v",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "luma/agent/ray/v3.2/image-to-video",
+      "label": "fal-ray-32-i2v",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/ray-32-i2v/route.json",
+      "schema_sha256": "42a80ca672f3ead829c65142c2ab2974d74f5091d0b6228a0d654cd2818bd9e5",
+      "service": "fal-ray-32-i2v"
+    },
+    {
+      "app_id": "livepeer-example/fal-ray-32-v2v",
+      "capability": "ray-32-v2v",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "luma/agent/ray/v3.2/video-to-video",
+      "label": "fal-ray-32-v2v",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/ray-32-v2v/route.json",
+      "schema_sha256": "30dc4e45a5061f02b6ae4f2402a3a8cdeb1b7efe9aa2b63885a37100b70fcaf0",
+      "service": "fal-ray-32-v2v"
+    },
+    {
+      "app_id": "livepeer-example/fal-ray-32-reframe",
+      "capability": "ray-32-reframe",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "luma/agent/ray/v3.2/reframe",
+      "label": "fal-ray-32-reframe",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/ray-32-reframe/route.json",
+      "schema_sha256": "16afead8676037019adeb51f322e5585ef8c0b32e8841f076c38309b07a6c389",
+      "service": "fal-ray-32-reframe"
+    },
+    {
+      "app_id": "livepeer-example/fal-minimax-h3-max-t2v",
+      "capability": "minimax-h3-max-t2v",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "minimax/h3-max/text-to-video",
+      "label": "fal-minimax-h3-max-t2v",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/minimax-h3-max-t2v/route.json",
+      "schema_sha256": "ebeb4901645bfcd826dc701e365e7a775c61d505e080d54c4aa84b1163e8ee59",
+      "service": "fal-minimax-h3-max-t2v"
+    },
+    {
+      "app_id": "livepeer-example/fal-minimax-h3-max-i2v",
+      "capability": "minimax-h3-max-i2v",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "minimax/h3-max/image-to-video",
+      "label": "fal-minimax-h3-max-i2v",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/minimax-h3-max-i2v/route.json",
+      "schema_sha256": "72208ac77df8358b16614ddc7fcac6dd6a86f195df1d420d4282e0fb916e2c4d",
+      "service": "fal-minimax-h3-max-i2v"
+    },
+    {
+      "app_id": "livepeer-example/fal-minimax-h3-max-ref2v",
+      "capability": "minimax-h3-max-ref2v",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "minimax/h3-max/reference-to-video",
+      "label": "fal-minimax-h3-max-ref2v",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/minimax-h3-max-ref2v/route.json",
+      "schema_sha256": "507bc3faf6808b2a7e3ecfea8556cf68454fb6fa55a0bb7de2b0bcfbf6265835",
+      "service": "fal-minimax-h3-max-ref2v"
+    },
+    {
+      "app_id": "livepeer-example/fal-seedance-20-t2v",
+      "capability": "seedance-20-t2v",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "bytedance/seedance-2.0/text-to-video",
+      "label": "fal-seedance-20-t2v",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/seedance-20-t2v/route.json",
+      "schema_sha256": "1d4b35446f5597c020816e6f1924c19cebbd8a6773aea3e5595c98894d01c84d",
+      "service": "fal-seedance-20-t2v"
+    },
+    {
+      "app_id": "livepeer-example/fal-seedance-20-i2v",
+      "capability": "seedance-20-i2v",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "bytedance/seedance-2.0/image-to-video",
+      "label": "fal-seedance-20-i2v",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/seedance-20-i2v/route.json",
+      "schema_sha256": "d32472a295d83282dc844b8c34e43147b615d4e9c3d31c3c3e753ba1d5184224",
+      "service": "fal-seedance-20-i2v"
+    },
+    {
+      "app_id": "livepeer-example/fal-seedance-20-ref2v",
+      "capability": "seedance-20-ref2v",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "bytedance/seedance-2.0/reference-to-video",
+      "label": "fal-seedance-20-ref2v",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/seedance-20-ref2v/route.json",
+      "schema_sha256": "7fe52abf70856fad3666ffc15f7aa7ae89d193bcc24319c1db8ab8c63e4b1257",
+      "service": "fal-seedance-20-ref2v"
+    },
+    {
+      "app_id": "livepeer-example/fal-seedance-25-t2v",
+      "capability": "seedance-25-t2v",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "bytedance/seedance-2.5/text-to-video",
+      "label": "fal-seedance-25-t2v",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/seedance-25-t2v/route.json",
+      "schema_sha256": "5deddbc53121eb84531dc576f2ac5fafc319011dfac373e205e994be91d67f5a",
+      "service": "fal-seedance-25-t2v"
+    },
+    {
+      "app_id": "livepeer-example/fal-seedance-25-i2v",
+      "capability": "seedance-25-i2v",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "bytedance/seedance-2.5/image-to-video",
+      "label": "fal-seedance-25-i2v",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/seedance-25-i2v/route.json",
+      "schema_sha256": "eb8544f6ad89e54d9411dc1ac0e72aea82c72ae72a7eb1069c0f605d4d777f62",
+      "service": "fal-seedance-25-i2v"
+    },
+    {
+      "app_id": "livepeer-example/fal-seedance-25-ref2v",
+      "capability": "seedance-25-ref2v",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "bytedance/seedance-2.5/reference-to-video",
+      "label": "fal-seedance-25-ref2v",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/seedance-25-ref2v/route.json",
+      "schema_sha256": "d09f8fcc3fafc6120df0f78aba951ea2906e147268fe26a6ab70189b5f874c03",
+      "service": "fal-seedance-25-ref2v"
+    },
+    {
+      "app_id": "livepeer-example/fal-grok-imagine-video-15-t2v",
+      "capability": "grok-imagine-video-15-t2v",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "xai/grok-imagine-video/v1.5/text-to-video",
+      "label": "fal-grok-imagine-video-15-t2v",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/grok-imagine-video-15-t2v/route.json",
+      "schema_sha256": "48b12b52911f2be1738f83a9a48ed42811c390dbb881093e2d592dc74edbd0e0",
+      "service": "fal-grok-imagine-video-15-t2v"
+    },
+    {
+      "app_id": "livepeer-example/fal-grok-imagine-video-15-i2v",
+      "capability": "grok-imagine-video-15-i2v",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "xai/grok-imagine-video/v1.5/image-to-video",
+      "label": "fal-grok-imagine-video-15-i2v",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/grok-imagine-video-15-i2v/route.json",
+      "schema_sha256": "6691ab92e9cc3b83bdcb67d990407dbea7e3f3344bf70bd35c01c359f2433b8a",
+      "service": "fal-grok-imagine-video-15-i2v"
+    },
+    {
+      "app_id": "livepeer-example/fal-grok-imagine-video-15-ref2v",
+      "capability": "grok-imagine-video-15-ref2v",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "xai/grok-imagine-video/v1.5/reference-to-video",
+      "label": "fal-grok-imagine-video-15-ref2v",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/grok-imagine-video-15-ref2v/route.json",
+      "schema_sha256": "dc451bf0f09e9f16ceb72e3ba545ea2ba1ddca694b4a86eeed758e54e09885b0",
+      "service": "fal-grok-imagine-video-15-ref2v"
+    },
+    {
+      "app_id": "livepeer-example/fal-veo-31-t2v",
+      "capability": "veo-31-t2v",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "fal-ai/veo3.1",
+      "label": "fal-veo-31-t2v",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/veo-31-t2v/route.json",
+      "schema_sha256": "d2f817bb0bf62c1bb558873d1d9e9a548765659ede6519c85cab56fc40b40f04",
+      "service": "fal-veo-31-t2v"
+    },
+    {
+      "app_id": "livepeer-example/fal-veo-31-i2v",
+      "capability": "veo-31-i2v",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "fal-ai/veo3.1/image-to-video",
+      "label": "fal-veo-31-i2v",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/veo-31-i2v/route.json",
+      "schema_sha256": "38de3e7c11d723a257caf2bcd516769c54c61065cc92df334a50df21ae7c5624",
+      "service": "fal-veo-31-i2v"
+    },
+    {
+      "app_id": "livepeer-example/fal-veo-31-transition",
+      "capability": "veo-31-transition",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "fal-ai/veo3.1/first-last-frame-to-video",
+      "label": "fal-veo-31-transition",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/veo-31-transition/route.json",
+      "schema_sha256": "500aba9b9e87295223bc9018c266d1d8a0c2377311da743a23cadf095d0e171c",
+      "service": "fal-veo-31-transition"
+    },
+    {
+      "app_id": "livepeer-example/fal-kling-v3-pro-t2v",
+      "capability": "kling-v3-pro-t2v",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "fal-ai/kling-video/v3/pro/text-to-video",
+      "label": "fal-kling-v3-pro-t2v",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/kling-v3-pro-t2v/route.json",
+      "schema_sha256": "16f3ccdf1edc1010af12e2888162e00edc66f0c39999cfb88e1eb298b9c71d82",
+      "service": "fal-kling-v3-pro-t2v"
+    },
+    {
+      "app_id": "livepeer-example/fal-kling-v3-pro-i2v",
+      "capability": "kling-v3-pro-i2v",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "fal-ai/kling-video/v3/pro/image-to-video",
+      "label": "fal-kling-v3-pro-i2v",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/kling-v3-pro-i2v/route.json",
+      "schema_sha256": "33ca087d756cd1f8c1e6101501c95ab287599d1566c23f0102611588cfbf532b",
+      "service": "fal-kling-v3-pro-i2v"
+    },
+    {
+      "app_id": "livepeer-example/fal-kling-o3-ref2v",
+      "capability": "kling-o3-ref2v",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "fal-ai/kling-video/o3/standard/reference-to-video",
+      "label": "fal-kling-o3-ref2v",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/kling-o3-ref2v/route.json",
+      "schema_sha256": "cf16690a8899e76eb532f3051ec94f6e6723cf26ae4c09dd7699c432a2af415a",
+      "service": "fal-kling-o3-ref2v"
+    },
+    {
+      "app_id": "livepeer-example/fal-bernini-r-edit",
+      "capability": "bernini-r-edit",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "fal-ai/bernini-r/edit-video",
+      "label": "fal-bernini-r-edit",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/bernini-r-edit/route.json",
+      "schema_sha256": "50ce57522a18a92cd0b22f8fcf10a58217761294a69ca3df7af4a73e1ac32b87",
+      "service": "fal-bernini-r-edit"
+    },
+    {
+      "app_id": "livepeer-example/fal-void-inpaint",
+      "capability": "void-inpaint",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "fal-ai/void-video-inpainting",
+      "label": "fal-void-inpaint",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/void-inpaint/route.json",
+      "schema_sha256": "9a56f0642b8a6407cf1382b47821843602f75bb1d24d7e4fc187cd8522e8e723",
+      "service": "fal-void-inpaint"
+    },
+    {
+      "app_id": "livepeer-example/fal-pixelcut-video-bg-remove",
+      "capability": "pixelcut-video-bg-remove",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "Pixelcut/video-background-removal",
+      "label": "fal-pixelcut-video-bg-remove",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/pixelcut-video-bg-remove/route.json",
+      "schema_sha256": "a486105bc4a5e16cd86991488727e2dd2cabd9ab26860b4662fc69eb7253e304",
+      "service": "fal-pixelcut-video-bg-remove"
+    },
+    {
+      "app_id": "livepeer-example/fal-talking-head",
+      "capability": "talking-head",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "fal-ai/bytedance/omnihuman/v1.5",
+      "label": "fal-talking-head",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/talking-head/route.json",
+      "schema_sha256": "797e650ec127c941815ae0efa523b6df071578e753bf9ef5d4f56d85ad010dc0",
+      "service": "fal-talking-head"
+    },
+    {
+      "app_id": "livepeer-example/fal-sync-lipsync-v3",
+      "capability": "sync-lipsync-v3",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "fal-ai/sync-lipsync/v3/image-to-video",
+      "label": "fal-sync-lipsync-v3",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/sync-lipsync-v3/route.json",
+      "schema_sha256": "6132b31e307224237c261327dced31cd5a1a204b731ea49987fe044ef4fd2040",
+      "service": "fal-sync-lipsync-v3"
+    },
+    {
+      "app_id": "livepeer-example/fal-mmaudio-v2-video-soundtrack",
+      "capability": "mmaudio-v2-video-soundtrack",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "fal-ai/mmaudio-v2",
+      "label": "fal-mmaudio-v2-video-soundtrack",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/mmaudio-v2-video-soundtrack/route.json",
+      "schema_sha256": "31d21a6cca811b80f5f21536634ea9d045c7cb7f67dd8e7ab2e8c2baf734cbf2",
+      "service": "fal-mmaudio-v2-video-soundtrack"
+    },
+    {
+      "app_id": "livepeer-example/fal-nemotron-asr",
+      "capability": "nemotron-asr",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "nvidia/nemotron-asr-multilingual/asr",
+      "label": "fal-nemotron-asr",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/nemotron-asr/route.json",
+      "schema_sha256": "c5fbd66df007023e654449ab67acb89b325aae608ec8381674264d2e91bfbd9c",
+      "service": "fal-nemotron-asr"
+    },
+    {
+      "app_id": "livepeer-example/fal-whisper-transcribe",
+      "capability": "whisper-transcribe",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "fal-ai/whisper",
+      "label": "fal-whisper-transcribe",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/whisper-transcribe/route.json",
+      "schema_sha256": "929dd25b4246701e480e31a9e38de7d9589e675fd3d6c35aeedda3e475ddd79b",
+      "service": "fal-whisper-transcribe"
+    },
+    {
+      "app_id": "livepeer-example/fal-gemini-tts",
+      "capability": "gemini-tts",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "fal-ai/gemini-3.1-flash-tts",
+      "label": "fal-gemini-tts",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/gemini-tts/route.json",
+      "schema_sha256": "43aefb19c6f3a9d205a733d0c79672dec2ead28826c19b964310d663b677b502",
+      "service": "fal-gemini-tts"
+    },
+    {
+      "app_id": "livepeer-example/fal-minimax-music-3",
+      "capability": "minimax-music-3",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "minimax/music-3",
+      "label": "fal-minimax-music-3",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/minimax-music-3/route.json",
+      "schema_sha256": "74fdeab613ee051bf59dbdee9105d4a9bfd606e7035d0ae089215c844c3f44fc",
+      "service": "fal-minimax-music-3"
+    },
+    {
+      "app_id": "livepeer-example/fal-mirelo-sfx",
+      "capability": "mirelo-sfx",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "Mirelo-AI/sfx1.6/text-to-audio",
+      "label": "fal-mirelo-sfx",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/mirelo-sfx/route.json",
+      "schema_sha256": "c40effb4fb71bb60969db97183a1b73dc105739b8fa421aaa5e0ab9061c84724",
+      "service": "fal-mirelo-sfx"
+    },
+    {
+      "app_id": "livepeer-example/fal-sonilo-v2m",
+      "capability": "sonilo-v2m",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "sonilo/v1.1/video-to-music",
+      "label": "fal-sonilo-v2m",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/sonilo-v2m/route.json",
+      "schema_sha256": "ef01b074fdb9160aeafdfe1e6f0118757fae5d6c3c45fe0a38331e8ef9cbf5e8",
+      "service": "fal-sonilo-v2m"
+    },
+    {
+      "app_id": "livepeer-example/fal-marlin-video",
+      "capability": "marlin-video",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "fal-ai/marlin",
+      "label": "fal-marlin-video",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/marlin-video/route.json",
+      "schema_sha256": "12b5fd65f9784fbfc86b1a79a75c907ee32781617344d4b04dbdbabf738e2c0f",
+      "service": "fal-marlin-video"
+    },
+    {
+      "app_id": "livepeer-example/fal-tripo-h31-t3d",
+      "capability": "tripo-h31-t3d",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "tripo3d/h3.1/text-to-3d",
+      "label": "fal-tripo-h31-t3d",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/tripo-h31-t3d/route.json",
+      "schema_sha256": "cdf5dd9cf7a706cddb233d46b85a3bf4de5ff080e232ec859d09913c9cd9aae1",
+      "service": "fal-tripo-h31-t3d"
+    },
+    {
+      "app_id": "livepeer-example/fal-meshy-v7-i3d",
+      "capability": "meshy-v7-i3d",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "meshy/v7/image-to-3d",
+      "label": "fal-meshy-v7-i3d",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/meshy-v7-i3d/route.json",
+      "schema_sha256": "d3f05ecfc5b7f58760d46a65c393617ab0f4c17e8989ef7ea834109f52d7964c",
+      "service": "fal-meshy-v7-i3d"
+    },
+    {
+      "app_id": "livepeer-example/fal-ffmpeg-compose",
+      "capability": "ffmpeg-compose",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "fal-ai/ffmpeg-api/compose",
+      "label": "fal-ffmpeg-compose",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/ffmpeg-compose/route.json",
+      "schema_sha256": "e0dd992d00085ee3e736377bf386db74f07e99d39ddaa8af84630ce4b47abb99",
+      "service": "fal-ffmpeg-compose"
+    },
+    {
+      "app_id": "livepeer-example/fal-ffmpeg-merge-videos",
+      "capability": "ffmpeg-merge-videos",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "fal-ai/ffmpeg-api/merge-videos",
+      "label": "fal-ffmpeg-merge-videos",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/ffmpeg-merge-videos/route.json",
+      "schema_sha256": "c2b2396565f4b404fbafeeab5221fd9eb4bdfe9673072bd51691ca7567639141",
+      "service": "fal-ffmpeg-merge-videos"
+    },
+    {
+      "app_id": "livepeer-example/fal-ffmpeg-merge-audio-video",
+      "capability": "ffmpeg-merge-audio-video",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "fal-ai/ffmpeg-api/merge-audio-video",
+      "label": "fal-ffmpeg-merge-audio-video",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/ffmpeg-merge-audio-video/route.json",
+      "schema_sha256": "f2c0e959e38518ad38c442870e17f1ddffb408f3b26bfc5897328c6c48452c00",
+      "service": "fal-ffmpeg-merge-audio-video"
+    },
+    {
+      "app_id": "livepeer-example/fal-ffmpeg-trim-video",
+      "capability": "ffmpeg-trim-video",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "fal-ai/workflow-utilities/trim-video",
+      "label": "fal-ffmpeg-trim-video",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/ffmpeg-trim-video/route.json",
+      "schema_sha256": "1eb55e5ad3e4335c49e4e27c3488cc2fe18d998b5d20f3f9dc5bbb92f42d4942",
+      "service": "fal-ffmpeg-trim-video"
+    },
+    {
+      "app_id": "livepeer-example/fal-ffmpeg-scale-video",
+      "capability": "ffmpeg-scale-video",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "fal-ai/workflow-utilities/scale-video",
+      "label": "fal-ffmpeg-scale-video",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/ffmpeg-scale-video/route.json",
+      "schema_sha256": "bff043dca8cd9f4b47e8af42b299936b07e764c8f7b3c4eea32e15f10a0570fc",
+      "service": "fal-ffmpeg-scale-video"
+    },
+    {
+      "app_id": "livepeer-example/fal-flux-video-upscale",
+      "capability": "flux-video-upscale",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "blackforestlabs/flux-video-upscale",
+      "label": "fal-flux-video-upscale",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/flux-video-upscale/route.json",
+      "schema_sha256": "caf4c7410c6cd52c7f9a9af7cac11373370b05c0b3d107b349ed2205b1096f31",
+      "service": "fal-flux-video-upscale"
+    },
+    {
+      "app_id": "livepeer-example/fal-ffmpeg-extract-frame",
+      "capability": "ffmpeg-extract-frame",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "fal-ai/ffmpeg-api/extract-frame",
+      "label": "fal-ffmpeg-extract-frame",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/ffmpeg-extract-frame/route.json",
+      "schema_sha256": "d6216c264b359a90a1c50f064bbafb61ba1fc442b25b3412d1fb25531c65ce97",
+      "service": "fal-ffmpeg-extract-frame"
+    },
+    {
+      "app_id": "livepeer-example/fal-ffmpeg-images-to-video",
+      "capability": "ffmpeg-images-to-video",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "fal-ai/ffmpeg-api/images-to-video",
+      "label": "fal-ffmpeg-images-to-video",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/ffmpeg-images-to-video/route.json",
+      "schema_sha256": "f3a77b1ca114dd7f425943863280868bc83662704c9f1a3cafde6f11855e870d",
+      "service": "fal-ffmpeg-images-to-video"
+    },
+    {
+      "app_id": "livepeer-example/fal-ffmpeg-metadata",
+      "capability": "ffmpeg-metadata",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "fal-ai/ffmpeg-api/metadata",
+      "label": "fal-ffmpeg-metadata",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/ffmpeg-metadata/route.json",
+      "schema_sha256": "6a0ea851c4da847e88cffc675627ea6f92be2cefd3a7a6f3224bf78be94d4e0c",
+      "service": "fal-ffmpeg-metadata"
+    },
+    {
+      "app_id": "livepeer-example/fal-ffmpeg-loudnorm",
+      "capability": "ffmpeg-loudnorm",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "fal-ai/ffmpeg-api/loudnorm",
+      "label": "fal-ffmpeg-loudnorm",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/ffmpeg-loudnorm/route.json",
+      "schema_sha256": "cbcb46f7d48c1a3466849cddc14989552fc05e463932c640eaf21361c9800aba",
+      "service": "fal-ffmpeg-loudnorm"
+    },
+    {
+      "app_id": "livepeer-example/fal-subtitles-veed",
+      "capability": "subtitles-veed",
+      "capacity": 4,
+      "deadline_seconds": 600,
+      "endpoint_id": "veed/subtitles",
+      "label": "fal-subtitles-veed",
+      "max_request_bytes": 1048576,
+      "price_info": {
+        "currency": "usd",
+        "price": 0.0001,
+        "unit": "fixed"
+      },
+      "route_model": "contracts/subtitles-veed/route.json",
+      "schema_sha256": "e9f816206d57cfefeafa90b880a9c72ed98db8c53777071a2e7534d432b3fd1b",
+      "service": "fal-subtitles-veed"
     }
   ]
 }
