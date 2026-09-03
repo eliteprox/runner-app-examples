@@ -32,7 +32,7 @@ def route_contract(
         "runner": {
             "mode": "single-shot",
             "routes": {
-                "execute": "./proxy",
+                "execute": "./",
                 "health": "./health",
                 "schema": "./schema",
             },

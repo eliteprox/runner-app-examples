@@ -153,7 +153,7 @@ class AdapterTest(unittest.IsolatedAsyncioTestCase):
     async def test_exact_body_and_operator_auth_reach_pinned_queue(self) -> None:
         raw = b'{  "prompt" : "keep spacing", "seed": 7 }'
         response = await self.client.post(
-            "/proxy?endpoint=fal-ai/other",
+            "/?endpoint=fal-ai/other",
             data=raw,
             headers={
                 "Authorization": "Bearer caller-secret",
@@ -195,7 +195,7 @@ class AdapterTest(unittest.IsolatedAsyncioTestCase):
     async def test_submit_error_is_typed_and_not_retried(self) -> None:
         self.fake.submit_status = 422
         self.fake.submit_body = {"detail": "invalid input"}
-        response = await self.client.post("/proxy", data=b"{}")
+        response = await self.client.post("/", data=b"{}")
         payload = await response.json()
 
         self.assertEqual(response.status, 422)
@@ -205,7 +205,7 @@ class AdapterTest(unittest.IsolatedAsyncioTestCase):
 
     async def test_submit_requires_request_id(self) -> None:
         self.fake.submit_body = {"status": "IN_QUEUE"}
-        response = await self.client.post("/proxy", data=b"{}")
+        response = await self.client.post("/", data=b"{}")
         payload = await response.json()
 
         self.assertEqual(response.status, 502)
@@ -215,7 +215,7 @@ class AdapterTest(unittest.IsolatedAsyncioTestCase):
 
     async def test_malformed_submit_response_is_typed(self) -> None:
         self.fake.submit_body = b"not-json"
-        response = await self.client.post("/proxy", data=b"{}")
+        response = await self.client.post("/", data=b"{}")
         payload = await response.json()
 
         self.assertEqual(response.status, 502)
@@ -226,7 +226,7 @@ class AdapterTest(unittest.IsolatedAsyncioTestCase):
     async def test_status_error_preserves_request_id(self) -> None:
         self.fake.status_status = 503
         self.fake.status_bodies = [{"error": "busy"}]
-        response = await self.client.post("/proxy", data=b"{}")
+        response = await self.client.post("/", data=b"{}")
         payload = await response.json()
 
         self.assertEqual(response.status, 503)
@@ -243,7 +243,7 @@ class AdapterTest(unittest.IsolatedAsyncioTestCase):
                 "status": "COMPLETED",
             }
         ]
-        response = await self.client.post("/proxy", data=b"{}")
+        response = await self.client.post("/", data=b"{}")
         payload = await response.json()
 
         self.assertEqual(response.status, 502)
@@ -252,7 +252,7 @@ class AdapterTest(unittest.IsolatedAsyncioTestCase):
 
     async def test_malformed_status_response_is_typed(self) -> None:
         self.fake.status_bodies = [b"not-json"]
-        response = await self.client.post("/proxy", data=b"{}")
+        response = await self.client.post("/", data=b"{}")
         payload = await response.json()
 
         self.assertEqual(response.status, 502)
@@ -262,7 +262,7 @@ class AdapterTest(unittest.IsolatedAsyncioTestCase):
 
     async def test_unknown_status_state_is_typed(self) -> None:
         self.fake.status_bodies = [{"status": "CANCELLED"}]
-        response = await self.client.post("/proxy", data=b"{}")
+        response = await self.client.post("/", data=b"{}")
         payload = await response.json()
 
         self.assertEqual(response.status, 502)
@@ -274,7 +274,7 @@ class AdapterTest(unittest.IsolatedAsyncioTestCase):
         self.fake.status_bodies = [{"status": "COMPLETED", "request_id": "req-123"}]
         self.fake.result_status = 500
         self.fake.result_body = {"error": "result unavailable"}
-        response = await self.client.post("/proxy", data=b"{}")
+        response = await self.client.post("/", data=b"{}")
         payload = await response.json()
 
         self.assertEqual(response.status, 500)
@@ -284,7 +284,7 @@ class AdapterTest(unittest.IsolatedAsyncioTestCase):
     async def test_malformed_result_response_is_typed(self) -> None:
         self.fake.status_bodies = [{"status": "COMPLETED"}]
         self.fake.result_body = b"not-json"
-        response = await self.client.post("/proxy", data=b"{}")
+        response = await self.client.post("/", data=b"{}")
         payload = await response.json()
 
         self.assertEqual(response.status, 502)
@@ -301,7 +301,7 @@ class AdapterTest(unittest.IsolatedAsyncioTestCase):
             return await original(*args, **kwargs)
 
         with mock.patch.object(runner, "_upstream_response", side_effect=fail_result):
-            response = await self.client.post("/proxy", data=b"{}")
+            response = await self.client.post("/", data=b"{}")
         payload = await response.json()
 
         self.assertEqual(response.status, 502)
@@ -312,7 +312,7 @@ class AdapterTest(unittest.IsolatedAsyncioTestCase):
         self.fake.status_bodies = [{"status": "IN_PROGRESS", "request_id": "req-123"}]
         timeout_client = await self._adapter_client(timeout=0.02, poll_interval=0.005)
         try:
-            response = await timeout_client.post("/proxy", data=b"{}")
+            response = await timeout_client.post("/", data=b"{}")
             payload = await response.json()
         finally:
             await timeout_client.close()
@@ -323,9 +323,9 @@ class AdapterTest(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(self.fake.submissions, 1)
         self.assertEqual(self.fake.result_calls, 0)
 
-    async def test_other_paths_and_methods_are_not_proxyable(self) -> None:
+    async def test_other_paths_and_methods_are_not_executable(self) -> None:
         other_path = await self.client.post("/fal-ai/flux/dev", data=b"{}")
-        wrong_method = await self.client.get("/proxy")
+        wrong_method = await self.client.get("/")
 
         self.assertEqual(other_path.status, 404)
         self.assertEqual(wrong_method.status, 405)
@@ -334,7 +334,7 @@ class AdapterTest(unittest.IsolatedAsyncioTestCase):
     async def test_request_body_limit_is_operator_owned(self) -> None:
         limited_client = await self._adapter_client(max_request_bytes=16)
         try:
-            response = await limited_client.post("/proxy", data=b"x" * 17)
+            response = await limited_client.post("/", data=b"x" * 17)
             payload = await response.json()
         finally:
             await limited_client.close()
@@ -346,7 +346,7 @@ class AdapterTest(unittest.IsolatedAsyncioTestCase):
     async def test_provider_error_body_is_bounded(self) -> None:
         self.fake.submit_status = 422
         self.fake.submit_body = "x" * (runner.MAX_PROVIDER_ERROR_BODY_BYTES + 100)
-        response = await self.client.post("/proxy", data=b"{}")
+        response = await self.client.post("/", data=b"{}")
         payload = await response.json()
 
         upstream_body = payload["error"]["upstream_body"]
@@ -359,7 +359,7 @@ class AdapterTest(unittest.IsolatedAsyncioTestCase):
         raw = b'{"prompt":"log-secret-prompt"}'
         with self.assertLogs(runner.log, level="INFO") as captured:
             response = await self.client.post(
-                "/proxy",
+                "/",
                 data=raw,
                 headers={"Authorization": "Bearer caller-secret"},
             )

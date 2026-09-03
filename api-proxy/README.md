@@ -50,9 +50,9 @@ owns the upstream credential and exposes only:
 
 - `GET /health`: local credential, route, and schema readiness;
 - `GET /schema`: deterministic schema bytes for the pinned route;
-- `POST /proxy`: blocking execution through the pinned fal queue.
+- `POST /`: blocking execution through the pinned fal queue.
 
-`POST /proxy` drops caller authorization and query parameters, adds the
+`POST /` drops caller authorization and query parameters, adds the
 operator-held `Authorization: Key <FAL_KEY>`, submits once, polls the original
 request ID, and returns the final provider output in a receipt envelope. The
 adapter does not validate inputs, apply defaults, rewrite prompts, choose
@@ -90,7 +90,7 @@ uv run python client.py run flux-schnell \
 
 The client selects the exact app ID from `route.json`, reads compact route
 metadata from discovery, fetches `/schema`, verifies its SHA-256, and then calls
-`/proxy`. A successful response has this shape; the object under `output` keeps
+`/`. A successful response has this shape; the object under `output` keeps
 the provider's result fields without renaming or selection:
 
 ```json

@@ -19,12 +19,21 @@ sys.path.insert(0, str(API_PROXY))
 import client as client_cli  # noqa: E402
 from fal_adapter.route_client import (  # noqa: E402
     RouteContractError,
+    _runner_url,
     load_runner_route,
     run_route_arguments,
 )
 
 
 class RoutePackTest(unittest.TestCase):
+    def test_execute_root_keeps_discovery_app_path(self) -> None:
+        base = "https://ai1.eliteencoder.net:8936/apps/fal-grok-image-2/app"
+        self.assertEqual(_runner_url(base, "./"), base)
+        self.assertEqual(
+            _runner_url(base, "./health"),
+            f"{base}/health",
+        )
+
     def test_all_73_routes_have_the_same_self_contained_shape(self) -> None:
         index = json.loads((API_PROXY / "routes" / "index.json").read_bytes())
         routes = [load_runner_route(entry["capability"]) for entry in index["routes"]]
@@ -97,9 +106,10 @@ class RouteRunnerExecutionTest(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(receipt, self.fake.receipt)
         call.assert_awaited_once_with(
             runner=self.runner,
-            runner_url=str(self.server.make_url("/proxy")),
+            runner_url=str(self.server.make_url("")).rstrip("/"),
             payload={"prompt": "route example", "seed": 17},
             signer_url="https://signer.example",
+            signer_headers=None,
             timeout=210,
         )
 
@@ -176,6 +186,7 @@ class RouteCliTest(unittest.IsolatedAsyncioTestCase):
                 input_json=input_path,
                 receipt_output=None,
                 signer="https://signer.example",
+                api_key="",
                 timeout=210,
             )
             selector = mock.AsyncMock(return_value=cursor)
@@ -190,6 +201,8 @@ class RouteCliTest(unittest.IsolatedAsyncioTestCase):
         selector.assert_awaited_once_with(
             discovery_url="https://discovery.example",
             app=route.app_id,
+            signer_url="https://signer.example",
+            signer_headers=None,
         )
         self.assertIs(run.await_args.kwargs["runner"], discovered)
         self.assertEqual(run.await_args.kwargs["route"], route)

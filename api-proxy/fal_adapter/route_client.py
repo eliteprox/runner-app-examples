@@ -82,7 +82,7 @@ def load_runner_route(
     expected_runner = {
         "mode": "single-shot",
         "routes": {
-            "execute": "./proxy",
+            "execute": "./",
             "health": "./health",
             "schema": "./schema",
         },
@@ -114,6 +114,8 @@ def load_runner_route(
 
 
 def _runner_url(base_url: str, relative_path: str) -> str:
+    if relative_path in {"./", ".", ""}:
+        return base_url.rstrip("/")
     return urljoin(base_url.rstrip("/") + "/", relative_path)
 
 

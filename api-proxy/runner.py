@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Queue-backed fal.ai adapter offered as a static Live Runner capability."""
+"""Pinned fal queue adapter offered as a static Live Runner capability."""
 
 from __future__ import annotations
 
@@ -36,7 +36,7 @@ MAX_PROVIDER_ERROR_BODY_BYTES = 4096
 
 ROOT = Path(__file__).resolve().parent
 
-log = logging.getLogger("fal-queue-adapter")
+log = logging.getLogger("live-runner")
 
 SESSION_KEY = web.AppKey("session", aiohttp.ClientSession)
 DESCRIPTOR_KEY = web.AppKey("endpoint_descriptor", EndpointDescriptor)
@@ -55,7 +55,7 @@ async def _request_log_middleware(
 ) -> web.StreamResponse:
     started = time.monotonic()
     response = await handler(request)
-    if request.path == "/proxy":
+    if request.path in ("/", ""):
         log.info(
             json.dumps(
                 {
@@ -72,7 +72,9 @@ async def _request_log_middleware(
 
 
 def _parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Pinned fal queue adapter.")
+    parser = argparse.ArgumentParser(
+        description="Live Runner HTTP app for a pinned fal queue route."
+    )
     parser.add_argument(
         "--host", default=DEFAULT_HOST, help="bind address (use 0.0.0.0 in containers)"
     )
@@ -213,7 +215,7 @@ async def _handle_schema(request: web.Request) -> web.Response:
     )
 
 
-async def _handle_proxy(request: web.Request) -> web.Response:
+async def _handle_execute(request: web.Request) -> web.Response:
     request_id: str | None = None
     request[REQUEST_ID_KEY] = None
     request[STAGE_KEY] = "submit"
@@ -421,7 +423,7 @@ def create_app(
 
     app.router.add_get("/health", _handle_health)
     app.router.add_get("/schema", _handle_schema)
-    app.router.add_post("/proxy", _handle_proxy)
+    app.router.add_post("/", _handle_execute)
     app.on_startup.append(_on_startup)
     app.on_cleanup.append(_on_cleanup)
     return app
