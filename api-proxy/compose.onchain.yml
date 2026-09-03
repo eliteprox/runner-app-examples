@@ -6,7 +6,7 @@
 # runner advertises its fixed price and the orchestrator issues a payment
 # challenge. Requires a local .env.local (gitignored); copy .env.example and fill it
 # in. Then pay through the signer:
-#   uv run client.py run flux-schnell --input-json request.json \
+#   uv run client.py run flux-schnell --input-json examples/flux-schnell.json \
 #     --discovery https://localhost:8935/discovery \
 #     --signer http://localhost:7936
 

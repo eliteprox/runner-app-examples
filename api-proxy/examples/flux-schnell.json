@@ -1,0 +1,8 @@
+{
+  "prompt": "A lighthouse in a winter storm, editorial photograph",
+  "image_size": "landscape_4_3",
+  "num_inference_steps": 4,
+  "num_images": 1,
+  "output_format": "jpeg",
+  "seed": 12345
+}

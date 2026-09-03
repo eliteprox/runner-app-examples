@@ -37,6 +37,11 @@ def _parse_args() -> argparse.Namespace:
     run.add_argument("--discovery", default=DEFAULT_DISCOVERY)
     run.add_argument("--signer", default="", help="remote signer base URL")
     run.add_argument(
+        "--api-key",
+        default="",
+        help="Bearer credential for the signer (Authorization header).",
+    )
+    run.add_argument(
         "--timeout",
         type=float,
         default=210.0,
@@ -62,9 +67,17 @@ async def _run(args: argparse.Namespace) -> None:
     except OSError as error:
         raise RouteContractError(f"could not read --input-json: {error}") from error
 
+    signer_url = args.signer.strip() or None
+    signer_headers = (
+        {"Authorization": f"Bearer {args.api_key.strip()}"}
+        if args.api_key.strip()
+        else None
+    )
     cursor = await runner_selector(
         discovery_url=args.discovery,
         app=route.app_id,
+        signer_url=signer_url,
+        signer_headers=signer_headers,
     )
     try:
         discovered = cursor.candidates[0]
@@ -81,7 +94,8 @@ async def _run(args: argparse.Namespace) -> None:
             route=route,
             arguments_bytes=arguments_bytes,
             timeout_seconds=args.timeout,
-            signer_url=args.signer.strip() or None,
+            signer_url=signer_url,
+            signer_headers=signer_headers,
             ssl=ssl,
         )
     _print_json(receipt)

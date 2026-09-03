@@ -76,24 +76,13 @@ curl -sk https://localhost:8935/discovery |
       {app, mode, metadata, capacity_available, price_info}'
 ```
 
-Save a complete provider-native input object as `request.json`, for example:
-
-```json
-{
-  "prompt": "A lighthouse in a winter storm, editorial photograph",
-  "image_size": "landscape_4_3",
-  "num_inference_steps": 4,
-  "num_images": 1,
-  "output_format": "jpeg",
-  "seed": 12345
-}
-```
-
-Call the application through Livepeer discovery:
+Call the application through Livepeer discovery. The client reads a
+provider-native input object; a Flux Schnell sample is checked in at
+[`examples/flux-schnell.json`](examples/flux-schnell.json).
 
 ```sh
 uv run python client.py run flux-schnell \
-  --input-json request.json \
+  --input-json examples/flux-schnell.json \
   --discovery https://localhost:8935/discovery \
   --insecure \
   --receipt-output receipt.json
@@ -141,7 +130,7 @@ payment overlay onto the offchain Compose file:
 docker compose --env-file .env.local \
   -f compose.yml -f compose.onchain.yml up -d --build
 uv run python client.py run flux-schnell \
-  --input-json request.json \
+  --input-json examples/flux-schnell.json \
   --discovery https://localhost:8935/discovery \
   --signer http://localhost:7936 \
   --insecure \

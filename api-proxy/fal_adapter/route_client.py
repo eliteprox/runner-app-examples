@@ -174,6 +174,7 @@ async def run_route_arguments(
     arguments_bytes: bytes,
     timeout_seconds: float,
     signer_url: str | None = None,
+    signer_headers: dict[str, str] | None = None,
     ssl: bool | None = None,
 ) -> dict[str, Any]:
     if timeout_seconds <= 0:
@@ -200,6 +201,7 @@ async def run_route_arguments(
         runner_url=_runner_url(runner_url, route.execute_url),
         payload=arguments,
         signer_url=signer_url,
+        signer_headers=signer_headers,
         timeout=timeout_seconds,
     )
     receipt = result.data

@@ -1,0 +1,23 @@
+{
+  "endpoint_id": "fal-ai/flux/schnell",
+  "output": {
+    "has_nsfw_concepts": [
+      false
+    ],
+    "images": [
+      {
+        "content_type": "image/jpeg",
+        "height": 768,
+        "url": "https://v3b.fal.media/files/b/0aa8de3b/7xrLIr1n2uxUnYtWtPb4a.jpg",
+        "width": 1024
+      }
+    ],
+    "prompt": "A lighthouse in a winter storm, editorial photograph",
+    "seed": 12345,
+    "timings": {
+      "inference": 0.9649342300835997
+    }
+  },
+  "request_id": "01a06468-fa29-7d01-873b-ada47e6089b9",
+  "schema_sha256": "6a5103a47bb61b39ffadcc8f6ea6f98d1027cc8ba14d1723883dd6c4a6a06658"
+}

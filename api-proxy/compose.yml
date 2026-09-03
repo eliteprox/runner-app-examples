@@ -3,7 +3,7 @@
 #
 # The operator-held FAL_KEY belongs in .env.local. Run with:
 #   docker compose --env-file .env.local up -d --build
-#   uv run client.py run flux-schnell --input-json request.json
+#   uv run client.py run flux-schnell --input-json examples/flux-schnell.json
 
 services:
   orchestrator:
