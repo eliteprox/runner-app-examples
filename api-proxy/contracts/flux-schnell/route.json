@@ -16,6 +16,43 @@
     "endpoint_selection": "pinned",
     "request_body": "provider_native_json"
   },
+  "inputs": {
+    "fields": {
+      "acceleration": {
+        "type": "string"
+      },
+      "enable_safety_checker": {
+        "type": "boolean"
+      },
+      "guidance_scale": {
+        "type": "number"
+      },
+      "image_size": {
+        "type": "object"
+      },
+      "num_images": {
+        "type": "integer"
+      },
+      "num_inference_steps": {
+        "type": "integer"
+      },
+      "output_format": {
+        "type": "string"
+      },
+      "prompt": {
+        "type": "string"
+      },
+      "seed": {
+        "type": "integer"
+      },
+      "sync_mode": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "prompt"
+    ]
+  },
   "runner": {
     "mode": "single-shot",
     "routes": {

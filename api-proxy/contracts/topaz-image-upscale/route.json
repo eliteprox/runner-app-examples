@@ -16,6 +16,52 @@
     "endpoint_selection": "pinned",
     "request_body": "provider_native_json"
   },
+  "inputs": {
+    "fields": {
+      "crop_to_fill": {
+        "type": "boolean"
+      },
+      "denoise": {
+        "type": "number"
+      },
+      "face_enhancement": {
+        "type": "boolean"
+      },
+      "face_enhancement_creativity": {
+        "type": "number"
+      },
+      "face_enhancement_strength": {
+        "type": "number"
+      },
+      "fix_compression": {
+        "type": "number"
+      },
+      "image_url": {
+        "type": "string"
+      },
+      "model": {
+        "type": "string"
+      },
+      "output_format": {
+        "type": "string"
+      },
+      "sharpen": {
+        "type": "number"
+      },
+      "strength": {
+        "type": "number"
+      },
+      "subject_detection": {
+        "type": "string"
+      },
+      "upscale_factor": {
+        "type": "number"
+      }
+    },
+    "required": [
+      "image_url"
+    ]
+  },
   "runner": {
     "mode": "single-shot",
     "routes": {

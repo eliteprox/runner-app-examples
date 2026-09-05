@@ -16,6 +16,36 @@
     "endpoint_selection": "pinned",
     "request_body": "provider_native_json"
   },
+  "inputs": {
+    "fields": {
+      "aspect_ratio": {
+        "type": "string"
+      },
+      "cfg_scale": {
+        "type": "number"
+      },
+      "duration": {
+        "type": "string"
+      },
+      "generate_audio": {
+        "type": "boolean"
+      },
+      "multi_prompt": {
+        "items": "object",
+        "type": "array"
+      },
+      "negative_prompt": {
+        "type": "string"
+      },
+      "prompt": {
+        "type": "string"
+      },
+      "shot_type": {
+        "type": "string"
+      }
+    },
+    "required": []
+  },
   "runner": {
     "mode": "single-shot",
     "routes": {

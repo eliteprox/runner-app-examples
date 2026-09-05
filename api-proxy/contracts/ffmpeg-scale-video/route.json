@@ -16,6 +16,37 @@
     "endpoint_selection": "pinned",
     "request_body": "provider_native_json"
   },
+  "inputs": {
+    "fields": {
+      "codec": {
+        "type": "string"
+      },
+      "crf": {
+        "type": "integer"
+      },
+      "height": {
+        "type": "integer"
+      },
+      "mode": {
+        "type": "string"
+      },
+      "pad_color": {
+        "type": "string"
+      },
+      "preset": {
+        "type": "string"
+      },
+      "video_url": {
+        "type": "string"
+      },
+      "width": {
+        "type": "integer"
+      }
+    },
+    "required": [
+      "video_url"
+    ]
+  },
   "runner": {
     "mode": "single-shot",
     "routes": {

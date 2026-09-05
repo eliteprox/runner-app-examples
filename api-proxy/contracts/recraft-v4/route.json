@@ -16,6 +16,29 @@
     "endpoint_selection": "pinned",
     "request_body": "provider_native_json"
   },
+  "inputs": {
+    "fields": {
+      "background_color": {
+        "type": "object"
+      },
+      "colors": {
+        "items": "object",
+        "type": "array"
+      },
+      "enable_safety_checker": {
+        "type": "boolean"
+      },
+      "image_size": {
+        "type": "object"
+      },
+      "prompt": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "prompt"
+    ]
+  },
   "runner": {
     "mode": "single-shot",
     "routes": {

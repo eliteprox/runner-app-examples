@@ -28,6 +28,7 @@ from fal_adapter import (
     ROUTE_INDEX_FORMAT,
     RouteDefinition,
     artifact_paths,
+    compact_input_summary,
     route_contract,
     route_contract_bytes,
 )
@@ -248,7 +249,12 @@ def _build_pack(document: dict[str, Any], item: RouteItem) -> BuiltPack:
     schema_sha256 = hashlib.sha256(schema_bytes).hexdigest()
     return BuiltPack(
         route_bytes=route_contract_bytes(
-            route_contract(item.entry, item.route, schema_sha256)
+            route_contract(
+                item.entry,
+                item.route,
+                schema_sha256,
+                compact_input_summary(bundle),
+            )
         ),
         snapshot_bytes=snapshot_bytes,
         schema_bytes=schema_bytes,

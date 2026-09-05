@@ -16,6 +16,32 @@
     "endpoint_selection": "pinned",
     "request_body": "provider_native_json"
   },
+  "inputs": {
+    "fields": {
+      "duration": {
+        "type": "number"
+      },
+      "guidance_scale": {
+        "type": "number"
+      },
+      "lyrics": {
+        "type": "string"
+      },
+      "num_inference_steps": {
+        "type": "integer"
+      },
+      "prompt": {
+        "type": "string"
+      },
+      "seed": {
+        "type": "integer"
+      }
+    },
+    "required": [
+      "prompt",
+      "lyrics"
+    ]
+  },
   "runner": {
     "mode": "single-shot",
     "routes": {

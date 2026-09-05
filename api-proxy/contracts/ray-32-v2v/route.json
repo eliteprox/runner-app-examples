@@ -16,6 +16,52 @@
     "endpoint_selection": "pinned",
     "request_body": "provider_native_json"
   },
+  "inputs": {
+    "fields": {
+      "auto_controls": {
+        "type": "boolean"
+      },
+      "controls": {
+        "type": "object"
+      },
+      "duration": {
+        "type": "string"
+      },
+      "edit_strength": {
+        "type": "string"
+      },
+      "exr_export": {
+        "type": "boolean"
+      },
+      "hdr": {
+        "type": "boolean"
+      },
+      "keyframe_indexes": {
+        "items": "integer",
+        "type": "array"
+      },
+      "keyframes": {
+        "items": "string",
+        "type": "array"
+      },
+      "prompt": {
+        "type": "string"
+      },
+      "resolution": {
+        "type": "string"
+      },
+      "start_image_url": {
+        "type": "string"
+      },
+      "video_url": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "prompt",
+      "video_url"
+    ]
+  },
   "runner": {
     "mode": "single-shot",
     "routes": {

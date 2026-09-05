@@ -16,6 +16,34 @@
     "endpoint_selection": "pinned",
     "request_body": "provider_native_json"
   },
+  "inputs": {
+    "fields": {
+      "ambience": {
+        "type": "boolean"
+      },
+      "double_output": {
+        "type": "boolean"
+      },
+      "duration": {
+        "type": "number"
+      },
+      "num_samples": {
+        "type": "integer"
+      },
+      "seed": {
+        "type": "integer"
+      },
+      "text_prompt": {
+        "type": "string"
+      },
+      "upload_audio_format": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "text_prompt"
+    ]
+  },
   "runner": {
     "mode": "single-shot",
     "routes": {

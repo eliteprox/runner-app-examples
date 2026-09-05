@@ -16,6 +16,39 @@
     "endpoint_selection": "pinned",
     "request_body": "provider_native_json"
   },
+  "inputs": {
+    "fields": {
+      "customization": {
+        "type": "object"
+      },
+      "language": {
+        "type": "string"
+      },
+      "preset": {
+        "type": "string"
+      },
+      "srt_content": {
+        "type": "string"
+      },
+      "srt_file_url": {
+        "type": "string"
+      },
+      "translation_language": {
+        "type": "string"
+      },
+      "video_url": {
+        "type": "string"
+      },
+      "vocabulary": {
+        "items": "object",
+        "type": "array"
+      }
+    },
+    "required": [
+      "video_url",
+      "preset"
+    ]
+  },
   "runner": {
     "mode": "single-shot",
     "routes": {

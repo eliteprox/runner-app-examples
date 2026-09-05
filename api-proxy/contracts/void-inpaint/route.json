@@ -16,6 +16,50 @@
     "endpoint_selection": "pinned",
     "request_body": "provider_native_json"
   },
+  "inputs": {
+    "fields": {
+      "enable_pass2_refinement": {
+        "type": "boolean"
+      },
+      "enable_safety_checker": {
+        "type": "boolean"
+      },
+      "guidance_scale": {
+        "type": "number"
+      },
+      "mask_prompt": {
+        "type": "string"
+      },
+      "negative_prompt": {
+        "type": "string"
+      },
+      "num_frames": {
+        "type": "integer"
+      },
+      "num_inference_steps": {
+        "type": "integer"
+      },
+      "prompt": {
+        "type": "string"
+      },
+      "quad_mask_video_url": {
+        "type": "string"
+      },
+      "seed": {
+        "type": "integer"
+      },
+      "strength": {
+        "type": "number"
+      },
+      "video_url": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "video_url",
+      "prompt"
+    ]
+  },
   "runner": {
     "mode": "single-shot",
     "routes": {

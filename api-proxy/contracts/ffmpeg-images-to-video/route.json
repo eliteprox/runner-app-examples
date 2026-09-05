@@ -16,6 +16,20 @@
     "endpoint_selection": "pinned",
     "request_body": "provider_native_json"
   },
+  "inputs": {
+    "fields": {
+      "fps": {
+        "type": "number"
+      },
+      "images": {
+        "items": "object",
+        "type": "array"
+      }
+    },
+    "required": [
+      "images"
+    ]
+  },
   "runner": {
     "mode": "single-shot",
     "routes": {

@@ -34,6 +34,7 @@ class FakeFal:
             {"status": "COMPLETED", "request_id": "req-123"},
         ]
         self.result_status = 200
+        self.result_headers: dict[str, str] = {"X-Fal-Billable-Units": "1"}
         self.result_body: Any = {
             "has_nsfw_concepts": [False],
             "images": [
@@ -66,12 +67,16 @@ class FakeFal:
         self.app.router.add_get("/fal-ai/flux/requests/{request_id}", self.result)
 
     @staticmethod
-    def _response(body: Any, status: int) -> web.Response:
+    def _response(body: Any, status: int, extra_headers: dict[str, str] | None = None) -> web.Response:
         if isinstance(body, (dict, list)):
-            return web.json_response(body, status=status)
-        if isinstance(body, bytes):
-            return web.Response(body=body, status=status, content_type="text/plain")
-        return web.Response(text=str(body), status=status, content_type="text/plain")
+            resp = web.json_response(body, status=status)
+        elif isinstance(body, bytes):
+            resp = web.Response(body=body, status=status, content_type="text/plain")
+        else:
+            resp = web.Response(text=str(body), status=status, content_type="text/plain")
+        if extra_headers:
+            resp.headers.update(extra_headers)
+        return resp
 
     async def submit(self, request: web.Request) -> web.Response:
         self.submissions += 1
@@ -90,7 +95,9 @@ class FakeFal:
     async def result(self, request: web.Request) -> web.Response:
         self.result_calls += 1
         self.received_result_path = request.path_qs
-        return self._response(self.result_body, self.result_status)
+        return self._response(
+            self.result_body, self.result_status, extra_headers=self.result_headers
+        )
 
 
 class AdapterTest(unittest.IsolatedAsyncioTestCase):
@@ -179,6 +186,11 @@ class AdapterTest(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(self.fake.result_calls, 1)
         self.assertEqual(payload["request_id"], "req-123")
         self.assertEqual(payload["output"], self.fake.result_body)
+        self.assertEqual(payload["billable_units"], 1)
+        self.assertEqual(payload["billable_units_source"], "x-fal-billable-units")
+        self.assertEqual(
+            response.headers.get(runner.PROVIDER_REQUEST_ID_HEADER), "req-123"
+        )
 
     async def test_request_id_is_quoted_as_one_tracking_path_segment(self) -> None:
         request_base = runner._request_base(
@@ -229,9 +241,13 @@ class AdapterTest(unittest.IsolatedAsyncioTestCase):
         response = await self.client.post("/", data=b"{}")
         payload = await response.json()
 
-        self.assertEqual(response.status, 503)
+        self.assertEqual(response.status, 200)
         self.assertEqual(payload["error"]["stage"], "status")
+        self.assertEqual(payload["error"]["status"], 503)
         self.assertEqual(payload["request_id"], "req-123")
+        self.assertEqual(
+            response.headers.get(runner.PROVIDER_REQUEST_ID_HEADER), "req-123"
+        )
         self.assertEqual(self.fake.submissions, 1)
 
     async def test_completed_error_does_not_fetch_result(self) -> None:
@@ -246,8 +262,9 @@ class AdapterTest(unittest.IsolatedAsyncioTestCase):
         response = await self.client.post("/", data=b"{}")
         payload = await response.json()
 
-        self.assertEqual(response.status, 502)
+        self.assertEqual(response.status, 200)
         self.assertEqual(payload["error"]["stage"], "status")
+        self.assertEqual(payload["error"]["status"], 502)
         self.assertEqual(self.fake.result_calls, 0)
 
     async def test_malformed_status_response_is_typed(self) -> None:
@@ -255,8 +272,9 @@ class AdapterTest(unittest.IsolatedAsyncioTestCase):
         response = await self.client.post("/", data=b"{}")
         payload = await response.json()
 
-        self.assertEqual(response.status, 502)
+        self.assertEqual(response.status, 200)
         self.assertEqual(payload["error"]["stage"], "status")
+        self.assertEqual(payload["error"]["status"], 502)
         self.assertEqual(payload["request_id"], "req-123")
         self.assertEqual(self.fake.result_calls, 0)
 
@@ -265,8 +283,9 @@ class AdapterTest(unittest.IsolatedAsyncioTestCase):
         response = await self.client.post("/", data=b"{}")
         payload = await response.json()
 
-        self.assertEqual(response.status, 502)
+        self.assertEqual(response.status, 200)
         self.assertEqual(payload["error"]["stage"], "status")
+        self.assertEqual(payload["error"]["status"], 502)
         self.assertIn("unknown state", payload["error"]["message"])
         self.assertEqual(self.fake.result_calls, 0)
 
@@ -277,8 +296,9 @@ class AdapterTest(unittest.IsolatedAsyncioTestCase):
         response = await self.client.post("/", data=b"{}")
         payload = await response.json()
 
-        self.assertEqual(response.status, 500)
+        self.assertEqual(response.status, 200)
         self.assertEqual(payload["error"]["stage"], "result")
+        self.assertEqual(payload["error"]["status"], 500)
         self.assertEqual(payload["request_id"], "req-123")
 
     async def test_malformed_result_response_is_typed(self) -> None:
@@ -287,8 +307,9 @@ class AdapterTest(unittest.IsolatedAsyncioTestCase):
         response = await self.client.post("/", data=b"{}")
         payload = await response.json()
 
-        self.assertEqual(response.status, 502)
+        self.assertEqual(response.status, 200)
         self.assertEqual(payload["error"]["stage"], "result")
+        self.assertEqual(payload["error"]["status"], 502)
         self.assertEqual(payload["request_id"], "req-123")
 
     async def test_result_transport_failure_keeps_result_stage(self) -> None:
@@ -302,10 +323,11 @@ class AdapterTest(unittest.IsolatedAsyncioTestCase):
 
         with mock.patch.object(runner, "_upstream_response", side_effect=fail_result):
             response = await self.client.post("/", data=b"{}")
-        payload = await response.json()
+            payload = await response.json()
 
-        self.assertEqual(response.status, 502)
+        self.assertEqual(response.status, 200)
         self.assertEqual(payload["error"]["stage"], "result")
+        self.assertEqual(payload["error"]["status"], 502)
         self.assertEqual(payload["request_id"], "req-123")
 
     async def test_timeout_does_not_resubmit_or_cancel(self) -> None:
@@ -317,9 +339,13 @@ class AdapterTest(unittest.IsolatedAsyncioTestCase):
         finally:
             await timeout_client.close()
 
-        self.assertEqual(response.status, 504)
+        self.assertEqual(response.status, 200)
         self.assertEqual(payload["error"]["stage"], "timeout")
+        self.assertEqual(payload["error"]["status"], 504)
         self.assertEqual(payload["request_id"], "req-123")
+        self.assertEqual(
+            response.headers.get(runner.PROVIDER_REQUEST_ID_HEADER), "req-123"
+        )
         self.assertEqual(self.fake.submissions, 1)
         self.assertEqual(self.fake.result_calls, 0)
 
@@ -363,11 +389,55 @@ class AdapterTest(unittest.IsolatedAsyncioTestCase):
                 data=raw,
                 headers={"Authorization": "Bearer caller-secret"},
             )
+            await response.json()
         self.assertEqual(response.status, 200)
         logs = "\n".join(captured.output)
         self.assertNotIn("log-secret-prompt", logs)
         self.assertNotIn("caller-secret", logs)
         self.assertNotIn("operator-secret", logs)
+
+    async def test_missing_result_header_stamps_null(self) -> None:
+        self.fake.result_headers = {}
+        response = await self.client.post("/", data=b"{}")
+        payload = await response.json()
+        self.assertEqual(response.status, 200)
+        self.assertIsNone(payload["billable_units"])
+        self.assertEqual(payload["billable_units_source"], "x-fal-billable-units")
+        self.assertIn("billable_units", payload)
+
+    async def test_fractional_result_header(self) -> None:
+        self.fake.result_headers = {"x-fal-billable-units": "2.5"}
+        response = await self.client.post("/", data=b"{}")
+        payload = await response.json()
+        self.assertEqual(response.status, 200)
+        self.assertEqual(payload["billable_units"], 2.5)
+
+
+class BillableUnitsTest(unittest.TestCase):
+    def test_reads_header(self) -> None:
+        self.assertEqual(runner.extract_billable_units({"X-Fal-Billable-Units": "3"}), 3)
+
+    def test_is_case_insensitive(self) -> None:
+        self.assertEqual(runner.extract_billable_units({"x-fal-billable-units": "3"}), 3)
+
+    def test_keeps_fraction(self) -> None:
+        self.assertEqual(runner.extract_billable_units({"x-fal-billable-units": "2.5"}), 2.5)
+
+    def test_whole_number_is_int(self) -> None:
+        got = runner.extract_billable_units({"x-fal-billable-units": "2.0"})
+        self.assertEqual(got, 2)
+        self.assertIsInstance(got, int)
+
+    def test_preserves_zero(self) -> None:
+        self.assertEqual(runner.extract_billable_units({"x-fal-billable-units": "0"}), 0)
+
+    def test_missing_is_none(self) -> None:
+        self.assertIsNone(runner.extract_billable_units({}))
+        self.assertIsNone(runner.extract_billable_units(None))
+
+    def test_malformed_is_none(self) -> None:
+        for bad in ("", "   ", "abc", "3 units", "NaN", "inf", "-inf"):
+            self.assertIsNone(runner.extract_billable_units({"x-fal-billable-units": bad}))
 
 
 if __name__ == "__main__":

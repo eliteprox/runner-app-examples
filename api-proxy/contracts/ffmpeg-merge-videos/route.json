@@ -16,6 +16,26 @@
     "endpoint_selection": "pinned",
     "request_body": "provider_native_json"
   },
+  "inputs": {
+    "fields": {
+      "resolution": {
+        "type": "object"
+      },
+      "resolution_aspect_ratio_video_index": {
+        "type": "integer"
+      },
+      "target_fps": {
+        "type": "number"
+      },
+      "video_urls": {
+        "items": "string",
+        "type": "array"
+      }
+    },
+    "required": [
+      "video_urls"
+    ]
+  },
   "runner": {
     "mode": "single-shot",
     "routes": {

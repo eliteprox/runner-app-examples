@@ -16,6 +16,31 @@
     "endpoint_selection": "pinned",
     "request_body": "provider_native_json"
   },
+  "inputs": {
+    "fields": {
+      "duration": {
+        "type": "number"
+      },
+      "num_samples": {
+        "type": "integer"
+      },
+      "prompt": {
+        "type": "string"
+      },
+      "prompt_influence": {
+        "type": "number"
+      },
+      "start_offset": {
+        "type": "number"
+      },
+      "video_url": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "video_url"
+    ]
+  },
   "runner": {
     "mode": "single-shot",
     "routes": {

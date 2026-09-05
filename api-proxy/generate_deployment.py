@@ -183,9 +183,12 @@ def _route_model(root: Path, entry: dict[str, Any]) -> tuple[RouteDefinition, st
     return route, digest, route_path
 
 
-def _metadata(route: RouteDefinition, schema_sha256: str) -> str:
+def _metadata(
+    route: RouteDefinition, schema_sha256: str, deadline_seconds: int
+) -> str:
     metadata = json.dumps(
         {
+            "deadline_seconds": deadline_seconds,
             "endpoint_id": route.endpoint_id,
             "provider": "fal",
             "schema_sha256": schema_sha256,
@@ -288,7 +291,7 @@ def build_artifacts(
                 "health_url": f"{runner_url}/health",
                 "healthy_status_code": 200,
                 "label": label,
-                "metadata": _metadata(route, schema_sha256),
+                "metadata": _metadata(route, schema_sha256, deadline_seconds),
                 "mode": "single-shot",
                 "price_info": price_info,
                 "routing": "label",

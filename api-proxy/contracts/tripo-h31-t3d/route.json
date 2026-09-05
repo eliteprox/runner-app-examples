@@ -16,6 +16,49 @@
     "endpoint_selection": "pinned",
     "request_body": "provider_native_json"
   },
+  "inputs": {
+    "fields": {
+      "auto_size": {
+        "type": "boolean"
+      },
+      "face_limit": {
+        "type": "integer"
+      },
+      "geometry_quality": {
+        "type": "string"
+      },
+      "image_seed": {
+        "type": "integer"
+      },
+      "model_seed": {
+        "type": "integer"
+      },
+      "negative_prompt": {
+        "type": "string"
+      },
+      "pbr": {
+        "type": "boolean"
+      },
+      "prompt": {
+        "type": "string"
+      },
+      "quad": {
+        "type": "boolean"
+      },
+      "texture": {
+        "type": "boolean"
+      },
+      "texture_quality": {
+        "type": "string"
+      },
+      "texture_seed": {
+        "type": "integer"
+      }
+    },
+    "required": [
+      "prompt"
+    ]
+  },
   "runner": {
     "mode": "single-shot",
     "routes": {

@@ -16,6 +16,34 @@
     "endpoint_selection": "pinned",
     "request_body": "provider_native_json"
   },
+  "inputs": {
+    "fields": {
+      "language_code": {
+        "type": "string"
+      },
+      "output_format": {
+        "type": "string"
+      },
+      "prompt": {
+        "type": "string"
+      },
+      "speakers": {
+        "type": "object"
+      },
+      "style_instructions": {
+        "type": "string"
+      },
+      "temperature": {
+        "type": "number"
+      },
+      "voice": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "prompt"
+    ]
+  },
   "runner": {
     "mode": "single-shot",
     "routes": {

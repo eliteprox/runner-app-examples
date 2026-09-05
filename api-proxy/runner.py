@@ -8,11 +8,12 @@ import asyncio
 import hashlib
 import json
 import logging
+import math
 import os
 import time
 from contextlib import suppress
 from pathlib import Path
-from typing import Any
+from typing import Any, Mapping
 from urllib.parse import quote
 
 import aiohttp
@@ -33,6 +34,9 @@ DEFAULT_MAX_REQUEST_BYTES = 1024 * 1024
 FAL_BASE_URL = "https://queue.fal.run"
 POLL_INTERVAL_SECONDS = 1.0
 MAX_PROVIDER_ERROR_BODY_BYTES = 4096
+PROVIDER_REQUEST_ID_HEADER = "Livepeer-Provider-Request-Id"
+BILLABLE_UNITS_HEADER = "X-Fal-Billable-Units"
+BILLABLE_UNITS_SOURCE = "x-fal-billable-units"
 
 ROOT = Path(__file__).resolve().parent
 
@@ -141,7 +145,7 @@ def _json_object(raw: bytes, stage: str) -> dict[str, Any]:
     return value
 
 
-def _error_response(
+def _error_payload(
     app: web.Application,
     *,
     stage: str,
@@ -149,8 +153,8 @@ def _error_response(
     message: str,
     request_id: str | None = None,
     upstream_body: Any | None = None,
-) -> web.Response:
-    error: dict[str, Any] = {"message": message, "stage": stage}
+) -> dict[str, Any]:
+    error: dict[str, Any] = {"message": message, "stage": stage, "status": status}
     if upstream_body is not None:
         error["upstream_body"] = upstream_body
     payload: dict[str, Any] = {
@@ -160,7 +164,59 @@ def _error_response(
     }
     if request_id:
         payload["request_id"] = request_id
-    return web.json_response(payload, status=status)
+    return payload
+
+
+def _response_headers(request_id: str | None = None) -> dict[str, str]:
+    if not request_id:
+        return {}
+    return {PROVIDER_REQUEST_ID_HEADER: request_id}
+
+
+def _error_response(
+    app: web.Application,
+    *,
+    stage: str,
+    status: int,
+    message: str,
+    request_id: str | None = None,
+    upstream_body: Any | None = None,
+) -> web.Response:
+    return web.json_response(
+        _error_payload(
+            app,
+            stage=stage,
+            status=status,
+            message=message,
+            request_id=request_id,
+            upstream_body=upstream_body,
+        ),
+        status=status,
+        headers=_response_headers(request_id),
+    )
+
+
+async def _begin_result_stream(
+    request: web.Request, request_id: str
+) -> web.StreamResponse:
+    response = web.StreamResponse(
+        status=200,
+        headers={
+            "Content-Type": "application/json",
+            PROVIDER_REQUEST_ID_HEADER: request_id,
+        },
+    )
+    response.enable_chunked_encoding()
+    await response.prepare(request)
+    return response
+
+
+async def _finish_json(
+    response: web.StreamResponse, payload: dict[str, Any]
+) -> web.StreamResponse:
+    await response.write(json.dumps(payload).encode())
+    await response.write_eof()
+    return response
 
 
 def _safe_upstream_status(status: int) -> int:
@@ -174,6 +230,36 @@ def _auth_headers(*, has_body: bool) -> dict[str, str]:
     return headers
 
 
+def extract_billable_units(headers: Mapping[str, str] | None) -> float | int | None:
+    """Parse fal's billable-units header. Never raises; never guesses."""
+    if headers is None:
+        return None
+    raw: Any = None
+    getter = getattr(headers, "get", None)
+    if getter is not None:
+        raw = getter(BILLABLE_UNITS_HEADER)
+        if raw is None:
+            raw = getter(BILLABLE_UNITS_HEADER.lower())
+    if raw is None:
+        items = getattr(headers, "items", None)
+        if items is None:
+            return None
+        lowered = BILLABLE_UNITS_HEADER.lower()
+        for key, value in items():
+            if isinstance(key, str) and key.lower() == lowered:
+                raw = value
+                break
+    if raw is None:
+        return None
+    try:
+        value = float(str(raw).strip())
+    except (TypeError, ValueError):
+        return None
+    if not math.isfinite(value):
+        return None
+    return int(value) if value.is_integer() else value
+
+
 async def _upstream_response(
     session: aiohttp.ClientSession,
     method: str,
@@ -181,7 +267,7 @@ async def _upstream_response(
     *,
     fal_key: str,
     body: bytes | None = None,
-) -> tuple[int, bytes, str]:
+) -> tuple[int, bytes, str, Mapping[str, str]]:
     headers = _auth_headers(has_body=body is not None)
     headers["Authorization"] = f"Key {fal_key}"
     async with session.request(method, url, data=body, headers=headers) as response:
@@ -189,6 +275,7 @@ async def _upstream_response(
             response.status,
             await response.read(),
             response.headers.get("Content-Type", ""),
+            response.headers,
         )
 
 
@@ -215,8 +302,41 @@ async def _handle_schema(request: web.Request) -> web.Response:
     )
 
 
-async def _handle_execute(request: web.Request) -> web.Response:
+async def _fail_execute(
+    request: web.Request,
+    stream: web.StreamResponse | None,
+    *,
+    stage: str,
+    status: int,
+    message: str,
+    request_id: str | None = None,
+    upstream_body: Any | None = None,
+) -> web.StreamResponse:
+    if stream is not None and stream.prepared:
+        return await _finish_json(
+            stream,
+            _error_payload(
+                request.app,
+                stage=stage,
+                status=status,
+                message=message,
+                request_id=request_id,
+                upstream_body=upstream_body,
+            ),
+        )
+    return _error_response(
+        request.app,
+        stage=stage,
+        status=status,
+        message=message,
+        request_id=request_id,
+        upstream_body=upstream_body,
+    )
+
+
+async def _handle_execute(request: web.Request) -> web.StreamResponse:
     request_id: str | None = None
+    stream: web.StreamResponse | None = None
     request[REQUEST_ID_KEY] = None
     request[STAGE_KEY] = "submit"
     try:
@@ -236,7 +356,7 @@ async def _handle_execute(request: web.Request) -> web.Response:
 
     try:
         async with asyncio.timeout(descriptor.deadline_seconds):
-            status, raw, upstream_content_type = await _upstream_response(
+            status, raw, upstream_content_type, _submit_headers = await _upstream_response(
                 session,
                 "POST",
                 submit_url,
@@ -267,19 +387,21 @@ async def _handle_execute(request: web.Request) -> web.Response:
                 )
             request_id = candidate_id
             request[REQUEST_ID_KEY] = request_id
+            stream = await _begin_result_stream(request, request_id)
             request_base = _request_base(base_url, descriptor, request_id)
 
             request[STAGE_KEY] = "status"
             while True:
-                status, raw, upstream_content_type = await _upstream_response(
+                status, raw, upstream_content_type, _status_headers = await _upstream_response(
                     session,
                     "GET",
                     f"{request_base}/status?logs=0",
                     fal_key=request.app[FAL_KEY],
                 )
                 if status < 200 or status >= 300:
-                    return _error_response(
-                        request.app,
+                    return await _fail_execute(
+                        request,
+                        stream,
                         stage="status",
                         status=_safe_upstream_status(status),
                         message=f"fal status returned HTTP {status}",
@@ -291,8 +413,9 @@ async def _handle_execute(request: web.Request) -> web.Response:
                 try:
                     queue_status = _json_object(raw, "status")
                 except (TypeError, ValueError) as error:
-                    return _error_response(
-                        request.app,
+                    return await _fail_execute(
+                        request,
+                        stream,
                         stage="status",
                         status=502,
                         message=str(error),
@@ -302,8 +425,9 @@ async def _handle_execute(request: web.Request) -> web.Response:
                 state = queue_status.get("status")
                 if state == "COMPLETED":
                     if queue_status.get("error"):
-                        return _error_response(
-                            request.app,
+                        return await _fail_execute(
+                            request,
+                            stream,
                             stage="status",
                             status=502,
                             message="fal request completed with an error",
@@ -314,8 +438,9 @@ async def _handle_execute(request: web.Request) -> web.Response:
                         )
                     break
                 if state not in {"IN_QUEUE", "IN_PROGRESS"}:
-                    return _error_response(
-                        request.app,
+                    return await _fail_execute(
+                        request,
+                        stream,
                         stage="status",
                         status=502,
                         message=f"fal status returned unknown state {state!r}",
@@ -324,15 +449,16 @@ async def _handle_execute(request: web.Request) -> web.Response:
                 await asyncio.sleep(request.app[POLL_INTERVAL_KEY])
 
             request[STAGE_KEY] = "result"
-            status, raw, upstream_content_type = await _upstream_response(
+            status, raw, upstream_content_type, result_headers = await _upstream_response(
                 session,
                 "GET",
                 request_base,
                 fal_key=request.app[FAL_KEY],
             )
             if status < 200 or status >= 300:
-                return _error_response(
-                    request.app,
+                return await _fail_execute(
+                    request,
+                    stream,
                     stage="result",
                     status=_safe_upstream_status(status),
                     message=f"fal result returned HTTP {status}",
@@ -342,26 +468,31 @@ async def _handle_execute(request: web.Request) -> web.Response:
             try:
                 output = _json_object(raw, "result")
             except (TypeError, ValueError) as error:
-                return _error_response(
-                    request.app,
+                return await _fail_execute(
+                    request,
+                    stream,
                     stage="result",
                     status=502,
                     message=str(error),
                     request_id=request_id,
                 )
 
-            return web.json_response(
+            return await _finish_json(
+                stream,
                 {
+                    "billable_units": extract_billable_units(result_headers),
+                    "billable_units_source": BILLABLE_UNITS_SOURCE,
                     "endpoint_id": descriptor.endpoint_id,
                     "output": output,
                     "request_id": request_id,
                     "schema_sha256": request.app[SCHEMA_SHA256_KEY],
-                }
+                },
             )
     except TimeoutError:
         request[STAGE_KEY] = "timeout"
-        return _error_response(
-            request.app,
+        return await _fail_execute(
+            request,
+            stream,
             stage="timeout",
             status=504,
             message="adapter deadline exceeded; fal may still complete the request",
@@ -369,8 +500,9 @@ async def _handle_execute(request: web.Request) -> web.Response:
         )
     except aiohttp.ClientError as error:
         stage = request.get(STAGE_KEY, "submit")
-        return _error_response(
-            request.app,
+        return await _fail_execute(
+            request,
+            stream,
             stage=stage,
             status=502,
             message=f"fal transport failed: {type(error).__name__}",

@@ -16,6 +16,48 @@
     "endpoint_selection": "pinned",
     "request_body": "provider_native_json"
   },
+  "inputs": {
+    "fields": {
+      "aspect_ratio": {
+        "type": "string"
+      },
+      "duration": {
+        "type": "string"
+      },
+      "end_image_url": {
+        "type": "string"
+      },
+      "exr_export": {
+        "type": "boolean"
+      },
+      "hdr": {
+        "type": "boolean"
+      },
+      "image_url": {
+        "type": "string"
+      },
+      "keyframe_indexes": {
+        "items": "integer",
+        "type": "array"
+      },
+      "keyframes": {
+        "items": "string",
+        "type": "array"
+      },
+      "loop": {
+        "type": "boolean"
+      },
+      "prompt": {
+        "type": "string"
+      },
+      "resolution": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "prompt"
+    ]
+  },
   "runner": {
     "mode": "single-shot",
     "routes": {

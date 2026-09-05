@@ -16,6 +16,37 @@
     "endpoint_selection": "pinned",
     "request_body": "provider_native_json"
   },
+  "inputs": {
+    "fields": {
+      "audio_url": {
+        "type": "string"
+      },
+      "batch_size": {
+        "type": "integer"
+      },
+      "chunk_level": {
+        "type": "string"
+      },
+      "diarize": {
+        "type": "boolean"
+      },
+      "language": {
+        "type": "string"
+      },
+      "num_speakers": {
+        "type": "integer"
+      },
+      "prompt": {
+        "type": "string"
+      },
+      "task": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "audio_url"
+    ]
+  },
   "runner": {
     "mode": "single-shot",
     "routes": {

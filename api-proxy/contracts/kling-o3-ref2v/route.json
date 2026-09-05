@@ -16,6 +16,44 @@
     "endpoint_selection": "pinned",
     "request_body": "provider_native_json"
   },
+  "inputs": {
+    "fields": {
+      "aspect_ratio": {
+        "type": "string"
+      },
+      "duration": {
+        "type": "string"
+      },
+      "elements": {
+        "items": "object",
+        "type": "array"
+      },
+      "end_image_url": {
+        "type": "string"
+      },
+      "generate_audio": {
+        "type": "boolean"
+      },
+      "image_urls": {
+        "items": "string",
+        "type": "array"
+      },
+      "multi_prompt": {
+        "items": "object",
+        "type": "array"
+      },
+      "prompt": {
+        "type": "string"
+      },
+      "shot_type": {
+        "type": "string"
+      },
+      "start_image_url": {
+        "type": "string"
+      }
+    },
+    "required": []
+  },
   "runner": {
     "mode": "single-shot",
     "routes": {

@@ -101,6 +101,7 @@ class SchemaTest(unittest.TestCase):
         self.assertEqual(self.metadata["endpoint_id"], self.route.endpoint_id)
         self.assertEqual(self.metadata["schema_sha256"], digest)
         self.assertEqual(self.metadata["schema_url"], "./schema")
+        self.assertEqual(self.metadata["deadline_seconds"], 180)
         self.assertLessEqual(len(self.runners["runners"][0]["metadata"].encode()), 1024)
 
     def test_generated_files_have_no_drift(self) -> None:

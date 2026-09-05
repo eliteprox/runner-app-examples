@@ -134,6 +134,7 @@ class DeploymentGeneratorTest(unittest.TestCase):
         metadata = json.loads(runners[0]["metadata"])
         self.assertLessEqual(len(runners[0]["metadata"].encode()), 1024)
         self.assertEqual(metadata["endpoint_id"], "fal-ai/flux/schnell")
+        self.assertEqual(metadata["deadline_seconds"], 180)
 
     def test_each_selected_route_gets_a_distinct_service_and_registration(self) -> None:
         deployment = copy.deepcopy(self.deployment)

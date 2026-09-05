@@ -16,6 +16,17 @@
     "endpoint_selection": "pinned",
     "request_body": "provider_native_json"
   },
+  "inputs": {
+    "fields": {
+      "tracks": {
+        "items": "object",
+        "type": "array"
+      }
+    },
+    "required": [
+      "tracks"
+    ]
+  },
   "runner": {
     "mode": "single-shot",
     "routes": {

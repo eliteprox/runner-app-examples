@@ -16,6 +16,19 @@
     "endpoint_selection": "pinned",
     "request_body": "provider_native_json"
   },
+  "inputs": {
+    "fields": {
+      "frame_type": {
+        "type": "string"
+      },
+      "video_url": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "video_url"
+    ]
+  },
   "runner": {
     "mode": "single-shot",
     "routes": {

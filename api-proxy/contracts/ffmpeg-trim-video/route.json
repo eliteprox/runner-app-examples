@@ -16,6 +16,25 @@
     "endpoint_selection": "pinned",
     "request_body": "provider_native_json"
   },
+  "inputs": {
+    "fields": {
+      "duration": {
+        "type": "number"
+      },
+      "end_time": {
+        "type": "number"
+      },
+      "start_time": {
+        "type": "number"
+      },
+      "video_url": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "video_url"
+    ]
+  },
   "runner": {
     "mode": "single-shot",
     "routes": {

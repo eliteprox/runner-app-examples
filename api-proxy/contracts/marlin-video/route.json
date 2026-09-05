@@ -16,6 +16,32 @@
     "endpoint_selection": "pinned",
     "request_body": "provider_native_json"
   },
+  "inputs": {
+    "fields": {
+      "do_sample": {
+        "type": "boolean"
+      },
+      "max_tokens": {
+        "type": "integer"
+      },
+      "prompt": {
+        "type": "string"
+      },
+      "temperature": {
+        "type": "number"
+      },
+      "top_p": {
+        "type": "number"
+      },
+      "video_url": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "video_url",
+      "prompt"
+    ]
+  },
   "runner": {
     "mode": "single-shot",
     "routes": {

@@ -16,6 +16,38 @@
     "endpoint_selection": "pinned",
     "request_body": "provider_native_json"
   },
+  "inputs": {
+    "fields": {
+      "aspect_ratio": {
+        "type": "string"
+      },
+      "duration": {
+        "type": "integer"
+      },
+      "enable_safety_checker": {
+        "type": "boolean"
+      },
+      "prompt": {
+        "type": "string"
+      },
+      "prompt_expansion_mode": {
+        "type": "string"
+      },
+      "resolution": {
+        "type": "string"
+      },
+      "seed": {
+        "type": "integer"
+      },
+      "sync_mode": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "prompt",
+      "prompt_expansion_mode"
+    ]
+  },
   "runner": {
     "mode": "single-shot",
     "routes": {

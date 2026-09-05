@@ -16,6 +16,22 @@
     "endpoint_selection": "pinned",
     "request_body": "provider_native_json"
   },
+  "inputs": {
+    "fields": {
+      "acceleration": {
+        "type": "string"
+      },
+      "audio_url": {
+        "type": "string"
+      },
+      "language": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "audio_url"
+    ]
+  },
   "runner": {
     "mode": "single-shot",
     "routes": {

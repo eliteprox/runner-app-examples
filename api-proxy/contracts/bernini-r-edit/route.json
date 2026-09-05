@@ -16,6 +16,44 @@
     "endpoint_selection": "pinned",
     "request_body": "provider_native_json"
   },
+  "inputs": {
+    "fields": {
+      "acceleration": {
+        "type": "string"
+      },
+      "enable_prompt_expansion": {
+        "type": "boolean"
+      },
+      "frames_per_second": {
+        "type": "integer"
+      },
+      "max_image_size": {
+        "type": "integer"
+      },
+      "negative_prompt": {
+        "type": "string"
+      },
+      "num_frames": {
+        "type": "integer"
+      },
+      "num_inference_steps": {
+        "type": "integer"
+      },
+      "prompt": {
+        "type": "string"
+      },
+      "seed": {
+        "type": "integer"
+      },
+      "video_url": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "prompt",
+      "video_url"
+    ]
+  },
   "runner": {
     "mode": "single-shot",
     "routes": {

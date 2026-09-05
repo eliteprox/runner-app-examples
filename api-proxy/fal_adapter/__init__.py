@@ -13,6 +13,7 @@ from .contract import (
 )
 from .route_contract import (
     ROUTE_CONTRACT_FORMAT,
+    compact_input_summary,
     route_contract,
     route_contract_bytes,
 )
@@ -28,6 +29,7 @@ __all__ = [
     "load_route_definition",
     "load_route_index",
     "ROUTE_CONTRACT_FORMAT",
+    "compact_input_summary",
     "route_contract",
     "route_contract_bytes",
 ]

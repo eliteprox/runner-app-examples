@@ -16,6 +16,29 @@
     "endpoint_selection": "pinned",
     "request_body": "provider_native_json"
   },
+  "inputs": {
+    "fields": {
+      "dilate_pixels": {
+        "type": "integer"
+      },
+      "image_url": {
+        "type": "string"
+      },
+      "mask_url": {
+        "type": "string"
+      },
+      "output_format": {
+        "type": "string"
+      },
+      "sync_mode": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "image_url",
+      "mask_url"
+    ]
+  },
   "runner": {
     "mode": "single-shot",
     "routes": {

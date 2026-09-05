@@ -16,6 +16,49 @@
     "endpoint_selection": "pinned",
     "request_body": "provider_native_json"
   },
+  "inputs": {
+    "fields": {
+      "audio_url": {
+        "type": "string"
+      },
+      "dual_mono": {
+        "type": "boolean"
+      },
+      "integrated_loudness": {
+        "type": "number"
+      },
+      "linear": {
+        "type": "boolean"
+      },
+      "loudness_range": {
+        "type": "number"
+      },
+      "measured_i": {
+        "type": "number"
+      },
+      "measured_lra": {
+        "type": "number"
+      },
+      "measured_thresh": {
+        "type": "number"
+      },
+      "measured_tp": {
+        "type": "number"
+      },
+      "offset": {
+        "type": "number"
+      },
+      "print_summary": {
+        "type": "boolean"
+      },
+      "true_peak": {
+        "type": "number"
+      }
+    },
+    "required": [
+      "audio_url"
+    ]
+  },
   "runner": {
     "mode": "single-shot",
     "routes": {
