@@ -30,6 +30,14 @@
       "audio_url"
     ]
   },
+  "pricing": {
+    "currency": "usd",
+    "endpoint_id": "fal-ai/sync-lipsync/v3/image-to-video",
+    "fetched_at": "2026-09-09T18:03:31Z",
+    "provider": "fal",
+    "unit": "minutes",
+    "unit_price": "8"
+  },
   "runner": {
     "mode": "single-shot",
     "routes": {

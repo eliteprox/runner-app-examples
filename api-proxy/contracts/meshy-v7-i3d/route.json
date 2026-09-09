@@ -77,6 +77,14 @@
       "image_url"
     ]
   },
+  "pricing": {
+    "currency": "usd",
+    "endpoint_id": "meshy/v7/image-to-3d",
+    "fetched_at": "2026-09-09T18:03:31Z",
+    "provider": "fal",
+    "unit": "generations",
+    "unit_price": "0.8"
+  },
   "runner": {
     "mode": "single-shot",
     "routes": {

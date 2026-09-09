@@ -10,7 +10,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.003,
         "unit": "fixed"
       },
       "routing": "label",
@@ -27,7 +27,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.03,
         "unit": "fixed"
       },
       "routing": "label",
@@ -44,7 +44,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.012,
         "unit": "fixed"
       },
       "routing": "label",
@@ -61,7 +61,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 1.0,
         "unit": "fixed"
       },
       "routing": "label",
@@ -78,7 +78,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 1.0,
         "unit": "fixed"
       },
       "routing": "label",
@@ -95,7 +95,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.01,
         "unit": "fixed"
       },
       "routing": "label",
@@ -112,7 +112,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.01,
         "unit": "fixed"
       },
       "routing": "label",
@@ -129,7 +129,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.0675,
         "unit": "fixed"
       },
       "routing": "label",
@@ -146,7 +146,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.0675,
         "unit": "fixed"
       },
       "routing": "label",
@@ -163,7 +163,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.01,
         "unit": "fixed"
       },
       "routing": "label",
@@ -180,7 +180,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.25,
         "unit": "fixed"
       },
       "routing": "label",
@@ -197,7 +197,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.0008,
         "unit": "fixed"
       },
       "routing": "label",
@@ -214,7 +214,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.05,
         "unit": "fixed"
       },
       "routing": "label",
@@ -231,7 +231,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.004,
         "unit": "fixed"
       },
       "routing": "label",
@@ -248,7 +248,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.01,
         "unit": "fixed"
       },
       "routing": "label",
@@ -265,7 +265,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.085,
         "unit": "fixed"
       },
       "routing": "label",
@@ -282,7 +282,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.085,
         "unit": "fixed"
       },
       "routing": "label",
@@ -299,7 +299,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.085,
         "unit": "fixed"
       },
       "routing": "label",
@@ -316,7 +316,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.085,
         "unit": "fixed"
       },
       "routing": "label",
@@ -333,7 +333,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.205,
         "unit": "fixed"
       },
       "routing": "label",
@@ -350,7 +350,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.01,
         "unit": "fixed"
       },
       "routing": "label",
@@ -367,7 +367,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.01,
         "unit": "fixed"
       },
       "routing": "label",
@@ -384,7 +384,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.01,
         "unit": "fixed"
       },
       "routing": "label",
@@ -401,7 +401,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.01,
         "unit": "fixed"
       },
       "routing": "label",
@@ -418,7 +418,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.01,
         "unit": "fixed"
       },
       "routing": "label",
@@ -435,7 +435,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.03,
         "unit": "fixed"
       },
       "routing": "label",
@@ -452,7 +452,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.03,
         "unit": "fixed"
       },
       "routing": "label",
@@ -469,7 +469,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.03,
         "unit": "fixed"
       },
       "routing": "label",
@@ -486,7 +486,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.03,
         "unit": "fixed"
       },
       "routing": "label",
@@ -503,7 +503,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.0125,
         "unit": "fixed"
       },
       "routing": "label",
@@ -520,7 +520,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.0125,
         "unit": "fixed"
       },
       "routing": "label",
@@ -537,7 +537,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.05,
         "unit": "fixed"
       },
       "routing": "label",
@@ -554,7 +554,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.014,
         "unit": "fixed"
       },
       "routing": "label",
@@ -571,7 +571,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.014,
         "unit": "fixed"
       },
       "routing": "label",
@@ -588,7 +588,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.014,
         "unit": "fixed"
       },
       "routing": "label",
@@ -605,7 +605,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.0214,
         "unit": "fixed"
       },
       "routing": "label",
@@ -622,7 +622,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.0214,
         "unit": "fixed"
       },
       "routing": "label",
@@ -639,7 +639,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.0214,
         "unit": "fixed"
       },
       "routing": "label",
@@ -656,7 +656,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.01,
         "unit": "fixed"
       },
       "routing": "label",
@@ -673,7 +673,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.01,
         "unit": "fixed"
       },
       "routing": "label",
@@ -690,7 +690,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.01,
         "unit": "fixed"
       },
       "routing": "label",
@@ -707,7 +707,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.4,
         "unit": "fixed"
       },
       "routing": "label",
@@ -724,7 +724,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.4,
         "unit": "fixed"
       },
       "routing": "label",
@@ -741,7 +741,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.4,
         "unit": "fixed"
       },
       "routing": "label",
@@ -758,7 +758,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.14,
         "unit": "fixed"
       },
       "routing": "label",
@@ -775,7 +775,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.14,
         "unit": "fixed"
       },
       "routing": "label",
@@ -792,7 +792,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.14,
         "unit": "fixed"
       },
       "routing": "label",
@@ -809,7 +809,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.08,
         "unit": "fixed"
       },
       "routing": "label",
@@ -826,7 +826,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.05,
         "unit": "fixed"
       },
       "routing": "label",
@@ -843,7 +843,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.022,
         "unit": "fixed"
       },
       "routing": "label",
@@ -860,7 +860,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.16,
         "unit": "fixed"
       },
       "routing": "label",
@@ -877,7 +877,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 8.0,
         "unit": "fixed"
       },
       "routing": "label",
@@ -894,7 +894,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.001,
         "unit": "fixed"
       },
       "routing": "label",
@@ -911,7 +911,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.008,
         "unit": "fixed"
       },
       "routing": "label",
@@ -928,7 +928,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.0008,
         "unit": "fixed"
       },
       "routing": "label",
@@ -945,7 +945,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.05,
         "unit": "fixed"
       },
       "routing": "label",
@@ -962,7 +962,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.002,
         "unit": "fixed"
       },
       "routing": "label",
@@ -979,7 +979,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.01,
         "unit": "fixed"
       },
       "routing": "label",
@@ -996,7 +996,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.009,
         "unit": "fixed"
       },
       "routing": "label",
@@ -1013,7 +1013,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.015,
         "unit": "fixed"
       },
       "routing": "label",
@@ -1030,7 +1030,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.01,
         "unit": "fixed"
       },
       "routing": "label",
@@ -1047,7 +1047,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.8,
         "unit": "fixed"
       },
       "routing": "label",
@@ -1064,7 +1064,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.0002,
         "unit": "fixed"
       },
       "routing": "label",
@@ -1081,7 +1081,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.00017,
         "unit": "fixed"
       },
       "routing": "label",
@@ -1098,7 +1098,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.0002,
         "unit": "fixed"
       },
       "routing": "label",
@@ -1115,7 +1115,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.001,
         "unit": "fixed"
       },
       "routing": "label",
@@ -1132,7 +1132,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.001,
         "unit": "fixed"
       },
       "routing": "label",
@@ -1149,7 +1149,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.075,
         "unit": "fixed"
       },
       "routing": "label",
@@ -1166,7 +1166,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.0002,
         "unit": "fixed"
       },
       "routing": "label",
@@ -1183,7 +1183,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.00017,
         "unit": "fixed"
       },
       "routing": "label",
@@ -1200,7 +1200,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.00017,
         "unit": "fixed"
       },
       "routing": "label",
@@ -1217,7 +1217,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.00017,
         "unit": "fixed"
       },
       "routing": "label",
@@ -1234,7 +1234,7 @@
       "mode": "single-shot",
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.1,
         "unit": "fixed"
       },
       "routing": "label",

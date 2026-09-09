@@ -16,7 +16,7 @@ every fal endpoint, a live fal catalog, a dynamic importer, or evidence that all
 | Runner mode  | single-shot                                                  |
 | Registration | static (orchestrator config + health poll)                   |
 | Transport    | blocking adapter over fal queue submit/status/result         |
-| Pricing      | fixed per application; checked-in value is local-demo policy |
+| Pricing      | fixed per application; sell price is derived from the committed fal catalog rate |
 | Adapter port | 8989                                                         |
 
 Prerequisites (Docker, `uv`, and the
@@ -91,10 +91,19 @@ uv run python client.py run flux-schnell \
 The client selects the exact app ID from `route.json`, reads compact route
 metadata from discovery, fetches `/schema`, verifies its SHA-256, and then calls
 `/`. A successful response has this shape; the object under `output` keeps
-the provider's result fields without renaming or selection:
+the provider's result fields without renaming or selection.
+
+`billable_units` is a **reconciliation receipt, not a settlement input**. On
+go-livepeer master a paid single-shot call is charged the route's flat `fixed`
+price at reserve, before the adapter runs. The field is always present on a
+blocking success: a number when fal sent `X-Fal-Billable-Units`, or `null`
+when that header was missing or unparseable. Compare it to the charged price
+after the fact; do not treat it as what the orchestrator debited.
 
 ```json
 {
+  "billable_units": 1,
+  "billable_units_source": "x-fal-billable-units",
   "request_id": "provider-request-id",
   "endpoint_id": "fal-ai/flux/schnell",
   "schema_sha256": "64-lowercase-hex-characters",
@@ -140,8 +149,10 @@ docker compose --env-file .env.local \
 ```
 
 Each request is one paid single-shot session at the fixed price in the selected
-Runner registration. The checked-in `0.0001 USD` price and capacity `4` are
-local demonstration policy, not production economics or provider facts.
+Runner registration. That price is derived from the route contract's committed
+fal `pricing.unit_price` (one expected billing unit, plus any `upcharge_bps`).
+Capacity `4` remains operator policy. The charged amount does not change if
+`billable_units` on the receipt differs from one.
 
 ## The 73 modeled route contracts
 
@@ -153,11 +164,14 @@ contains:
 - `openapi.json`: committed official queue OpenAPI snapshot;
 - `schema.json`: request/result schemas and transitive OpenAPI components;
 - `route.json`: Live Runner app identity, fixed queue identity, credential
-  ownership, request policy, Runner paths, and schema hash.
+  ownership, request policy, Runner paths, schema hash, and the committed fal
+  `pricing` snapshot (`unit`, `unit_price`, `currency`, `fetched_at`).
 
 All 73 `route.json` files use the same format as Flux Schnell. They contain no
-capacity, price, publication status, or deployment-readiness label. Those are
-operator deployment decisions, not properties of an API contract.
+capacity, publication status, or deployment-readiness label. Operator
+deployment decisions (capacity, deadline, upcharge, expected units, and any
+explicit `price_info` override) stay in the deployment selection. The catalog
+rate itself is pinned on the contract so it is auditable and diffable.
 
 The snapshots were retrieved on 2026-09-01 using:
 
@@ -181,14 +195,17 @@ operator-owned policy for each instance:
   "label": "fal-flux-schnell",
   "deadline_seconds": 180,
   "max_request_bytes": 1048576,
-  "capacity": 4,
-  "price_info": {
-    "currency": "usd",
-    "price": 0.0001,
-    "unit": "fixed"
-  }
+  "capacity": 4
 }
 ```
+
+The generator derives `price_info` as
+`pricing.unit_price × expected_units × (1 + upcharge_bps / 10000)` with
+`unit` kept as `fixed`. Deployment-level `upcharge_bps` and `expected_units`
+are the defaults; either may be overridden per route. An explicit
+`price_info.price` in the selection still wins. For endpoints fal bills per
+unit (seconds of video, megapixels), set `expected_units` to the representative
+count for one call.
 
 To select more of the modeled routes, add entries to a deployment's `routes`
 array and regenerate it:
@@ -212,8 +229,8 @@ To work through another route:
 
 1. Inspect `contracts/<capability>/route.json` and `schema.json`.
 2. Add the capability to an operator deployment's `routes` array.
-3. Choose that instance's deadline, request limit, capacity, price, service,
-   and label.
+3. Choose that instance's deadline, request limit, capacity, service, label,
+   and any `expected_units` / `upcharge_bps` / explicit `price_info` override.
 4. Regenerate and inspect the generated Compose and `runners.json` files.
 5. Exercise it with a schema-valid full JSON object through the same discovery
    and Runner path used by Flux Schnell.
@@ -270,7 +287,8 @@ Regenerate committed derived artifacts only after changing their source inputs:
 uv run python generate_contracts.py --generate
 ```
 
-Refresh official OpenAPI only as an intentional network operation. Refresh one
+Refresh official OpenAPI and fal catalog pricing only as an intentional
+network operation (`FAL_KEY` is required for the pricing call). Refresh one
 route while developing; omit `--route` to refresh all 73:
 
 ```sh
@@ -283,4 +301,4 @@ This repository demonstrates how this curated set of 73 fal queue endpoints
 maps to pinned Live Runner applications. It does not implement a public
 capability catalog, dynamic endpoint import, categorization, ranking, model
 selection, prompt rewriting, fallback, webhook handling, durable recovery after
-adapter restart, production pricing, or arbitrary provider routing.
+adapter restart, usage-based settlement, or arbitrary provider routing.

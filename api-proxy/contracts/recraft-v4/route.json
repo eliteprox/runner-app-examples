@@ -39,6 +39,14 @@
       "prompt"
     ]
   },
+  "pricing": {
+    "currency": "usd",
+    "endpoint_id": "fal-ai/recraft/v4/pro/text-to-image",
+    "fetched_at": "2026-09-09T18:03:31Z",
+    "provider": "fal",
+    "unit": "images",
+    "unit_price": "0.25"
+  },
   "runner": {
     "mode": "single-shot",
     "routes": {

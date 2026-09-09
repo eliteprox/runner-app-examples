@@ -268,6 +268,151 @@ class ContractFleetTest(unittest.TestCase):
                     ],
                     pack.schema_sha256,
                 )
+                route_document = json.loads(
+                    (API_PROXY / "contracts" / item.route.capability / "route.json").read_bytes()
+                )
+                pricing = generate_contracts.normalize_pricing(
+                    route_document["pricing"], item.route.endpoint_id
+                )
+                self.assertEqual(pricing["provider"], "fal")
+                self.assertEqual(pricing["endpoint_id"], item.route.endpoint_id)
+                self.assertEqual(pricing["currency"], "usd")
+                self.assertGreater(float(pricing["unit_price"]), 0)
+
+    def test_parse_fal_pricing_reads_prices_array(self) -> None:
+        body = json.dumps(
+            {
+                "prices": [
+                    {
+                        "currency": "USD",
+                        "endpoint_id": "fal-ai/flux/schnell",
+                        "unit": "image",
+                        "unit_price": 0.003,
+                    }
+                ]
+            }
+        ).encode()
+        pricing = generate_contracts.parse_fal_pricing(
+            "fal-ai/flux/schnell", body, fetched_at="2026-09-09T00:00:00Z"
+        )
+        self.assertEqual(
+            pricing,
+            {
+                "currency": "usd",
+                "endpoint_id": "fal-ai/flux/schnell",
+                "fetched_at": "2026-09-09T00:00:00Z",
+                "provider": "fal",
+                "unit": "image",
+                "unit_price": "0.003",
+            },
+        )
+
+    def test_refresh_stamps_pricing_and_offline_generate_preserves_it(self) -> None:
+        entry = self._entry()
+        self._write_route_index(entry)
+        document = self._document_for(entry["endpoint_id"])
+        pricing = {
+            "currency": "usd",
+            "endpoint_id": entry["endpoint_id"],
+            "fetched_at": "2026-09-09T00:00:00Z",
+            "provider": "fal",
+            "unit": "image",
+            "unit_price": "0.025",
+        }
+        self.assertEqual(
+            generate_contracts.refresh_routes(
+                route_index_path=self.route_index_path,
+                report_path=self.report_path,
+                root=self.root,
+                fetch_document=lambda route: document,
+                fetch_pricing=lambda route: pricing,
+                jobs=1,
+            ),
+            0,
+        )
+        route_path = self.root / "contracts" / "example-route" / "route.json"
+        written = json.loads(route_path.read_bytes())
+        self.assertEqual(written["pricing"], pricing)
+
+        self.assertEqual(
+            generate_contracts.generate_routes(
+                route_index_path=self.route_index_path,
+                report_path=self.report_path,
+                root=self.root,
+            ),
+            0,
+        )
+        self.assertEqual(json.loads(route_path.read_bytes())["pricing"], pricing)
+        self.assertEqual(
+            generate_contracts.check_routes(
+                route_index_path=self.route_index_path,
+                report_path=self.report_path,
+                root=self.root,
+            ),
+            0,
+        )
+
+    def test_pricing_fetch_failure_keeps_committed_price(self) -> None:
+        entry = self._entry()
+        self._write_route_index(entry)
+        document = self._document_for(entry["endpoint_id"])
+        first = {
+            "currency": "usd",
+            "endpoint_id": entry["endpoint_id"],
+            "fetched_at": "2026-09-09T00:00:00Z",
+            "provider": "fal",
+            "unit": "image",
+            "unit_price": "0.01",
+        }
+        self.assertEqual(
+            generate_contracts.refresh_routes(
+                route_index_path=self.route_index_path,
+                report_path=self.report_path,
+                root=self.root,
+                fetch_document=lambda route: document,
+                fetch_pricing=lambda route: first,
+                jobs=1,
+            ),
+            0,
+        )
+
+        def fail_pricing(route: RouteDefinition) -> dict[str, object]:
+            raise OSError(f"pricing down {route.endpoint_id}")
+
+        self.assertEqual(
+            generate_contracts.refresh_routes(
+                route_index_path=self.route_index_path,
+                report_path=self.report_path,
+                root=self.root,
+                fetch_document=lambda route: document,
+                fetch_pricing=fail_pricing,
+                jobs=1,
+            ),
+            0,
+        )
+        written = json.loads(
+            (self.root / "contracts" / "example-route" / "route.json").read_bytes()
+        )
+        self.assertEqual(written["pricing"]["unit_price"], "0.01")
+
+    def test_refuses_zero_or_missing_unit_price(self) -> None:
+        with self.assertRaisesRegex(generate_contracts.FleetError, "positive decimal"):
+            generate_contracts.parse_fal_pricing(
+                "fal-ai/flux/schnell",
+                json.dumps(
+                    {
+                        "prices": [
+                            {
+                                "currency": "USD",
+                                "endpoint_id": "fal-ai/flux/schnell",
+                                "unit": "image",
+                                "unit_price": 0,
+                            }
+                        ]
+                    }
+                ).encode(),
+                fetched_at="2026-09-09T00:00:00Z",
+            )
 
 
 if __name__ == "__main__":

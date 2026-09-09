@@ -2,7 +2,7 @@
   "deployment_id": "fal-flux-schnell-example",
   "format": "livepeer.fal.generated-deployment.v2",
   "network": "offchain",
-  "pricing_scope": "local_demo_only",
+  "pricing_scope": "committed_fal_catalog",
   "route_index_format": "livepeer.fal.route-index.v1",
   "routes": [
     {
@@ -15,7 +15,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.003,
         "unit": "fixed"
       },
       "route_model": "contracts/flux-schnell/route.json",
@@ -32,7 +32,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.03,
         "unit": "fixed"
       },
       "route_model": "contracts/flux-2-pro/route.json",
@@ -49,7 +49,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.012,
         "unit": "fixed"
       },
       "route_model": "contracts/flux-2-edit/route.json",
@@ -66,7 +66,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 1.0,
         "unit": "fixed"
       },
       "route_model": "contracts/gpt-image-2/route.json",
@@ -83,7 +83,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 1.0,
         "unit": "fixed"
       },
       "route_model": "contracts/gpt-image-2-edit/route.json",
@@ -100,7 +100,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.01,
         "unit": "fixed"
       },
       "route_model": "contracts/grok-image-2/route.json",
@@ -117,7 +117,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.01,
         "unit": "fixed"
       },
       "route_model": "contracts/grok-image-2-edit/route.json",
@@ -134,7 +134,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.0675,
         "unit": "fixed"
       },
       "route_model": "contracts/seedream-5-pro/route.json",
@@ -151,7 +151,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.0675,
         "unit": "fixed"
       },
       "route_model": "contracts/seedream-5-pro-edit/route.json",
@@ -168,7 +168,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.01,
         "unit": "fixed"
       },
       "route_model": "contracts/ideogram-v4/route.json",
@@ -185,7 +185,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.25,
         "unit": "fixed"
       },
       "route_model": "contracts/recraft-v4/route.json",
@@ -202,7 +202,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.0008,
         "unit": "fixed"
       },
       "route_model": "contracts/bg-remove/route.json",
@@ -219,7 +219,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.05,
         "unit": "fixed"
       },
       "route_model": "contracts/flux-fill/route.json",
@@ -236,7 +236,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.004,
         "unit": "fixed"
       },
       "route_model": "contracts/flux-erase/route.json",
@@ -253,7 +253,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.01,
         "unit": "fixed"
       },
       "route_model": "contracts/topaz-image-upscale/route.json",
@@ -270,7 +270,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.085,
         "unit": "fixed"
       },
       "route_model": "contracts/flux-3-t2v/route.json",
@@ -287,7 +287,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.085,
         "unit": "fixed"
       },
       "route_model": "contracts/flux-3-i2v/route.json",
@@ -304,7 +304,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.085,
         "unit": "fixed"
       },
       "route_model": "contracts/flux-3-transition/route.json",
@@ -321,7 +321,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.085,
         "unit": "fixed"
       },
       "route_model": "contracts/flux-3-keyframes/route.json",
@@ -338,7 +338,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.205,
         "unit": "fixed"
       },
       "route_model": "contracts/flux-3-extend/route.json",
@@ -355,7 +355,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.01,
         "unit": "fixed"
       },
       "route_model": "contracts/ltx-25-t2v-pro/route.json",
@@ -372,7 +372,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.01,
         "unit": "fixed"
       },
       "route_model": "contracts/ltx-25-t2v-fast/route.json",
@@ -389,7 +389,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.01,
         "unit": "fixed"
       },
       "route_model": "contracts/ltx-25-i2v-pro/route.json",
@@ -406,7 +406,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.01,
         "unit": "fixed"
       },
       "route_model": "contracts/ltx-25-i2v-fast/route.json",
@@ -423,7 +423,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.01,
         "unit": "fixed"
       },
       "route_model": "contracts/ltx-25-a2v-pro/route.json",
@@ -440,7 +440,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.03,
         "unit": "fixed"
       },
       "route_model": "contracts/ray-32-t2v/route.json",
@@ -457,7 +457,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.03,
         "unit": "fixed"
       },
       "route_model": "contracts/ray-32-i2v/route.json",
@@ -474,7 +474,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.03,
         "unit": "fixed"
       },
       "route_model": "contracts/ray-32-v2v/route.json",
@@ -491,7 +491,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.03,
         "unit": "fixed"
       },
       "route_model": "contracts/ray-32-reframe/route.json",
@@ -508,7 +508,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.0125,
         "unit": "fixed"
       },
       "route_model": "contracts/minimax-h3-max-t2v/route.json",
@@ -525,7 +525,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.0125,
         "unit": "fixed"
       },
       "route_model": "contracts/minimax-h3-max-i2v/route.json",
@@ -542,7 +542,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.05,
         "unit": "fixed"
       },
       "route_model": "contracts/minimax-h3-max-ref2v/route.json",
@@ -559,7 +559,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.014,
         "unit": "fixed"
       },
       "route_model": "contracts/seedance-20-t2v/route.json",
@@ -576,7 +576,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.014,
         "unit": "fixed"
       },
       "route_model": "contracts/seedance-20-i2v/route.json",
@@ -593,7 +593,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.014,
         "unit": "fixed"
       },
       "route_model": "contracts/seedance-20-ref2v/route.json",
@@ -610,7 +610,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.0214,
         "unit": "fixed"
       },
       "route_model": "contracts/seedance-25-t2v/route.json",
@@ -627,7 +627,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.0214,
         "unit": "fixed"
       },
       "route_model": "contracts/seedance-25-i2v/route.json",
@@ -644,7 +644,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.0214,
         "unit": "fixed"
       },
       "route_model": "contracts/seedance-25-ref2v/route.json",
@@ -661,7 +661,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.01,
         "unit": "fixed"
       },
       "route_model": "contracts/grok-imagine-video-15-t2v/route.json",
@@ -678,7 +678,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.01,
         "unit": "fixed"
       },
       "route_model": "contracts/grok-imagine-video-15-i2v/route.json",
@@ -695,7 +695,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.01,
         "unit": "fixed"
       },
       "route_model": "contracts/grok-imagine-video-15-ref2v/route.json",
@@ -712,7 +712,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.4,
         "unit": "fixed"
       },
       "route_model": "contracts/veo-31-t2v/route.json",
@@ -729,7 +729,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.4,
         "unit": "fixed"
       },
       "route_model": "contracts/veo-31-i2v/route.json",
@@ -746,7 +746,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.4,
         "unit": "fixed"
       },
       "route_model": "contracts/veo-31-transition/route.json",
@@ -763,7 +763,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.14,
         "unit": "fixed"
       },
       "route_model": "contracts/kling-v3-pro-t2v/route.json",
@@ -780,7 +780,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.14,
         "unit": "fixed"
       },
       "route_model": "contracts/kling-v3-pro-i2v/route.json",
@@ -797,7 +797,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.14,
         "unit": "fixed"
       },
       "route_model": "contracts/kling-o3-ref2v/route.json",
@@ -814,7 +814,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.08,
         "unit": "fixed"
       },
       "route_model": "contracts/bernini-r-edit/route.json",
@@ -831,7 +831,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.05,
         "unit": "fixed"
       },
       "route_model": "contracts/void-inpaint/route.json",
@@ -848,7 +848,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.022,
         "unit": "fixed"
       },
       "route_model": "contracts/pixelcut-video-bg-remove/route.json",
@@ -865,7 +865,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.16,
         "unit": "fixed"
       },
       "route_model": "contracts/talking-head/route.json",
@@ -882,7 +882,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 8.0,
         "unit": "fixed"
       },
       "route_model": "contracts/sync-lipsync-v3/route.json",
@@ -899,7 +899,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.001,
         "unit": "fixed"
       },
       "route_model": "contracts/mmaudio-v2-video-soundtrack/route.json",
@@ -916,7 +916,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.008,
         "unit": "fixed"
       },
       "route_model": "contracts/nemotron-asr/route.json",
@@ -933,7 +933,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.0008,
         "unit": "fixed"
       },
       "route_model": "contracts/whisper-transcribe/route.json",
@@ -950,7 +950,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.05,
         "unit": "fixed"
       },
       "route_model": "contracts/gemini-tts/route.json",
@@ -967,7 +967,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.002,
         "unit": "fixed"
       },
       "route_model": "contracts/minimax-music-3/route.json",
@@ -984,7 +984,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.01,
         "unit": "fixed"
       },
       "route_model": "contracts/mirelo-sfx/route.json",
@@ -1001,7 +1001,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.009,
         "unit": "fixed"
       },
       "route_model": "contracts/sonilo-v2m/route.json",
@@ -1018,7 +1018,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.015,
         "unit": "fixed"
       },
       "route_model": "contracts/marlin-video/route.json",
@@ -1035,7 +1035,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.01,
         "unit": "fixed"
       },
       "route_model": "contracts/tripo-h31-t3d/route.json",
@@ -1052,7 +1052,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.8,
         "unit": "fixed"
       },
       "route_model": "contracts/meshy-v7-i3d/route.json",
@@ -1069,7 +1069,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.0002,
         "unit": "fixed"
       },
       "route_model": "contracts/ffmpeg-compose/route.json",
@@ -1086,7 +1086,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.00017,
         "unit": "fixed"
       },
       "route_model": "contracts/ffmpeg-merge-videos/route.json",
@@ -1103,7 +1103,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.0002,
         "unit": "fixed"
       },
       "route_model": "contracts/ffmpeg-merge-audio-video/route.json",
@@ -1120,7 +1120,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.001,
         "unit": "fixed"
       },
       "route_model": "contracts/ffmpeg-trim-video/route.json",
@@ -1137,7 +1137,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.001,
         "unit": "fixed"
       },
       "route_model": "contracts/ffmpeg-scale-video/route.json",
@@ -1154,7 +1154,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.075,
         "unit": "fixed"
       },
       "route_model": "contracts/flux-video-upscale/route.json",
@@ -1171,7 +1171,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.0002,
         "unit": "fixed"
       },
       "route_model": "contracts/ffmpeg-extract-frame/route.json",
@@ -1188,7 +1188,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.00017,
         "unit": "fixed"
       },
       "route_model": "contracts/ffmpeg-images-to-video/route.json",
@@ -1205,7 +1205,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.00017,
         "unit": "fixed"
       },
       "route_model": "contracts/ffmpeg-metadata/route.json",
@@ -1222,7 +1222,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.00017,
         "unit": "fixed"
       },
       "route_model": "contracts/ffmpeg-loudnorm/route.json",
@@ -1239,7 +1239,7 @@
       "max_request_bytes": 1048576,
       "price_info": {
         "currency": "usd",
-        "price": 0.0001,
+        "price": 0.1,
         "unit": "fixed"
       },
       "route_model": "contracts/subtitles-veed/route.json",

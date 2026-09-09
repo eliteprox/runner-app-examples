@@ -44,6 +44,14 @@
       "prompt"
     ]
   },
+  "pricing": {
+    "currency": "usd",
+    "endpoint_id": "luma/agent/ray/v3.2/text-to-video",
+    "fetched_at": "2026-09-09T18:03:31Z",
+    "provider": "fal",
+    "unit": "seconds",
+    "unit_price": "0.03"
+  },
   "runner": {
     "mode": "single-shot",
     "routes": {

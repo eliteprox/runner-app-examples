@@ -156,6 +156,63 @@ class DeploymentGeneratorTest(unittest.TestCase):
         with self.assertRaisesRegex(generate_deployment.DeploymentError, "not modeled"):
             self._build(deployment=deployment)
 
+    def test_sell_price_is_derived_from_route_pricing(self) -> None:
+        route_path = self.root / "contracts" / "flux-schnell" / "route.json"
+        document = json.loads(route_path.read_bytes())
+        document["pricing"] = {
+            "currency": "usd",
+            "endpoint_id": "fal-ai/flux/schnell",
+            "fetched_at": "2026-09-09T00:00:00Z",
+            "provider": "fal",
+            "unit": "image",
+            "unit_price": "0.003",
+        }
+        self._write(route_path, document)
+        deployment = copy.deepcopy(self.deployment)
+        deployment["pricing_scope"] = "committed_fal_catalog"
+        deployment["upcharge_bps"] = 1000
+        del deployment["routes"][0]["price_info"]
+        artifacts = self._build(deployment=deployment)
+        self.assertAlmostEqual(
+            artifacts["runners.json"]["runners"][0]["price_info"]["price"],
+            0.0033,
+        )
+        self.assertEqual(
+            artifacts["runners.json"]["runners"][0]["price_info"]["unit"],
+            "fixed",
+        )
+        self.assertEqual(
+            artifacts["deployment.json"]["pricing_scope"],
+            "committed_fal_catalog",
+        )
+
+    def test_explicit_price_info_wins_over_derived_sell_price(self) -> None:
+        route_path = self.root / "contracts" / "flux-schnell" / "route.json"
+        document = json.loads(route_path.read_bytes())
+        document["pricing"] = {
+            "currency": "usd",
+            "endpoint_id": "fal-ai/flux/schnell",
+            "fetched_at": "2026-09-09T00:00:00Z",
+            "provider": "fal",
+            "unit": "second",
+            "unit_price": "0.05",
+        }
+        self._write(route_path, document)
+        deployment = copy.deepcopy(self.deployment)
+        deployment["routes"][0]["expected_units"] = 8
+        artifacts = self._build(deployment=deployment)
+        self.assertEqual(
+            artifacts["runners.json"]["runners"][0]["price_info"]["price"],
+            0.0001,
+        )
+
+        del deployment["routes"][0]["price_info"]
+        artifacts = self._build(deployment=deployment)
+        self.assertAlmostEqual(
+            artifacts["runners.json"]["runners"][0]["price_info"]["price"],
+            0.4,
+        )
+
     def test_operator_policy_is_required_in_deployment_selection(self) -> None:
         fields = {
             "deadline_seconds",

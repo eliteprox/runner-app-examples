@@ -54,6 +54,14 @@
     },
     "required": []
   },
+  "pricing": {
+    "currency": "usd",
+    "endpoint_id": "fal-ai/kling-video/o3/standard/reference-to-video",
+    "fetched_at": "2026-09-09T18:03:31Z",
+    "provider": "fal",
+    "unit": "seconds",
+    "unit_price": "0.14"
+  },
   "runner": {
     "mode": "single-shot",
     "routes": {

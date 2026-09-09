@@ -56,6 +56,14 @@
       "prompt"
     ]
   },
+  "pricing": {
+    "currency": "usd",
+    "endpoint_id": "bytedance/seedance-2.5/reference-to-video",
+    "fetched_at": "2026-09-09T18:03:31Z",
+    "provider": "fal",
+    "unit": "1000 tokens",
+    "unit_price": "0.0214"
+  },
   "runner": {
     "mode": "single-shot",
     "routes": {

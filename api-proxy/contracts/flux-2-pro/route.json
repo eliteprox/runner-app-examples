@@ -44,6 +44,14 @@
       "prompt"
     ]
   },
+  "pricing": {
+    "currency": "usd",
+    "endpoint_id": "fal-ai/flux-2-pro",
+    "fetched_at": "2026-09-09T18:03:31Z",
+    "provider": "fal",
+    "unit": "processed megapixels",
+    "unit_price": "0.03"
+  },
   "runner": {
     "mode": "single-shot",
     "routes": {

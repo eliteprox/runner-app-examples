@@ -33,6 +33,14 @@
       "audio_url"
     ]
   },
+  "pricing": {
+    "currency": "usd",
+    "endpoint_id": "fal-ai/ffmpeg-api/merge-audio-video",
+    "fetched_at": "2026-09-09T18:03:31Z",
+    "provider": "fal",
+    "unit": "seconds",
+    "unit_price": "0.0002"
+  },
   "runner": {
     "mode": "single-shot",
     "routes": {

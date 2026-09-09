@@ -13,12 +13,16 @@ import argparse
 import concurrent.futures
 import hashlib
 import json
+import os
 import sys
 import tempfile
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 from dataclasses import dataclass
+from datetime import datetime, timezone
+from decimal import Decimal, InvalidOperation
 from pathlib import Path
 from typing import Any, Callable
 
@@ -43,7 +47,9 @@ DESCRIPTOR_SELECTION = "livepeer_curated"
 OFFICIAL_SOURCE_URL_TEMPLATE = (
     "https://fal.ai/api/openapi/queue/openapi.json?endpoint_id={endpoint_id}"
 )
+FAL_PRICING_API = "https://api.fal.ai/v1/models/pricing"
 MAX_OPENAPI_BYTES = 10 * 1024 * 1024
+MAX_PRICING_BYTES = 1 * 1024 * 1024
 REFRESH_RETRIES = 3
 
 
@@ -71,6 +77,7 @@ class RouteItem:
 
 
 FetchDocument = Callable[[RouteDefinition], dict[str, Any]]
+FetchPricing = Callable[[RouteDefinition], dict[str, Any] | None]
 
 
 def _parse_args() -> argparse.Namespace:
@@ -242,7 +249,203 @@ def _fetch_official_openapi(route: RouteDefinition) -> dict[str, Any]:
     raise FleetError(f"could not fetch official OpenAPI: {last_error}")
 
 
-def _build_pack(document: dict[str, Any], item: RouteItem) -> BuiltPack:
+def _decimal_string(value: Any) -> str:
+    if isinstance(value, bool) or value is None:
+        raise FleetError("unit_price must be a positive decimal")
+    try:
+        number = Decimal(str(value).strip())
+    except (InvalidOperation, ValueError, TypeError) as error:
+        raise FleetError("unit_price must be a positive decimal") from error
+    if number <= 0:
+        raise FleetError("unit_price must be a positive decimal")
+    formatted = format(number, "f")
+    if "." in formatted:
+        formatted = formatted.rstrip("0").rstrip(".")
+    return formatted or "0"
+
+
+def normalize_pricing(value: Any, endpoint_id: str) -> dict[str, Any]:
+    if not isinstance(value, dict):
+        raise FleetError("pricing must be an object")
+    unit = value.get("unit")
+    currency = value.get("currency")
+    fetched_at = value.get("fetched_at")
+    provider = value.get("provider", "fal")
+    priced_endpoint = value.get("endpoint_id", endpoint_id)
+    if not isinstance(unit, str) or not unit.strip():
+        raise FleetError("pricing.unit is required")
+    if not isinstance(currency, str) or not currency.strip():
+        raise FleetError("pricing.currency is required")
+    if not isinstance(fetched_at, str) or not fetched_at.strip():
+        raise FleetError("pricing.fetched_at is required")
+    if not isinstance(provider, str) or not provider.strip():
+        raise FleetError("pricing.provider is required")
+    if not isinstance(priced_endpoint, str) or not priced_endpoint.strip():
+        raise FleetError("pricing.endpoint_id is required")
+    if priced_endpoint.strip() != endpoint_id:
+        raise FleetError(
+            f"pricing.endpoint_id {priced_endpoint!r} does not match {endpoint_id!r}"
+        )
+    return {
+        "currency": currency.strip().lower(),
+        "endpoint_id": endpoint_id,
+        "fetched_at": fetched_at.strip(),
+        "provider": provider.strip(),
+        "unit": unit.strip(),
+        "unit_price": _decimal_string(value.get("unit_price")),
+    }
+
+
+def parse_fal_pricing(endpoint_id: str, body: bytes, *, fetched_at: str) -> dict[str, Any]:
+    try:
+        raw = json.loads(body)
+    except (UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise FleetError(f"fal pricing was not valid JSON: {error}") from error
+    if not isinstance(raw, dict):
+        raise FleetError("fal pricing must be a JSON object")
+    prices = raw.get("prices")
+    if isinstance(prices, list):
+        match = None
+        for row in prices:
+            if isinstance(row, dict) and row.get("endpoint_id") == endpoint_id:
+                match = row
+                break
+        if match is None and len(prices) == 1 and isinstance(prices[0], dict):
+            match = prices[0]
+        if match is None:
+            raise FleetError(f"fal pricing missing endpoint {endpoint_id!r}")
+        raw = match
+    unit = raw.get("unit") or raw.get("unit_type")
+    price = raw.get("unit_price", raw.get("price", raw.get("unitPrice")))
+    currency = raw.get("currency") or "usd"
+    priced_endpoint = raw.get("endpoint_id") or endpoint_id
+    return normalize_pricing(
+        {
+            "currency": currency,
+            "endpoint_id": priced_endpoint,
+            "fetched_at": fetched_at,
+            "provider": "fal",
+            "unit": unit,
+            "unit_price": price,
+        },
+        endpoint_id,
+    )
+
+
+def _fal_api_key() -> str:
+    return os.environ.get("FAL_KEY", "").strip()
+
+
+def _utc_now() -> str:
+    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def _fetch_fal_pricing_body(endpoint_ids: list[str]) -> bytes:
+    key = _fal_api_key()
+    if not key:
+        raise FleetError("FAL_KEY is required to fetch fal pricing")
+    query = urllib.parse.urlencode({"endpoint_id": ",".join(endpoint_ids)})
+    request = urllib.request.Request(
+        f"{FAL_PRICING_API}?{query}",
+        headers={
+            "Accept": "application/json",
+            "Authorization": f"Key {key}",
+            "User-Agent": "livepeer-fal-runner-routes/1",
+        },
+    )
+    last_error: Exception | None = None
+    for attempt in range(REFRESH_RETRIES):
+        try:
+            with urllib.request.urlopen(request, timeout=30) as response:
+                status = getattr(response, "status", 200)
+                if status != 200:
+                    raise FleetError(f"fal pricing returned HTTP {status}")
+                raw = response.read(MAX_PRICING_BYTES + 1)
+            if len(raw) > MAX_PRICING_BYTES:
+                raise FleetError(f"fal pricing exceeds {MAX_PRICING_BYTES} bytes")
+            return raw
+        except (
+            OSError,
+            TimeoutError,
+            UnicodeDecodeError,
+            json.JSONDecodeError,
+            urllib.error.HTTPError,
+            urllib.error.URLError,
+            FleetError,
+        ) as error:
+            last_error = error
+            retryable = not isinstance(error, urllib.error.HTTPError) or (
+                error.code == 429 or 500 <= error.code <= 599
+            )
+            if not retryable or attempt + 1 == REFRESH_RETRIES:
+                break
+            time.sleep(2.0 * (2**attempt))
+    raise FleetError(f"could not fetch fal pricing: {last_error}")
+
+
+def _fetch_fal_pricing(route: RouteDefinition) -> dict[str, Any] | None:
+    if not _fal_api_key():
+        return None
+    return parse_fal_pricing(
+        route.endpoint_id,
+        _fetch_fal_pricing_body([route.endpoint_id]),
+        fetched_at=_utc_now(),
+    )
+
+
+def fetch_fal_pricing_map(items: list[RouteItem], *, batch_size: int = 50) -> dict[str, Any]:
+    """Fetch catalog prices in batches of up to 50 endpoint IDs."""
+
+    fetched_at = _utc_now()
+    priced: dict[str, Any] = {}
+    pending = list(items)
+    while pending:
+        batch = pending[:batch_size]
+        pending = pending[batch_size:]
+        try:
+            raw = _fetch_fal_pricing_body([item.route.endpoint_id for item in batch])
+        except Exception as error:
+            for item in batch:
+                priced[item.route.capability] = error
+            continue
+        for item in batch:
+            try:
+                priced[item.route.capability] = parse_fal_pricing(
+                    item.route.endpoint_id, raw, fetched_at=fetched_at
+                )
+            except Exception as error:
+                priced[item.route.capability] = error
+    return priced
+
+
+def _committed_pricing(root: Path, item: RouteItem) -> dict[str, Any] | None:
+    path = artifact_paths(root, item.route).route
+    try:
+        document = json.loads(path.read_bytes())
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError):
+        return None
+    if not isinstance(document, dict) or "pricing" not in document:
+        return None
+    return normalize_pricing(document["pricing"], item.route.endpoint_id)
+
+
+def _resolve_pricing(
+    root: Path,
+    item: RouteItem,
+    fetched: dict[str, Any] | Exception | None,
+) -> dict[str, Any] | None:
+    if isinstance(fetched, Exception):
+        return _committed_pricing(root, item)
+    if isinstance(fetched, dict):
+        return normalize_pricing(fetched, item.route.endpoint_id)
+    return _committed_pricing(root, item)
+
+
+def _build_pack(
+    document: dict[str, Any],
+    item: RouteItem,
+    pricing: dict[str, Any] | None = None,
+) -> BuiltPack:
     bundle = generate_schema._build_schema_bundle(document, item.route)
     snapshot_bytes = generate_schema._pretty_json(document)
     schema_bytes = generate_schema._canonical_json(bundle)
@@ -254,6 +457,7 @@ def _build_pack(document: dict[str, Any], item: RouteItem) -> BuiltPack:
                 item.route,
                 schema_sha256,
                 compact_input_summary(bundle),
+                pricing,
             )
         ),
         snapshot_bytes=snapshot_bytes,
@@ -368,7 +572,7 @@ def _pack_from_disk(root: Path, item: RouteItem) -> BuiltPack:
         ) from error
     if not isinstance(document, dict):
         raise FleetError(f"OpenAPI snapshot {paths.snapshot} must be an object")
-    expected = _build_pack(document, item)
+    expected = _build_pack(document, item, pricing=_committed_pricing(root, item))
     if snapshot_bytes != expected.snapshot_bytes:
         raise FleetError(f"snapshot drift: {paths.snapshot}")
     if schema_bytes != expected.schema_bytes:
@@ -379,14 +583,14 @@ def _pack_from_disk(root: Path, item: RouteItem) -> BuiltPack:
 
 
 def _fetch_selected(
-    items: list[RouteItem], fetch_document: FetchDocument, jobs: int
-) -> dict[str, dict[str, Any] | Exception]:
+    items: list[RouteItem], fetch: Callable[[RouteDefinition], Any], jobs: int
+) -> dict[str, Any]:
     if jobs <= 0:
         raise FleetError("--jobs must be positive")
-    fetched: dict[str, dict[str, Any] | Exception] = {}
+    fetched: dict[str, Any] = {}
     with concurrent.futures.ThreadPoolExecutor(max_workers=jobs) as executor:
         pending = {
-            executor.submit(fetch_document, item.route): item.route.capability
+            executor.submit(fetch, item.route): item.route.capability
             for item in items
         }
         for future in concurrent.futures.as_completed(pending):
@@ -404,6 +608,7 @@ def refresh_routes(
     report_path: Path = DEFAULT_REPORT_PATH,
     root: Path = ROOT,
     fetch_document: FetchDocument = _fetch_official_openapi,
+    fetch_pricing: FetchPricing | None = None,
     selected_capabilities: list[str] | None = None,
     jobs: int = 6,
 ) -> int:
@@ -417,6 +622,12 @@ def refresh_routes(
         raise FleetError(f"unknown --route values: {', '.join(unknown)}")
     selected_items = [item for item in items if item.route.capability in selected]
     fetched = _fetch_selected(selected_items, fetch_document, jobs)
+    if fetch_pricing is None:
+        priced = {item.route.capability: None for item in selected_items}
+    elif fetch_pricing is _fetch_fal_pricing:
+        priced = fetch_fal_pricing_map(selected_items)
+    else:
+        priced = _fetch_selected(selected_items, fetch_pricing, jobs)
     results: list[dict[str, Any]] = []
 
     for item in items:
@@ -433,7 +644,8 @@ def refresh_routes(
             results.append(_failed_result(item, fetched_value))
             continue
         try:
-            pack = _build_pack(fetched_value, item)
+            pricing = _resolve_pricing(root, item, priced.get(item.route.capability))
+            pack = _build_pack(fetched_value, item, pricing=pricing)
             _write_pack(root, item, pack)
             results.append(_verified_result(root, item, _pack_from_disk(root, item)))
         except Exception as error:
@@ -449,6 +661,52 @@ def refresh_routes(
         f"failed={summary['failed']} refreshed={len(selected_items)}"
     )
     return 1 if summary["failed"] else 0
+
+
+def stamp_committed_pricing(
+    *,
+    route_index_path: Path = DEFAULT_ROUTE_INDEX_PATH,
+    root: Path = ROOT,
+    fetch_pricing: FetchPricing,
+    jobs: int = 6,
+) -> dict[str, int]:
+    """Write fetched pricing onto committed route models without touching OpenAPI."""
+
+    _, items = _route_items(route_index_path)
+    if fetch_pricing is _fetch_fal_pricing:
+        priced = fetch_fal_pricing_map(items)
+    else:
+        priced = _fetch_selected(items, fetch_pricing, jobs)
+    written = 0
+    missing = 0
+    failed = 0
+    for item in items:
+        fetched = priced.get(item.route.capability)
+        if isinstance(fetched, Exception):
+            failed += 1
+            continue
+        pricing = _resolve_pricing(root, item, fetched)
+        if pricing is None:
+            missing += 1
+            continue
+        paths = artifact_paths(root, item.route)
+        try:
+            document = json.loads(paths.snapshot.read_bytes())
+        except (OSError, UnicodeDecodeError, json.JSONDecodeError):
+            failed += 1
+            continue
+        if not isinstance(document, dict):
+            failed += 1
+            continue
+        pack = _build_pack(document, item, pricing=pricing)
+        _write_pack(root, item, pack)
+        written += 1
+    return {
+        "failed": failed,
+        "missing": missing,
+        "total": len(items),
+        "written": written,
+    }
 
 
 def generate_routes(
@@ -471,7 +729,7 @@ def generate_routes(
             ) from error
         if not isinstance(document, dict):
             raise FleetError(f"snapshot {paths.snapshot} must be a JSON object")
-        pack = _build_pack(document, item)
+        pack = _build_pack(document, item, pricing=_committed_pricing(root, item))
         _write_pack(root, item, pack)
         results.append(_verified_result(root, item, _pack_from_disk(root, item)))
 
@@ -541,6 +799,7 @@ def main() -> int:
             report_path=args.report,
             selected_capabilities=args.routes,
             jobs=args.jobs,
+            fetch_pricing=_fetch_fal_pricing,
         )
     if args.routes:
         raise FleetError("--route is valid only with --refresh")

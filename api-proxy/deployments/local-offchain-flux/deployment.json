@@ -1,6 +1,9 @@
 {
   "adapter_image": "runner-example-fal-adapter:local",
   "deployment_id": "fal-flux-schnell-example",
+  "format": "livepeer.fal.deployment.v2",
+  "network": "offchain",
+  "pricing_scope": "committed_fal_catalog",
   "routes": [
     {
       "capability": "flux-schnell",
@@ -8,11 +11,6 @@
       "deadline_seconds": 180,
       "label": "fal-flux-schnell",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-flux-schnell"
     },
     {
@@ -21,11 +19,6 @@
       "deadline_seconds": 180,
       "label": "fal-flux-2-pro",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-flux-2-pro"
     },
     {
@@ -34,11 +27,6 @@
       "deadline_seconds": 180,
       "label": "fal-flux-2-edit",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-flux-2-edit"
     },
     {
@@ -47,11 +35,6 @@
       "deadline_seconds": 180,
       "label": "fal-gpt-image-2",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-gpt-image-2"
     },
     {
@@ -60,11 +43,6 @@
       "deadline_seconds": 180,
       "label": "fal-gpt-image-2-edit",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-gpt-image-2-edit"
     },
     {
@@ -73,11 +51,6 @@
       "deadline_seconds": 180,
       "label": "fal-grok-image-2",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-grok-image-2"
     },
     {
@@ -86,11 +59,6 @@
       "deadline_seconds": 180,
       "label": "fal-grok-image-2-edit",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-grok-image-2-edit"
     },
     {
@@ -99,11 +67,6 @@
       "deadline_seconds": 180,
       "label": "fal-seedream-5-pro",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-seedream-5-pro"
     },
     {
@@ -112,11 +75,6 @@
       "deadline_seconds": 180,
       "label": "fal-seedream-5-pro-edit",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-seedream-5-pro-edit"
     },
     {
@@ -125,11 +83,6 @@
       "deadline_seconds": 180,
       "label": "fal-ideogram-v4",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-ideogram-v4"
     },
     {
@@ -138,11 +91,6 @@
       "deadline_seconds": 180,
       "label": "fal-recraft-v4",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-recraft-v4"
     },
     {
@@ -151,11 +99,6 @@
       "deadline_seconds": 180,
       "label": "fal-bg-remove",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-bg-remove"
     },
     {
@@ -164,11 +107,6 @@
       "deadline_seconds": 180,
       "label": "fal-flux-fill",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-flux-fill"
     },
     {
@@ -177,11 +115,6 @@
       "deadline_seconds": 180,
       "label": "fal-flux-erase",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-flux-erase"
     },
     {
@@ -190,11 +123,6 @@
       "deadline_seconds": 180,
       "label": "fal-topaz-image-upscale",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-topaz-image-upscale"
     },
     {
@@ -203,11 +131,6 @@
       "deadline_seconds": 600,
       "label": "fal-flux-3-t2v",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-flux-3-t2v"
     },
     {
@@ -216,11 +139,6 @@
       "deadline_seconds": 600,
       "label": "fal-flux-3-i2v",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-flux-3-i2v"
     },
     {
@@ -229,11 +147,6 @@
       "deadline_seconds": 600,
       "label": "fal-flux-3-transition",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-flux-3-transition"
     },
     {
@@ -242,11 +155,6 @@
       "deadline_seconds": 600,
       "label": "fal-flux-3-keyframes",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-flux-3-keyframes"
     },
     {
@@ -255,11 +163,6 @@
       "deadline_seconds": 600,
       "label": "fal-flux-3-extend",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-flux-3-extend"
     },
     {
@@ -268,11 +171,6 @@
       "deadline_seconds": 600,
       "label": "fal-ltx-25-t2v-pro",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-ltx-25-t2v-pro"
     },
     {
@@ -281,11 +179,6 @@
       "deadline_seconds": 600,
       "label": "fal-ltx-25-t2v-fast",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-ltx-25-t2v-fast"
     },
     {
@@ -294,11 +187,6 @@
       "deadline_seconds": 600,
       "label": "fal-ltx-25-i2v-pro",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-ltx-25-i2v-pro"
     },
     {
@@ -307,11 +195,6 @@
       "deadline_seconds": 600,
       "label": "fal-ltx-25-i2v-fast",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-ltx-25-i2v-fast"
     },
     {
@@ -320,11 +203,6 @@
       "deadline_seconds": 600,
       "label": "fal-ltx-25-a2v-pro",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-ltx-25-a2v-pro"
     },
     {
@@ -333,11 +211,6 @@
       "deadline_seconds": 600,
       "label": "fal-ray-32-t2v",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-ray-32-t2v"
     },
     {
@@ -346,11 +219,6 @@
       "deadline_seconds": 600,
       "label": "fal-ray-32-i2v",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-ray-32-i2v"
     },
     {
@@ -359,11 +227,6 @@
       "deadline_seconds": 600,
       "label": "fal-ray-32-v2v",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-ray-32-v2v"
     },
     {
@@ -372,11 +235,6 @@
       "deadline_seconds": 600,
       "label": "fal-ray-32-reframe",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-ray-32-reframe"
     },
     {
@@ -385,11 +243,6 @@
       "deadline_seconds": 600,
       "label": "fal-minimax-h3-max-t2v",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-minimax-h3-max-t2v"
     },
     {
@@ -398,11 +251,6 @@
       "deadline_seconds": 600,
       "label": "fal-minimax-h3-max-i2v",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-minimax-h3-max-i2v"
     },
     {
@@ -411,11 +259,6 @@
       "deadline_seconds": 600,
       "label": "fal-minimax-h3-max-ref2v",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-minimax-h3-max-ref2v"
     },
     {
@@ -424,11 +267,6 @@
       "deadline_seconds": 600,
       "label": "fal-seedance-20-t2v",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-seedance-20-t2v"
     },
     {
@@ -437,11 +275,6 @@
       "deadline_seconds": 600,
       "label": "fal-seedance-20-i2v",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-seedance-20-i2v"
     },
     {
@@ -450,11 +283,6 @@
       "deadline_seconds": 600,
       "label": "fal-seedance-20-ref2v",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-seedance-20-ref2v"
     },
     {
@@ -463,11 +291,6 @@
       "deadline_seconds": 600,
       "label": "fal-seedance-25-t2v",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-seedance-25-t2v"
     },
     {
@@ -476,11 +299,6 @@
       "deadline_seconds": 600,
       "label": "fal-seedance-25-i2v",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-seedance-25-i2v"
     },
     {
@@ -489,11 +307,6 @@
       "deadline_seconds": 600,
       "label": "fal-seedance-25-ref2v",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-seedance-25-ref2v"
     },
     {
@@ -502,11 +315,6 @@
       "deadline_seconds": 600,
       "label": "fal-grok-imagine-video-15-t2v",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-grok-imagine-video-15-t2v"
     },
     {
@@ -515,11 +323,6 @@
       "deadline_seconds": 600,
       "label": "fal-grok-imagine-video-15-i2v",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-grok-imagine-video-15-i2v"
     },
     {
@@ -528,11 +331,6 @@
       "deadline_seconds": 600,
       "label": "fal-grok-imagine-video-15-ref2v",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-grok-imagine-video-15-ref2v"
     },
     {
@@ -541,11 +339,6 @@
       "deadline_seconds": 600,
       "label": "fal-veo-31-t2v",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-veo-31-t2v"
     },
     {
@@ -554,11 +347,6 @@
       "deadline_seconds": 600,
       "label": "fal-veo-31-i2v",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-veo-31-i2v"
     },
     {
@@ -567,11 +355,6 @@
       "deadline_seconds": 600,
       "label": "fal-veo-31-transition",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-veo-31-transition"
     },
     {
@@ -580,11 +363,6 @@
       "deadline_seconds": 600,
       "label": "fal-kling-v3-pro-t2v",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-kling-v3-pro-t2v"
     },
     {
@@ -593,11 +371,6 @@
       "deadline_seconds": 600,
       "label": "fal-kling-v3-pro-i2v",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-kling-v3-pro-i2v"
     },
     {
@@ -606,11 +379,6 @@
       "deadline_seconds": 600,
       "label": "fal-kling-o3-ref2v",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-kling-o3-ref2v"
     },
     {
@@ -619,11 +387,6 @@
       "deadline_seconds": 600,
       "label": "fal-bernini-r-edit",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-bernini-r-edit"
     },
     {
@@ -632,11 +395,6 @@
       "deadline_seconds": 600,
       "label": "fal-void-inpaint",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-void-inpaint"
     },
     {
@@ -645,11 +403,6 @@
       "deadline_seconds": 600,
       "label": "fal-pixelcut-video-bg-remove",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-pixelcut-video-bg-remove"
     },
     {
@@ -658,11 +411,6 @@
       "deadline_seconds": 600,
       "label": "fal-talking-head",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-talking-head"
     },
     {
@@ -671,11 +419,6 @@
       "deadline_seconds": 600,
       "label": "fal-sync-lipsync-v3",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-sync-lipsync-v3"
     },
     {
@@ -684,11 +427,6 @@
       "deadline_seconds": 600,
       "label": "fal-mmaudio-v2-video-soundtrack",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-mmaudio-v2-video-soundtrack"
     },
     {
@@ -697,11 +435,6 @@
       "deadline_seconds": 600,
       "label": "fal-nemotron-asr",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-nemotron-asr"
     },
     {
@@ -710,11 +443,6 @@
       "deadline_seconds": 600,
       "label": "fal-whisper-transcribe",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-whisper-transcribe"
     },
     {
@@ -723,11 +451,6 @@
       "deadline_seconds": 600,
       "label": "fal-gemini-tts",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-gemini-tts"
     },
     {
@@ -736,11 +459,6 @@
       "deadline_seconds": 600,
       "label": "fal-minimax-music-3",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-minimax-music-3"
     },
     {
@@ -749,11 +467,6 @@
       "deadline_seconds": 600,
       "label": "fal-mirelo-sfx",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-mirelo-sfx"
     },
     {
@@ -762,11 +475,6 @@
       "deadline_seconds": 600,
       "label": "fal-sonilo-v2m",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-sonilo-v2m"
     },
     {
@@ -775,11 +483,6 @@
       "deadline_seconds": 600,
       "label": "fal-marlin-video",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-marlin-video"
     },
     {
@@ -788,11 +491,6 @@
       "deadline_seconds": 600,
       "label": "fal-tripo-h31-t3d",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-tripo-h31-t3d"
     },
     {
@@ -801,11 +499,6 @@
       "deadline_seconds": 600,
       "label": "fal-meshy-v7-i3d",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-meshy-v7-i3d"
     },
     {
@@ -814,11 +507,6 @@
       "deadline_seconds": 600,
       "label": "fal-ffmpeg-compose",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-ffmpeg-compose"
     },
     {
@@ -827,11 +515,6 @@
       "deadline_seconds": 600,
       "label": "fal-ffmpeg-merge-videos",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-ffmpeg-merge-videos"
     },
     {
@@ -840,11 +523,6 @@
       "deadline_seconds": 600,
       "label": "fal-ffmpeg-merge-audio-video",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-ffmpeg-merge-audio-video"
     },
     {
@@ -853,11 +531,6 @@
       "deadline_seconds": 600,
       "label": "fal-ffmpeg-trim-video",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-ffmpeg-trim-video"
     },
     {
@@ -866,11 +539,6 @@
       "deadline_seconds": 600,
       "label": "fal-ffmpeg-scale-video",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-ffmpeg-scale-video"
     },
     {
@@ -879,11 +547,6 @@
       "deadline_seconds": 600,
       "label": "fal-flux-video-upscale",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-flux-video-upscale"
     },
     {
@@ -892,11 +555,6 @@
       "deadline_seconds": 600,
       "label": "fal-ffmpeg-extract-frame",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-ffmpeg-extract-frame"
     },
     {
@@ -905,11 +563,6 @@
       "deadline_seconds": 600,
       "label": "fal-ffmpeg-images-to-video",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-ffmpeg-images-to-video"
     },
     {
@@ -918,11 +571,6 @@
       "deadline_seconds": 600,
       "label": "fal-ffmpeg-metadata",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-ffmpeg-metadata"
     },
     {
@@ -931,11 +579,6 @@
       "deadline_seconds": 600,
       "label": "fal-ffmpeg-loudnorm",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-ffmpeg-loudnorm"
     },
     {
@@ -944,15 +587,8 @@
       "deadline_seconds": 600,
       "label": "fal-subtitles-veed",
       "max_request_bytes": 1048576,
-      "price_info": {
-        "currency": "usd",
-        "price": 0.0001,
-        "unit": "fixed"
-      },
       "service": "fal-subtitles-veed"
     }
   ],
-  "format": "livepeer.fal.deployment.v2",
-  "network": "offchain",
-  "pricing_scope": "local_demo_only"
+  "upcharge_bps": 0
 }

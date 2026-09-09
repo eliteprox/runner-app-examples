@@ -14,6 +14,7 @@ import json
 import math
 import re
 import sys
+from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
 from pathlib import Path
 from typing import Any
 
@@ -30,6 +31,10 @@ METADATA_LIMIT_BYTES = 1024
 SHA256_RE = re.compile(r"[0-9a-f]{64}")
 NAME_RE = re.compile(r"[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
 PRICE_UNITS = {"fixed", "hour", "720p"}
+PRICING_SCOPES = {"local_demo_only", "committed_fal_catalog"}
+DEFAULT_UPCHARGE_BPS = 0
+DEFAULT_EXPECTED_UNITS = 1
+SELL_PRICE_QUANTUM = Decimal("0.000000000001")
 
 
 class DeploymentError(RuntimeError):
@@ -129,7 +134,95 @@ def _price_info(value: Any, field: str) -> dict[str, Any]:
     return {"currency": currency, "price": price, "unit": unit}
 
 
-def _route_model(root: Path, entry: dict[str, Any]) -> tuple[RouteDefinition, str, str]:
+def _non_negative_int(value: Any, field: str) -> int:
+    if isinstance(value, bool) or not isinstance(value, int) or value < 0:
+        raise DeploymentError(f"{field} must be a non-negative integer")
+    return value
+
+
+def _positive_quantity(value: Any, field: str) -> Decimal:
+    if isinstance(value, bool) or not isinstance(value, (int, float, str, Decimal)):
+        raise DeploymentError(f"{field} must be a positive number")
+    try:
+        quantity = Decimal(str(value).strip())
+    except (InvalidOperation, ValueError) as error:
+        raise DeploymentError(f"{field} must be a positive number") from error
+    if quantity <= 0:
+        raise DeploymentError(f"{field} must be a positive number")
+    return quantity
+
+
+def _route_pricing(document: dict[str, Any], capability: str) -> dict[str, Any] | None:
+    raw = document.get("pricing")
+    if raw is None:
+        return None
+    if not isinstance(raw, dict):
+        raise DeploymentError(f"route model {capability} pricing must be an object")
+    try:
+        unit_price = Decimal(str(raw.get("unit_price", "")).strip())
+    except (InvalidOperation, ValueError) as error:
+        raise DeploymentError(
+            f"route model {capability} pricing.unit_price is invalid"
+        ) from error
+    if unit_price <= 0:
+        raise DeploymentError(
+            f"route model {capability} pricing.unit_price must be positive"
+        )
+    unit = raw.get("unit")
+    if not isinstance(unit, str) or not unit.strip():
+        raise DeploymentError(f"route model {capability} pricing.unit is required")
+    return {
+        "unit": unit.strip(),
+        "unit_price": unit_price,
+    }
+
+
+def _derived_price_info(
+    *,
+    unit_price: Decimal,
+    expected_units: Decimal,
+    upcharge_bps: int,
+) -> dict[str, Any]:
+    sell = (unit_price * expected_units * Decimal(10000 + upcharge_bps)) / Decimal(10000)
+    quantized = sell.quantize(SELL_PRICE_QUANTUM, rounding=ROUND_HALF_UP)
+    price = float(quantized)
+    if not math.isfinite(price) or price <= 0:
+        raise DeploymentError("derived sell price must be a positive finite number")
+    return {"currency": "usd", "price": price, "unit": "fixed"}
+
+
+def _selection_price_info(
+    selection: dict[str, Any],
+    field: str,
+    pricing: dict[str, Any] | None,
+    default_upcharge_bps: int,
+    default_expected_units: Decimal,
+) -> dict[str, Any]:
+    explicit = selection.get("price_info")
+    if isinstance(explicit, dict) and explicit.get("price") is not None:
+        return _price_info(explicit, f"{field}.price_info")
+    if pricing is None:
+        raise DeploymentError(f"{field}.price_info is unresolved")
+    upcharge_bps = default_upcharge_bps
+    if "upcharge_bps" in selection:
+        upcharge_bps = _non_negative_int(
+            selection.get("upcharge_bps"), f"{field}.upcharge_bps"
+        )
+    expected_units = default_expected_units
+    if "expected_units" in selection:
+        expected_units = _positive_quantity(
+            selection.get("expected_units"), f"{field}.expected_units"
+        )
+    return _derived_price_info(
+        unit_price=pricing["unit_price"],
+        expected_units=expected_units,
+        upcharge_bps=upcharge_bps,
+    )
+
+
+def _route_model(
+    root: Path, entry: dict[str, Any]
+) -> tuple[RouteDefinition, str, str, dict[str, Any] | None]:
     try:
         route = RouteDefinition.from_index_entry(entry)
     except RuntimeError as error:
@@ -180,7 +273,7 @@ def _route_model(root: Path, entry: dict[str, Any]) -> tuple[RouteDefinition, st
             f"schema {paths.schema} does not describe {route.endpoint_id!r}"
         )
     route_path = paths.route.relative_to(root).as_posix()
-    return route, digest, route_path
+    return route, digest, route_path, _route_pricing(document, route.capability)
 
 
 def _metadata(
@@ -227,9 +320,21 @@ def build_artifacts(
         raise DeploymentError(
             "V2 generates local offchain deployments only; onchain pricing is unresolved"
         )
-    if deployment.get("pricing_scope") != "local_demo_only":
+    pricing_scope = deployment.get("pricing_scope")
+    if pricing_scope not in PRICING_SCOPES:
         raise DeploymentError(
-            "deployment.pricing_scope must be local_demo_only in offchain V2"
+            "deployment.pricing_scope must be one of "
+            + ", ".join(sorted(PRICING_SCOPES))
+        )
+    default_upcharge_bps = DEFAULT_UPCHARGE_BPS
+    if "upcharge_bps" in deployment:
+        default_upcharge_bps = _non_negative_int(
+            deployment.get("upcharge_bps"), "deployment.upcharge_bps"
+        )
+    default_expected_units = Decimal(DEFAULT_EXPECTED_UNITS)
+    if "expected_units" in deployment:
+        default_expected_units = _positive_quantity(
+            deployment.get("expected_units"), "deployment.expected_units"
         )
     adapter_image = _required_string(
         deployment.get("adapter_image"), "deployment.adapter_image"
@@ -261,7 +366,7 @@ def build_artifacts(
         if entry is None:
             raise DeploymentError(f"selected capability {capability!r} is not modeled")
 
-        route, schema_sha256, route_path = _route_model(route_root, entry)
+        route, schema_sha256, route_path, pricing = _route_model(route_root, entry)
         deadline_seconds = _positive_int(
             selection.get("deadline_seconds"), f"{field}.deadline_seconds"
         )
@@ -269,7 +374,13 @@ def build_artifacts(
             selection.get("max_request_bytes"), f"{field}.max_request_bytes"
         )
         capacity = _positive_int(selection.get("capacity"), f"{field}.capacity")
-        price_info = _price_info(selection.get("price_info"), f"{field}.price_info")
+        price_info = _selection_price_info(
+            selection,
+            field,
+            pricing,
+            default_upcharge_bps,
+            default_expected_units,
+        )
         service = _selection_name(selection.get("service"), f"{field}.service")
         label = _selection_name(selection.get("label"), f"{field}.label")
 
@@ -363,7 +474,7 @@ def build_artifacts(
             "deployment_id": deployment_id,
             "format": "livepeer.fal.generated-deployment.v2",
             "network": "offchain",
-            "pricing_scope": "local_demo_only",
+            "pricing_scope": pricing_scope,
             "route_index_format": ROUTE_INDEX_FORMAT,
             "routes": resolved,
         },

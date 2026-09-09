@@ -36,6 +36,14 @@
       "video_urls"
     ]
   },
+  "pricing": {
+    "currency": "usd",
+    "endpoint_id": "fal-ai/ffmpeg-api/merge-videos",
+    "fetched_at": "2026-09-09T18:03:31Z",
+    "provider": "fal",
+    "unit": "compute seconds",
+    "unit_price": "0.00017"
+  },
   "runner": {
     "mode": "single-shot",
     "routes": {

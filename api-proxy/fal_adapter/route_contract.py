@@ -85,13 +85,14 @@ def route_contract(
     route: RouteDefinition,
     schema_sha256: str,
     inputs: dict[str, Any] | None = None,
+    pricing: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Project source identity into the exact model an operator can deploy."""
 
     summary = inputs if isinstance(inputs, dict) else {"fields": {}, "required": []}
     fields = summary.get("fields")
     required = summary.get("required")
-    return {
+    document: dict[str, Any] = {
         "credential": {
             "authorization_scheme": "Key",
             "environment_variable": "FAL_KEY",
@@ -123,6 +124,9 @@ def route_contract(
             "sha256": schema_sha256,
         },
     }
+    if pricing is not None:
+        document["pricing"] = pricing
+    return document
 
 
 def route_contract_bytes(value: dict[str, Any]) -> bytes:
