@@ -7,7 +7,7 @@ ARG BASE_IMAGE=livepeer/comfystream:latest
 FROM ${BASE_IMAGE}
 
 # livepeer/comfystream feat/comfypeer-liverunner
-ARG COMFYSTREAM_REF=a3376b839581071ceafb8079d08ee48749b49aa2
+ARG COMFYSTREAM_REF=687f90b2f6023d8a31b548809abac02989878a2e
 # eliteprox/livepeer-python-gateway pin used by that comfystream commit.
 ARG GATEWAY_REF=796ca2dc833ef3c5981260c50d948639640f2895
 

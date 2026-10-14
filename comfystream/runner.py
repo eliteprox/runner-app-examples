@@ -3,7 +3,8 @@
 
 The comfystream package is installed in the image (pinned checkout). This file
 is the live-runner app: registration, trickle channels, and the HTTP / WebSocket
-surface. Stream-only — no fal batch routes and no isolated realtime pipelines.
+surface, plus single-shot batch video tools. The tools run in a process
+pool and do not share the live stream pipeline.
 
 Agent surface:
   POST /analyze        video-in → text-out
@@ -12,6 +13,9 @@ Agent surface:
   GET  /ws_stream      browser-friendly WebSocket JPEG A/V (no trickle)
   GET  /text           buffered text outputs for the active session
   GET  /healthz
+  GET  /tools/{name}/schema
+  POST /tools/{name}   one-shot video tool (convert, compress, trim, resize,
+                       gif, extract-audio, mute, rotate)
 
 Livepeer integration (grep ``# Livepeer:``):
   1. register_runner()
@@ -47,6 +51,7 @@ from PIL import Image
 from comfystream.modalities import WorkflowModality
 from comfystream.pipeline import Pipeline
 from comfystream.realtime.gpu import pinned_gpu
+from comfystream.tool_pipeline import ToolPipeline
 from comfystream.utils import convert_prompt
 from livepeer_gateway.channel_writer import JSONLWriter
 from livepeer_gateway.errors import LivepeerGatewayError
@@ -71,6 +76,8 @@ TEXT_POLL_INTERVAL = 0.25
 # aiohttp defaults each header field to 8190 bytes. Livepeer payment tickets
 # for a metered session can exceed that and the server answers 400.
 HEADER_LIMIT_BYTES = 262144
+# 64 MB of video plus base64 overhead. Larger tool bodies are rejected.
+TOOL_BODY_LIMIT_BYTES = 96 * 1024 * 1024
 # LoadAudioTensor defaults to a 500ms buffer. JPEG ws_stream has no audio, so
 # each video frame must enqueue at least this much silence or the graph waits
 # 1s per frame and FPS collapses.
@@ -190,6 +197,17 @@ def _parse_args() -> argparse.Namespace:
         "--skip-bootstrap",
         action="store_true",
         help="Skip Pipeline default-workflow bootstrap (faster bring-up if workspace is ready).",
+    )
+    parser.add_argument(
+        "--skip-tools",
+        action="store_true",
+        help="Do not register or serve the batch video tools.",
+    )
+    parser.add_argument(
+        "--batch-workers",
+        type=int,
+        default=int(os.environ.get("COMFYSTREAM_BATCH_WORKERS", "2")),
+        help="Process-pool size shared by the batch video tools.",
     )
     return parser.parse_args()
 
@@ -831,6 +849,26 @@ async def _handle_healthz(_request: web.Request) -> web.Response:
     return web.json_response({"ok": True, "app": APP_ID})
 
 
+async def _handle_tool_schema(request: web.Request) -> web.Response:
+    tools: ToolPipeline | None = request.app.get("tools")
+    if tools is None:
+        raise web.HTTPNotFound(text="video tools are disabled")
+    item = tools.get(request.match_info["name"])
+    if item is None:
+        raise web.HTTPNotFound(text="unknown tool")
+    return web.json_response(item.schema)
+
+
+async def _handle_tool_execute(request: web.Request) -> web.Response:
+    tools: ToolPipeline | None = request.app.get("tools")
+    if tools is None:
+        raise web.HTTPNotFound(text="video tools are disabled")
+    status, payload = await tools.execute(
+        request.match_info["name"], await request.read()
+    )
+    return web.json_response(payload, status=status)
+
+
 def main() -> None:
     logging.basicConfig(
         level=logging.INFO,
@@ -884,13 +922,29 @@ def main() -> None:
             args.runner_url,
         )
 
+        app["tools"] = None
+        if not args.skip_tools:
+            tools = ToolPipeline(
+                orchestrator=args.orchestrator,
+                orch_secret=args.orchSecret,
+                runner_base_url=args.runner_url,
+                batch_workers=args.batch_workers,
+                workspace=args.workspace,
+            )
+            await tools.start()
+            app["tools"] = tools
+
     async def _on_cleanup(app: web.Application) -> None:
         await _close_session(app)
+        tools = app.get("tools")
+        if tools is not None:
+            with suppress(Exception):
+                await tools.close()
         with suppress(Exception):
             await app["registration"].close()  # Livepeer: 3
 
     app = web.Application(
-        client_max_size=1024 * 1024,
+        client_max_size=TOOL_BODY_LIMIT_BYTES,
         handler_args={
             "max_line_size": HEADER_LIMIT_BYTES,
             "max_field_size": HEADER_LIMIT_BYTES,
@@ -902,6 +956,8 @@ def main() -> None:
     app.router.add_get("/ws_stream", _handle_ws_stream)
     app.router.add_get("/text", _handle_text)
     app.router.add_get("/healthz", _handle_healthz)
+    app.router.add_get("/tools/{name}/schema", _handle_tool_schema)
+    app.router.add_post("/tools/{name}", _handle_tool_execute)
     app.on_startup.append(_on_startup)
     app.on_cleanup.append(_on_cleanup)
     web.run_app(app, host=args.host, port=args.port)

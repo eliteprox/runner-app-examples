@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import base64
 import json
 import logging
 from contextlib import suppress
@@ -26,14 +27,14 @@ import av
 
 from livepeer_gateway.errors import LivepeerGatewayError
 from livepeer_gateway.http import get_json, post_json
-from livepeer_gateway.live_runner import stop_runner_session
+from livepeer_gateway.live_runner import call_runner, stop_runner_session
 from livepeer_gateway.media_publish import (
     AudioOutputConfig,
     MediaPublish,
     MediaPublishConfig,
     VideoOutputConfig,
 )
-from livepeer_gateway.selection import reserve_session
+from livepeer_gateway.selection import reserve_session, runner_selector
 
 APP_ID = "livepeer-example/comfystream"
 DEFAULT_DISCOVERY = "https://localhost:8935/discovery"
@@ -84,6 +85,52 @@ def _parse_args() -> argparse.Namespace:
         default="",
         help="Optional second workflow JSON for update_stream.",
     )
+    parser.add_argument(
+        "--tool",
+        default="",
+        help=(
+            "Batch video tool: convert, compress, trim, resize, gif, "
+            "extract-audio, mute, or rotate."
+        ),
+    )
+    parser.add_argument(
+        "--format", default="", help="Output format for convert or extract-audio."
+    )
+    parser.add_argument(
+        "--quality", default="", help="compress quality: high, medium, or low."
+    )
+    parser.add_argument(
+        "--target-bytes", type=int, default=0, help="compress toward this size."
+    )
+    parser.add_argument("--start", default="", help="trim or gif start time.")
+    parser.add_argument("--end", default="", help="trim end time.")
+    parser.add_argument(
+        "--trim-mode",
+        default="precise",
+        choices=("fast", "precise"),
+        help="trim mode.",
+    )
+    parser.add_argument(
+        "--duration", type=float, default=0, help="gif length in seconds, max 30."
+    )
+    parser.add_argument("--fps", type=int, default=10, help="gif frame rate.")
+    parser.add_argument("--tool-width", type=int, default=0, help="gif width.")
+    parser.add_argument(
+        "--tool-height",
+        type=int,
+        default=720,
+        help="resize height: 2160, 1440, 1080, 720, 480, 360, 240, or 144.",
+    )
+    parser.add_argument(
+        "--rotation", type=int, default=0, help="clockwise degrees: 0, 90, 180, 270."
+    )
+    parser.add_argument(
+        "--flip",
+        default="none",
+        choices=("none", "horizontal", "vertical"),
+        help="flip after rotation.",
+    )
+    parser.add_argument("--output", default="", help="Where to write the tool result.")
     return parser.parse_args()
 
 
@@ -232,12 +279,79 @@ async def _run_stream(args: argparse.Namespace, workflow: Any) -> None:
         log.info("stream session stopped")
 
 
+def _tool_payload(args: argparse.Namespace, video: bytes) -> dict[str, Any]:
+    payload: dict[str, Any] = {"video_base64": base64.b64encode(video).decode("ascii")}
+    if args.format:
+        payload["format"] = args.format
+    if args.quality:
+        payload["quality"] = args.quality
+    if args.target_bytes:
+        payload["target_bytes"] = args.target_bytes
+    if args.start:
+        payload["start"] = args.start
+    if args.end:
+        payload["end"] = args.end
+    if args.tool == "trim":
+        payload["mode"] = args.trim_mode
+    if args.duration:
+        payload["duration"] = args.duration
+    if args.tool == "gif":
+        payload["fps"] = args.fps
+        if args.tool_width:
+            payload["width"] = args.tool_width
+    if args.tool == "resize":
+        payload["height"] = args.tool_height
+    if args.tool == "rotate":
+        payload["rotation"] = args.rotation
+        payload["flip"] = args.flip
+    return payload
+
+
+async def _run_tool(args: argparse.Namespace) -> int:
+    signer_url, signer_headers, discovery_headers = _auth_headers(args)
+    app_id = f"{APP_ID}-{args.tool}"
+    video = Path(args.input).read_bytes()
+    if len(video) > 64 * 1024 * 1024:
+        raise SystemExit("input exceeds 64 MB")
+    try:
+        cursor = await runner_selector(  # Livepeer: 1
+            discovery_url=args.discovery,
+            app=app_id,
+            signer_url=signer_url,
+            signer_headers=signer_headers,
+            discovery_headers=discovery_headers,
+        )
+        runner = cursor.candidates[0]
+        result = await call_runner(  # Livepeer: 2
+            runner=runner,
+            runner_url=runner.url.rstrip("/") + f"/tools/{args.tool}",
+            payload=_tool_payload(args, video),
+            signer_url=signer_url,
+            signer_headers=signer_headers,
+            timeout=180.0,
+        )
+    except LivepeerGatewayError as exc:
+        raise SystemExit(f"ERROR: {exc}") from exc
+    data = result.data or {}
+    encoded = data.get("video_base64") or data.get("audio_base64")
+    if not isinstance(encoded, str) or not encoded:
+        raise SystemExit(f"ERROR: tool returned no media: {data}")
+    output = args.output or str(
+        Path(args.input).with_name(f"{Path(args.input).stem}-{args.tool}")
+    )
+    Path(output).write_bytes(base64.b64decode(encoded))
+    log.info("wrote %s (%s)", output, data.get("content_type", ""))
+    return 0
+
+
 async def _amain() -> int:
     args = _parse_args()
     input_path = Path(args.input).expanduser()
     if not input_path.exists():
         raise SystemExit(f"input file does not exist: {input_path}")
     args.input = str(input_path)
+    if args.tool:
+        return await _run_tool(args)
     workflow = _load_workflow(args.workflow)
     if args.mode in ("analyze", "both"):
         await _run_analyze(args, workflow)

@@ -51,7 +51,7 @@ Need a transport that isn't here? [Open an issue](https://github.com/livepeer/ru
 | [`tiles`](./tiles)                                   | Capacity fan-out — one call per tile                                                     | dynamic      | single-shot | HTTP (base64 PNG) | fixed   |
 | [`api-proxy`](./api-proxy)                           | Pass calls through to hosted APIs — the operator holds the key, one capability per model | static       | single-shot | HTTP (JPEG bytes) | fixed   |
 | [`echo`](./echo)                                     | Realtime video, transformed and echoed back                                              | dynamic      | persistent  | trickle           | hour    |
-| [`comfystream`](./comfystream)                       | ComfyUI live video + analyze; installs the pinned `comfystream` package                  | dynamic      | persistent  | trickle + HTTP    | hour    |
+| [`comfystream`](./comfystream)                       | ComfyUI live video + analyze, plus single-shot video tools; pinned package               | dynamic      | persistent  | trickle + HTTP    | hour    |
 | [`vllm`](./vllm)                                     | Drop-in OpenAI API; the client stays unmodified                                          | static       | single-shot | HTTP + SSE        | hour    |
 | [`realtime-transcription`](./realtime-transcription) | Audio up, transcripts back, on one socket                                                | dynamic      | persistent  | WebSocket         | hour    |
 

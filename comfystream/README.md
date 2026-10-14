@@ -27,11 +27,11 @@ CUDA/ComfyUI base is too large for GitHub-hosted runners.
 ## How it's wired
 
 `COMFYSTREAM_REF` in the [Dockerfile](Dockerfile) pins the comfystream checkout
-(currently `a3376b839581071ceafb8079d08ee48749b49aa2` on
+(currently `687f90b2f6023d8a31b548809abac02989878a2e` on
 `feat/comfypeer-liverunner`). Bump that build-arg to move the package forward,
 then rebuild. `runner.py` imports `comfystream.Pipeline` from the installed
-package and registers with the orchestrator. Stream-only: no fal single-shot
-routes and no isolated realtime pipelines.
+package and registers with the orchestrator. Batch video tools run in a
+separate process pool so they do not share the live stream pipeline.
 
 The app is **dynamically registered**: it self-registers via `register_runner`
 ([runner.py](runner.py)) and exposes:
@@ -42,8 +42,11 @@ The app is **dynamically registered**: it self-registers via `register_runner`
 - `GET /ws_stream` — browser JPEG frames over the session WebSocket
 - `GET /text` — buffered text for the active session
 - `GET /healthz`
+- `POST /tools/{name}` — one-shot video tool. `{name}` is `convert`,
+  `compress`, `trim`, `resize`, `gif`, `extract-audio`, `mute`, or `rotate`.
+  `GET /tools/{name}/schema` returns the JSON fields.
 
-The client calls it with `reserve_session` → `post_json` / `MediaPublish` →
+The stream client calls it with `reserve_session` → `post_json` / `MediaPublish` →
 `stop_runner_session` ([client.py](client.py)). Grep `# Livepeer:` in either
 file to see the exact calls.
 
@@ -82,6 +85,24 @@ is the same invert plus an audio passthrough. Pass `--audio` and a file that
 contains an audio stream. The graph waits about a second for the first audio
 frame, so a live source (the way [`echo`](../echo) is driven) is a better fit
 than a short file dumped as fast as possible.
+
+## Batch video tools
+
+Each tool is its own single-shot app, `livepeer-example/comfystream-<tool>`,
+billed once per call (`unit=fixed`). Workers are CPU processes
+(`CUDA_VISIBLE_DEVICES` is cleared) so the live stream keeps the GPU. One pool,
+default 2 workers, is shared by every tool. Input files are capped at 64 MB.
+
+```sh
+uv run client.py sample.mp4 --tool convert --format webm \
+  --discovery https://localhost:8935/discovery --output sample.webm
+uv run client.py sample.mp4 --tool resize --tool-height 720 \
+  --discovery https://localhost:8935/discovery --output sample-720.mp4
+```
+
+The body is `{"video_base64": "...", ...fields}`. Resize and rotate workflows
+call Comfy `ImageScale` and `RotateFlipImage` once per frame. Convert, compress,
+trim, gif, extract-audio, and mute run as a single container edit.
 
 Stop the stack with `docker compose down`.
 
