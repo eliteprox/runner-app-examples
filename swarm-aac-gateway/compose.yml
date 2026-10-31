@@ -5,7 +5,7 @@ services:
       context: ..
       dockerfile: swarm-aac-gateway/Dockerfile
     restart: unless-stopped
-    network_mode: host
+    network_mode: ${RUNNER_NETWORK_MODE:-host}
     environment:
       ORCHESTRATOR_URL: ${ORCHESTRATOR_URL:?set orchestrator registration URL}
       RUNNER_URL: ${RUNNER_URL:?set runner URL reachable from orchestrator}

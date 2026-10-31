@@ -32,9 +32,9 @@ jobs:
             example=${dir%/}
             [ -f "$example/compose.yml" ] || continue
             if [ "$example" = "swarm-aac-gateway" ]; then
-              BEE_PASSWORD_PATH=/tmp/example-bee-password docker compose \
+              BEE_PASSWORD_PATH=/tmp/example-bee-password ORCH_DOCKER_NETWORK=example-network docker compose \
                 --env-file "$example/.env.example" \
-                -f "$example/compose.yml" -f "$example/compose.bee.yml" config --quiet || status=1
+                -f "$example/compose.yml" -f "$example/compose.bee.yml" -f "$example/compose.container.yml" config --quiet || status=1
               continue
             fi
             docker compose -f "$example/compose.yml" config --quiet || status=1

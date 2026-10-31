@@ -46,6 +46,29 @@ $0.10/hour is not a profitability claim. This charge is additional to any indepe
 publisher session. Wall-clock billing continues while the playback session is held,
 including temporary station stalls.
 
+### Existing orchestrator in Docker
+
+If the orchestrator's Docker bridge cannot reach host services because of host
+firewall policy, use the supported namespace-sharing overlay instead of opening
+the runner port publicly. Configure:
+
+```dotenv
+RUNNER_NETWORK_MODE=container:your-orchestrator-container
+RUNNER_HOST=127.0.0.1
+RUNNER_URL=http://127.0.0.1:8993
+ORCH_DOCKER_NETWORK=your-orchestrator-network
+BEE_READ_URL=http://swarm-playback-bee:1633
+```
+
+Then run `docker compose -f compose.yml -f compose.bee.yml -f compose.container.yml up -d`.
+The playback runner shares the existing orchestrator's network namespace; Bee
+joins its private Docker network under the alias `swarm-playback-bee`. The
+orchestrator itself is not restarted or reconfigured. If that orchestrator
+container is replaced, recreate the playback runner to join its new namespace.
+Health checks run inside the runner namespace. This profile requires the optional
+Bee service and an existing Docker network; only trusted operator containers
+should belong to that network.
+
 ### Operator-funded Bee
 
 Use an operator-controlled Bee read endpoint. For a dedicated persistent light node:
