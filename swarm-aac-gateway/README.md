@@ -148,7 +148,8 @@ for the current exchange rate rather than copied blindly.
 station changes conflict until release. Only the operator configures the Bee URL;
 client URL overrides and extra fields are rejected. SOC ownership and chunk
 references are verified by the shared engine. Playback begins near the live edge,
-keeps a three-segment queue, drops slow consumers, and terminates after 30 seconds
+prefetches two audio segments independently of feed discovery and playback timing,
+keeps a three-segment per-listener queue, drops slow consumers, and terminates after 30 seconds
 without audio. Channels close on EOF/error/release. One station pipeline exists
 per active session, with no unbounded retrieval cache or cross-session listener state.
 
