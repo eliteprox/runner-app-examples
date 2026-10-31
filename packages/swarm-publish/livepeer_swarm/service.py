@@ -222,9 +222,11 @@ class LiveService:
                     [
                         {
                             "name": name,
-                            "mime_type": "application/octet-stream"
-                            if name == "in"
-                            else "application/jsonl",
+                            "mime_type": (
+                                "application/octet-stream"
+                                if name == "in"
+                                else "application/jsonl"
+                            ),
                         }
                         for name in ("in", "events", "stamps", "control")
                     ],
