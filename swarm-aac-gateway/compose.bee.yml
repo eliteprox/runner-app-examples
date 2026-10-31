@@ -5,14 +5,14 @@ services:
     restart: unless-stopped
     command: [start]
     environment:
-      BEE_API_ADDR: ':1633'
-      BEE_FULL_NODE: 'false'
-      BEE_SWAP_ENABLE: 'true'
+      BEE_API_ADDR: ":1633"
+      BEE_FULL_NODE: "false"
+      BEE_SWAP_ENABLE: "true"
       BEE_BLOCKCHAIN_RPC_ENDPOINT: ${GNOSIS_RPC_URL:-https://rpc.gnosischain.com}
       BEE_PASSWORD_FILE: /run/secrets/bee_password
       BEE_DATA_DIR: /home/bee/.bee
       BEE_VERBOSITY: info
-    ports: ['127.0.0.1:11634:1633']
+    ports: ["127.0.0.1:11634:1633"]
     volumes: [bee-data:/home/bee/.bee]
     secrets: [bee_password]
 secrets:

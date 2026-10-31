@@ -89,7 +89,7 @@ python3 -m venv .venv
   --seconds 600 --listen-host 127.0.0.1 --listen-port 8788
 ```
 
-Open **`http://127.0.0.1:8788/stream.aac`** in VLC's *Media → Open Network Stream*.
+Open **`http://127.0.0.1:8788/stream.aac`** in VLC's _Media → Open Network Stream_.
 For VLC on another LAN machine, bind `--listen-host` to the bridge machine's LAN
 address and open that address from VLC. The local URL uses the bridge owner's payer,
 so keep it on a trusted LAN; do not publicly port-forward it. One listener is supported
