@@ -1,0 +1,45 @@
+name: Swarm AAC gateway
+on:
+  pull_request:
+    paths:
+      [
+        "swarm-aac-gateway/**",
+        "packages/swarm-publish/**",
+        ".github/workflows/swarm-aac-gateway.yml",
+      ]
+  push:
+    branches: [feat/swarm-aac-gateway]
+permissions:
+  contents: read
+concurrency:
+  group: swarm-aac-gateway-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r swarm-aac-gateway/requirements.txt pytest pytest-asyncio
+      - run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - name: Start offchain orchestrator
+        run: |
+          docker run -d --name swarm-gateway-test --network host livepeer/go-livepeer:v0.9.3 \
+            -orchestrator -useLiveRunners -network=offchain \
+            -httpAddr=127.0.0.1:18935 -serviceAddr=https://localhost:18935 \
+            -liveRunnerAddr=https://localhost:18935 -cliAddr=127.0.0.1:17935 \
+            -orchSecret=swarm-test-only -monitor=false
+          for attempt in $(seq 1 30); do
+            if docker cp swarm-gateway-test:/root/.lpData/offchain/cert.pem /tmp/swarm-gateway-cert.pem; then break; fi
+            sleep 1
+          done
+      - run: pytest -q swarm-aac-gateway/tests packages/swarm-publish/tests
+        env:
+          PYTHONPATH: swarm-aac-gateway:packages/swarm-publish
+          SSL_CERT_FILE: /tmp/swarm-gateway-cert.pem
+          SWARM_TEST_ORCHESTRATOR: https://localhost:18935
+      - run: docker build -t swarm-aac-gateway:test -f swarm-aac-gateway/Dockerfile .
+      - if: always()
+        run: docker rm -f swarm-gateway-test || true

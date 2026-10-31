@@ -1,0 +1,13 @@
+# For an existing Dockerized orchestrator whose firewall blocks bridge-to-host traffic.
+# Set RUNNER_NETWORK_MODE=container:<orchestrator-container>, RUNNER_HOST=127.0.0.1,
+# RUNNER_URL=http://127.0.0.1:8993, BEE_READ_URL=http://swarm-playback-bee:1633.
+services:
+  bee:
+    networks:
+      default: {}
+      orchestrator:
+        aliases: [swarm-playback-bee]
+networks:
+  orchestrator:
+    external: true
+    name: ${ORCH_DOCKER_NETWORK:?set existing orchestrator Docker network}
