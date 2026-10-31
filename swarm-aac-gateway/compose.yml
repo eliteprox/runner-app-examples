@@ -1,0 +1,26 @@
+name: livepeer-swarm-aac-gateway
+services:
+  gateway:
+    build:
+      context: ..
+      dockerfile: swarm-aac-gateway/Dockerfile
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      ORCHESTRATOR_URL: ${ORCHESTRATOR_URL:?set orchestrator registration URL}
+      RUNNER_URL: ${RUNNER_URL:?set runner URL reachable from orchestrator}
+      RUNNER_HOST: ${RUNNER_HOST:-127.0.0.1}
+      RUNNER_PORT: ${RUNNER_PORT:-8993}
+      ORCH_SECRET_FILE: /run/secrets/orch_secret
+      BEE_READ_URL: ${BEE_READ_URL:?set operator Bee read URL}
+      BEE_MIN_AVAILABLE_BZZ: ${BEE_MIN_AVAILABLE_BZZ:-}
+      PRICE_USD_PER_HOUR: ${PRICE_USD_PER_HOUR:?set total retrieval service price}
+    secrets: [orch_secret]
+    healthcheck:
+      test: [CMD, python, -c, "import os,urllib.request; urllib.request.urlopen('http://'+os.getenv('RUNNER_HOST','127.0.0.1')+':'+os.getenv('RUNNER_PORT','8993')+'/healthz',timeout=3)"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+secrets:
+  orch_secret:
+    file: ${ORCH_SECRET_PATH:?set path to orchestrator registration secret}
