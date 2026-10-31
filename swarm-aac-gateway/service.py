@@ -2,6 +2,7 @@
 
 import asyncio
 import logging
+from collections import OrderedDict
 
 from aiohttp import web
 from eth_utils import is_address
@@ -14,10 +15,16 @@ log = logging.getLogger(__name__)
 
 
 class Playback:
-    def __init__(self, sid, owner, station, channels, bee_url, idle_timeout):
+    def __init__(
+        self, sid, owner, station, channels, bee_url, idle_timeout, frontiers=None
+    ):
         self.sid, self.owner, self.station = sid, owner, station
         self.channels = channels
         self.bee = BeeClient(bee_url)
+        # Only authenticated SOC payloads enter this bounded cache. Keep it across
+        # listener sessions so reconnects do not search from index zero again.
+        if frontiers is not None:
+            self.bee.frontiers = frontiers
         self.radio = Radio(self.bee, owner, station)
         self.queue = self.radio.subscribe()
         out = channels[0]
@@ -80,6 +87,7 @@ class Gateway:
         self.idle_timeout = idle_timeout
         self.playback = None
         self.lock = asyncio.Lock()
+        self.frontiers = OrderedDict()
 
     def attach(self, app):
         app.router.add_post("/start", self.start)
@@ -134,7 +142,13 @@ class Gateway:
                 request, [{"name": "out", "mime_type": "audio/aac"}]
             )
             self.playback = Playback(
-                sid, owner, station, channels, self.bee_url, self.idle_timeout
+                sid,
+                owner,
+                station,
+                channels,
+                self.bee_url,
+                self.idle_timeout,
+                self.frontiers,
             )
             return web.json_response(self.playback.response())
 

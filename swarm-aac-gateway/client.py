@@ -7,6 +7,7 @@ import json
 import logging
 import signal
 import sys
+import time
 from pathlib import Path
 from contextlib import aclosing
 
@@ -22,11 +23,13 @@ from service import APP_ID
 
 
 async def audio_stream(args):
+    started = time.monotonic()
     if not args.offchain:
         if not args.signer or args.max_hourly_usd is None:
             raise ValueError("paid playback requires --signer and --max-hourly-usd")
         entries = await discover_orchestrator_runners(args.orchestrator, app=APP_ID)
         validate_price(entries, args.max_hourly_usd, wei_cap=args.max_wei_per_second)
+    logging.info("playback discovery_s=%.3f", time.monotonic() - started)
     headers = (
         json.loads(Path(args.signer_headers_file).read_text())
         if args.signer_headers_file
@@ -39,10 +42,15 @@ async def audio_stream(args):
             signer_url=args.signer or None,
             signer_headers=headers,
         ) as session:
+            logging.info("playback reserved_after_s=%.3f", time.monotonic() - started)
             channels = await post_json(
                 session.app_url.rstrip("/") + "/start",
                 {"owner": args.owner, "station": args.station},
             )
+            logging.info(
+                "playback channels_ready_after_s=%.3f", time.monotonic() - started
+            )
+            first = True
             async with TrickleSubscriber(
                 channels["out"], start_seq=0, max_bytes=256 * 1024
             ) as sub:
@@ -54,6 +62,12 @@ async def audio_stream(args):
                         try:
                             reader = segment.make_reader()
                             while data := await reader.read():
+                                if first:
+                                    logging.info(
+                                        "playback first_audio_after_s=%.3f",
+                                        time.monotonic() - started,
+                                    )
+                                    first = False
                                 yield data
                         finally:
                             await segment.close()

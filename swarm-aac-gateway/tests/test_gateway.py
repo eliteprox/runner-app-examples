@@ -270,3 +270,48 @@ async def test_vlc_bridge_disconnect_closes_paid_generator(
     finally:
         task.cancel()
         await asyncio.gather(task, return_exceptions=True)
+
+
+@pytest.mark.asyncio
+async def test_reconnect_reuses_authenticated_frontiers_without_cross_owner_leak(
+    monkeypatch,
+):
+    from collections import OrderedDict
+    from livepeer_swarm.bee import BeeClient
+    from service import Playback
+
+    class Publisher:
+        def __init__(self, *args):
+            pass
+
+        async def close(self):
+            pass
+
+    monkeypatch.setattr("service.TricklePublisher", Publisher)
+    cache = OrderedDict()
+    first = Playback(
+        "one", OWNER, "station", [{"url": "http://unused"}], "http://unused", 30, cache
+    )
+    # Simulate the result already authenticated by BeeClient.verify_soc.
+    first.bee.frontiers[(OWNER.lower(), "station")] = (42, b"authenticated")
+    await first.close()
+    second = Playback(
+        "two", OWNER, "station", [{"url": "http://unused"}], "http://unused", 30, cache
+    )
+    called = []
+
+    async def missing(owner, topic, index):
+        called.append(index)
+        return None
+
+    second.bee.feed_at = missing
+    try:
+        result = await BeeClient.latest_feed(second.bee, OWNER, "station")
+        assert result == (42, b"authenticated")
+        assert called == [
+            43
+        ], "reconnect should probe the frontier, not replay discovery"
+        assert ("0x" + "22" * 20, "station") not in cache
+        assert second.bee.frontiers is cache
+    finally:
+        await second.close()

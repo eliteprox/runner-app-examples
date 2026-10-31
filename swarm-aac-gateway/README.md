@@ -185,3 +185,18 @@ decodes the resulting AAC. It also checks malformed inputs, client URL rejection
 operator-funding failures, idempotency, capacity isolation, and release/reuse.
 This proves the protocol without spending funds; public Swarm/paid deployment
 validation is a separate check.
+
+### Startup versus steady-state latency
+
+A newly reserved session must discover the station's current broadcast and rendition
+frontier before it can emit audio. Cold discovery can take several seconds on Swarm,
+in addition to Livepeer payment setup and player buffering. The runner retains up to
+256 already-authenticated feed frontiers across listener sessions, keyed by owner
+and topic, so reconnects probe forward from a verified position instead of starting
+at index zero. This cache is in memory and is lost when the runner restarts. The
+live freshness check still applies; cached historical audio is not played just to
+produce a fast response. A completely new station can still require cold discovery.
+
+The client logs `discovery_s`, `reserved_after_s`, `channels_ready_after_s`, and
+`first_audio_after_s` to stderr. These distinguish payment/discovery overhead from
+retrieval delay before first AAC bytes; VLC's additional buffering is not measured.
