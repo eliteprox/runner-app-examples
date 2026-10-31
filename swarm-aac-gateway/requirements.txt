@@ -1,1 +1,1 @@
-livepeer-swarm-radio @ git+https://github.com/eliteprox/livepeer-swarm-radio.git@74404205bbcdcca4ab3d733f27d154222e3d8fab
+livepeer-swarm-radio @ git+https://github.com/eliteprox/livepeer-swarm-radio.git@990540d782644b89c8353a1fd710a50d94d85fc6
