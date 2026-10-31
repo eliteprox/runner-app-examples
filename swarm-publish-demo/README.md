@@ -38,12 +38,12 @@ The on-chain overlay adds Livepeer payment only. It does not start a Swarm chain
 
 The existing `/ingest` WebSocket file demo is preserved. The new `/start` endpoint opens a persistent live publishing session with four Trickle channels. The local gateway client signs postage and feeds under its publisher identity; a separate remote signer pays Livepeer. The runner is keyless and uses only externally signed stamps and SOCs.
 
-| Channel | Direction | Wire format |
-|---|---|---|
-| `in` | client → runner | One upload per Trickle segment: 32 ASCII hex characters of upload ID, then initialization/audio bytes |
-| `events` | runner → client | Incremental JSONL: ready, stamp-request, uploaded, feed, error, stopped |
-| `stamps` | client → runner | Incremental JSONL: session, request_id, ordered stamps (or error) |
-| `control` | client → runner | Incremental JSONL: ready, meta, soc, stop |
+| Channel   | Direction       | Wire format                                                                                           |
+| --------- | --------------- | ----------------------------------------------------------------------------------------------------- |
+| `in`      | client → runner | One upload per Trickle segment: 32 ASCII hex characters of upload ID, then initialization/audio bytes |
+| `events`  | runner → client | Incremental JSONL: ready, stamp-request, uploaded, feed, error, stopped                               |
+| `stamps`  | client → runner | Incremental JSONL: session, request_id, ordered stamps (or error)                                     |
+| `control` | client → runner | Incremental JSONL: ready, meta, soc, stop                                                             |
 
 `POST /start` accepts `{ "owner": "0x…", "batch_id": "…" }` and returns protocol version 1, session ID, and public URLs named `in`, `events`, `stamps`, `control`. The orchestrator supplies the session headers. Runner consumers use internal channel URLs. All JSON messages include the session ID. Each `meta` carries upload_id, kind (`init` or `media`), and duration. Signed `soc` commands include request_id, topic/index, owner/id/signature, base64 CAC body, postage stamp and address. A feed acknowledgment must match that address before the client advances its index.
 
