@@ -58,3 +58,35 @@ Use the documented client command in README to start another bounded session.
 Do not restart an old publisher against expired postage or discard its counter
 state. The local radio on port 8787 is a different path; this test specifically
 uses port 8788 to route retrieval through eliteprd4.
+
+## Playback optimization comparison
+
+The deployed radio is pinned to `990540d` from `livepeer-swarm-radio`. Discovery,
+bounded two-segment prefetch, and paced AAC delivery now run independently. Live
+startup waits for a recent frontier; short backlogs preserve audio rather than
+immediately skipping forward. Media format and two-second publication segments
+are unchanged.
+
+Sequential observations on the same live station through eliteprd4:
+
+| Measurement                          |   Before | Optimized |
+| ------------------------------------ | -------: | --------: |
+| Observed audio segments              |       64 |        61 |
+| Skipped sequences within observation |       17 |         0 |
+| Median capture-to-runner-emission    |  7.930 s |   9.570 s |
+| p95 capture-to-runner-emission       | 10.920 s |   9.598 s |
+| Maximum capture-to-runner-emission   | 13.655 s |   9.601 s |
+
+The optimized `/stream.aac` decoded 120 seconds with FFmpeg exit code 0 and no
+reported decoder warnings. A mid-run status sample recorded two playback-buffer
+underruns, zero retrieval failures, zero gaps and two prefetched segments. Buffer
+underruns can still pause delivery; unlike the earlier catch-up policy, this run
+preserved the audio sequence. The tradeoff is a higher median delay for smoother,
+more predictable delivery. VLC adds its own buffering, which these latency figures
+do not include. Different observation windows and changing public-network
+conditions mean this is not a controlled benchmark or a no-drop guarantee.
+
+Validation: all 33 application tests pass, including real offchain Trickle tests;
+all five hosted-gateway tests pass against the updated application. New regression
+tests cover discovery stalls, ordered playback across short backlogs, stale startup
+frontiers, broadcast changes, and cancellation of every pipeline task.
