@@ -24,6 +24,7 @@ services:
     network_mode: host
     environment:
       BEE_URL: http://127.0.0.1:11633
+      BEE_MIN_AVAILABLE_BZZ: ${BEE_MIN_AVAILABLE_BZZ:-0.01}
       ORCH_SECRET_FILE: /run/secrets/orch_secret
     command:
       - --host=127.0.0.1

@@ -150,7 +150,8 @@ class RunnerSession:
 
 
 class LiveService:
-    def __init__(self, bee_url):
+    def __init__(self, bee_url, operator_funding=None):
+        self.operator_funding = operator_funding
         self.bee_url = bee_url
         self.sessions = {}
         self.lock = asyncio.Lock()
@@ -158,7 +159,19 @@ class LiveService:
     def attach(self, app):
         app.router.add_post("/start", self.start)
         app.router.add_get("/healthz", self.health)
+        if self.operator_funding:
+            app.router.add_get("/operator/bandwidth", self.bandwidth)
         app.on_cleanup.append(self.cleanup)
+
+    async def bandwidth(self, request):
+        # Administrative route: keep the runner bound to loopback.
+        try:
+            snapshot = await self.operator_funding.snapshot()
+        except Exception:
+            raise web.HTTPServiceUnavailable(
+                text="operator accounting unavailable"
+            ) from None
+        return web.json_response(snapshot, status=200 if snapshot["funded"] else 503)
 
     async def health(self, request):
         return web.json_response(
@@ -190,6 +203,19 @@ class LiveService:
                 if self.sessions:
                     raise web.HTTPConflict(
                         text="runner already has an active broadcast"
+                    )
+                if self.operator_funding:
+                    try:
+                        snapshot = await self.operator_funding.require_funding()
+                    except Exception:
+                        log.exception("operator funding check failed")
+                        raise web.HTTPServiceUnavailable(
+                            text="operator bandwidth funding unavailable; contact service operator"
+                        ) from None
+                    log.info(
+                        "operator_bandwidth_start session=%s accounting=%s",
+                        sid,
+                        snapshot,
                     )
                 channels = await request.app["registration"].create_trickle_channels(
                     request,
@@ -226,6 +252,16 @@ class LiveService:
         if session:
             await session.close()
             self.sessions.pop(event.session_id, None)
+            if self.operator_funding:
+                try:
+                    snapshot = await self.operator_funding.snapshot()
+                    log.info(
+                        "operator_bandwidth_end session=%s accounting=%s",
+                        event.session_id,
+                        snapshot,
+                    )
+                except Exception:
+                    log.exception("could not record final operator accounting")
 
     async def cleanup(self, app):
         await asyncio.gather(*(s.close() for s in self.sessions.values()))

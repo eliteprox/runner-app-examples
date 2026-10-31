@@ -22,6 +22,7 @@ import aiohttp
 from aiohttp import web
 from livepeer_gateway.live_runner import register_runner
 from livepeer_swarm.service import LiveService
+from livepeer_swarm.operator import OperatorFunding
 from livepeer_swarm import SwarmPublisher, SwarmPublishError, unwrap
 
 DEFAULT_HOST = "127.0.0.1"
@@ -48,7 +49,7 @@ def _parse_args() -> argparse.Namespace:
         "--price",
         type=float,
         default=0,
-        help="Runner price in USD per hour (0 = free, the offchain default).",
+        help="All-in runner USD/hour including operator upload bandwidth (0 = offchain).",
     )
     return parser.parse_args()
 
@@ -86,7 +87,9 @@ def main() -> None:
     args = _parse_args()
     if args.orch_secret_file:
         args.orchSecret = Path(args.orch_secret_file).read_text().strip()
-    live = LiveService(os.environ.get("BEE_URL", ""))
+    minimum = os.environ.get("BEE_MIN_AVAILABLE_BZZ")
+    funding = OperatorFunding(os.environ["BEE_URL"], minimum) if minimum else None
+    live = LiveService(os.environ.get("BEE_URL", ""), operator_funding=funding)
     if publisher.enabled:
         log.info("swarm publish on %s", os.environ.get("BEE_URL"))
     else:

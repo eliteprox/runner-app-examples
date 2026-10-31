@@ -57,3 +57,44 @@ The local client's runbook is [livepeer-swarm-radio operations](https://github.c
 Deployment directory: `/home/elite/livepeer-swarm` on eliteprd1. The newly generated Bee operator address is `0x2d0991c3d789079eEA883F036D854214CD7eE20F`. The operator was funded with 1 xBZZ and 0.01 xDAI, and its chequebook is `0x6FA1f35D08b0f7a5d254888c42d748d23d931D58`. A fresh publisher-owned depth-20, bucket-depth-16 mutable batch was created: `f6b9f693fe530ef03da5f85f9947a736cec3ecb28ee35a69c328c0ab6fbe23e3`. Total setup allocation was 1.3937175649386496 xBZZ plus 0.01 xDAI and gas. The batch is temporary (approximately 26 hours at creation), not a permanent entitlement; check its remaining TTL before subsequent tests. Use live logs and readiness to check synchronization. This address is different from publisher `0x8e967011A1895516B7720903FFF0BF080219946A`.
 
 Stop this example with `docker compose down` from its deployment directory. This preserves Bee data and leaves the existing orchestrator and other runners running. Rebuild the image and use `docker compose up -d` to update it.
+
+## Hosted billing and operator responsibilities
+
+The advertised `PRICE_USD_PER_HOUR` is the **total service price including upload
+bandwidth**. The current $0.10/hour is an introductory operator-set price, not a
+measured cost or profitability guarantee. There is no separate Bee-wallet payment
+step for publishers. Publishers supply their own valid postage batch and sign
+postage/feed updates locally; their independently configured Livepeer payer pays
+the advertised rate. Playback gateway costs are not included in this upload service.
+
+The orchestrator operator owns, funds, and monitors Bee's node wallet and
+chequebook. Our original experiment seeded this operator wallet from the test
+publisher wallet; production users must not be asked to repeat that setup.
+No automatic transfers, token purchases, or publisher-key imports are performed.
+
+`BEE_MIN_AVAILABLE_BZZ` defaults to `0.01` xBZZ. The entrypoint waits for this
+available chequebook balance before registration, and each new broadcast checks
+it again before allocating channels. Unavailable accounting or insufficient
+funds returns 503 with an operator-funding error. Existing broadcasts are not
+terminated by this admission threshold. It is a reserve threshold, not a guarantee
+that a session of arbitrary length is funded; operators must monitor and top up.
+
+Inspect the private runner endpoint:
+
+```sh
+curl -f http://127.0.0.1:8992/operator/bandwidth
+```
+
+Keep this administrative endpoint on loopback, alongside the private Bee API.
+It reports available funds (including outstanding-cheque obligations), sent and
+received settlement totals in xBZZ, and the operator-paid billing policy. Session
+start/release logs include accounting snapshots. For this dedicated, single-session
+Bee, compare `settlements_sent_bzz` at start/end and divide by active session hours
+for an observed settlement rate. Cheques settle in batches: short intervals can
+understate accrued costs. Deposits are not expenses, and elapsed idle time must not
+be treated as paid streaming time. Retain logs and compare longer runs before
+setting a production price. Do not reset Bee data to reset these counters.
+
+Price the service from compute/hosting plus measured xBZZ/hour converted at the
+operator's chosen exchange rate, plus margin. Set the resulting **total** in
+`PRICE_USD_PER_HOUR`; do not add an undisclosed client bandwidth surcharge.
