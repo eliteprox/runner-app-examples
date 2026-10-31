@@ -9,6 +9,10 @@ dependencies = [
     "eth-hash[pycryptodome]",
 ]
 
+[project.optional-dependencies]
+live = ["livepeer-gateway>=1.0.0"]
+test = ["pytest>=8.3", "pytest-asyncio>=0.24"]
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"

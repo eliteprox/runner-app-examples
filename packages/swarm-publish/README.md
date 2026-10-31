@@ -43,3 +43,11 @@ await publisher.put(frame)
 ```
 
 The client of a cap that opts in calls `chunk_and_stamp` and `pack` before it sends. A client that does not opt in keeps sending raw PCM, and the runner leaves `BEE_URL` unset so `put` is a no-op and the frame is still the original bytes. Turn the publisher on only for clients that send packed frames.
+
+## Live publisher capability
+
+The `live` extra installs the gateway SDK used to register the supply-side runner. This package provides Swarm chunking, postage/SOC formats and verification, bounded Bee I/O, the keyless upload pipeline, and its four-channel Trickle service. The original file-upload API is unchanged.
+
+Capture, publisher-owned SQLite state and signing, the gateway client, playlists, and the standalone AAC player are maintained in [livepeer-swarm-radio](https://github.com/eliteprox/livepeer-swarm-radio). This repository contains no radio service and requires no client-package dependency to run its publisher.
+
+The runner validates publisher-supplied stamps before immediate Bee uploads and acknowledges media only after all chunks succeed. Its development Bee stub validates layouts and signatures, but does not establish real postage funding or network propagation. Run supply-side tests with `uv run --with pytest --with pytest-asyncio pytest tests` from this package directory. End-to-end client/radio tests live in the application repository.

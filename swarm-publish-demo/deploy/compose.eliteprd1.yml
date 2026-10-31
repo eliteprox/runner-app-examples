@@ -1,0 +1,49 @@
+name: livepeer-swarm
+services:
+  bee:
+    image: ethersphere/bee:2.8.3
+    restart: unless-stopped
+    command: [start]
+    environment:
+      BEE_API_ADDR: ':1633'
+      BEE_FULL_NODE: 'false'
+      BEE_SWAP_ENABLE: 'true'
+      BEE_BLOCKCHAIN_RPC_ENDPOINT: ${GNOSIS_RPC_URL:?set GNOSIS_RPC_URL}
+      BEE_PASSWORD_FILE: /run/secrets/bee_password
+      BEE_DATA_DIR: /home/bee/.bee
+      BEE_VERBOSITY: info
+    ports:
+      - '127.0.0.1:11633:1633'
+    volumes:
+      - bee-data:/home/bee/.bee
+    secrets:
+      - bee_password
+  publisher:
+    image: ${SWARM_PUBLISHER_IMAGE:-livepeer-swarm-publisher:local}
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      BEE_URL: http://127.0.0.1:11633
+      ORCH_SECRET_FILE: /run/secrets/orch_secret
+    command:
+      - --host=127.0.0.1
+      - --port=8992
+      - --orchestrator=https://ai1.eliteencoder.net:8936
+      - --runner-url=http://127.0.0.1:8992
+      - --price=${PRICE_USD_PER_HOUR:?set capability price explicitly}
+    secrets:
+      - orch_secret
+    depends_on:
+      - bee
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8992/healthz', timeout=3)"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+secrets:
+  bee_password:
+    file: ./secrets/bee-password
+  orch_secret:
+    file: ./secrets/orch-secret
+volumes:
+  bee-data:

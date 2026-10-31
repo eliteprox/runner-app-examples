@@ -15,11 +15,13 @@ from __future__ import annotations
 import argparse
 import logging
 import os
+from pathlib import Path
 from contextlib import suppress
 
 import aiohttp
 from aiohttp import web
 from livepeer_gateway.live_runner import register_runner
+from livepeer_swarm.service import LiveService
 from livepeer_swarm import SwarmPublisher, SwarmPublishError, unwrap
 
 DEFAULT_HOST = "127.0.0.1"
@@ -33,7 +35,11 @@ publisher = SwarmPublisher(os.environ.get("BEE_URL"))
 def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Live Runner swarm-publish demo.")
     parser.add_argument("--orchestrator", default="https://localhost:8935")
-    parser.add_argument("--orchSecret", default="abcdef")
+    parser.add_argument("--orchSecret", default=os.environ.get("ORCH_SECRET", "abcdef"))
+    parser.add_argument(
+        "--orch-secret-file", default=os.environ.get("ORCH_SECRET_FILE")
+    )
+    parser.add_argument("--port", type=int, default=DEFAULT_PORT)
     parser.add_argument("--runner-url", default=f"http://{DEFAULT_HOST}:{DEFAULT_PORT}")
     parser.add_argument(
         "--host", default=DEFAULT_HOST, help="Bind address (use 0.0.0.0 in containers)."
@@ -78,6 +84,9 @@ def main() -> None:
         level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s"
     )
     args = _parse_args()
+    if args.orch_secret_file:
+        args.orchSecret = Path(args.orch_secret_file).read_text().strip()
+    live = LiveService(os.environ.get("BEE_URL", ""))
     if publisher.enabled:
         log.info("swarm publish on %s", os.environ.get("BEE_URL"))
     else:
@@ -91,6 +100,8 @@ def main() -> None:
             app=APP_ID,
             mode="persistent",
             price=args.price,  # USD per hour
+            auto_detect_gpu=False,
+            on_session_release=live.released,
         )
         log.info(
             "registered runner_id=%s orchestrator=%s",
@@ -104,10 +115,11 @@ def main() -> None:
             await app["registration"].close()  # Livepeer: 2
 
     app = web.Application()
+    live.attach(app)
     app.router.add_get("/ingest", _handle_ingest)
     app.on_startup.append(_on_startup)
     app.on_cleanup.append(_on_cleanup)
-    web.run_app(app, host=args.host, port=DEFAULT_PORT)
+    web.run_app(app, host=args.host, port=args.port)
 
 
 if __name__ == "__main__":
