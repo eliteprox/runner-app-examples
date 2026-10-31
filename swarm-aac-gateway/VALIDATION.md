@@ -90,3 +90,19 @@ Validation: all 33 application tests pass, including real offchain Trickle tests
 all five hosted-gateway tests pass against the updated application. New regression
 tests cover discovery stalls, ordered playback across short backlogs, stale startup
 frontiers, broadcast changes, and cancellation of every pipeline task.
+
+## Reconnect startup improvement
+
+The gateway now retains a bounded cache of authenticated feed frontiers across
+sessions. On eliteprd4, isolated feed discovery took 6.643 seconds cold versus
+2.331 seconds when reusing verified frontiers. A subsequent paid HTTP-bridge test
+measured 14.016 seconds to first AAC bytes after deployment and 8.440 seconds on
+reconnect. Those totals include discovery, reservation/payment setup, channel
+creation, retrieval and initial playback buffering, but not VLC's own playback
+buffer. These are two startup observations, not a startup-latency guarantee.
+
+All six hosted-gateway tests pass, including real offchain AAC delivery and the
+new regression verifying that reconnects probe from the authenticated frontier
+instead of restarting from index zero. The cache is cleared on process restart;
+a new station still has a cold-start cost. No paid session is held open merely to
+keep the gateway warm between listeners.
