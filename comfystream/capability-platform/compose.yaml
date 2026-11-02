@@ -1,0 +1,23 @@
+services:
+  runner:
+    image: ${CAPABILITY_IMAGE:?Set the tested candidate image}
+    build:
+      context: .
+      target: ${PROFILE:-media}
+      args:
+        COMFYSTREAM_REF: ${COMFYSTREAM_REF:?Set an immutable package commit}
+        PROFILE: ${PROFILE:-media}
+    gpus: all
+    ports:
+      - "127.0.0.1:${RUNNER_PORT:-18991}:8991"
+    volumes:
+      - ${MODEL_CACHE:?Set the existing model cache}:/workspace/ComfyUI/models:ro
+      - ${HF_CACHE:?Set an immutable Hugging Face cache}:/models/hf:ro
+      - ${STATE_DIR:?Set a persistent candidate state directory}:/state
+    environment:
+      HF_HUB_CACHE: /models/hf
+      CUDA_VISIBLE_DEVICES: ${GPU_DEVICE:-0}
+      LIVEPEER_ORCH_URL: ${LIVEPEER_ORCH_URL:-https://localhost:8935}
+      LIVEPEER_ORCH_SECRET: ${LIVEPEER_ORCH_SECRET:?Set the orchestrator secret}
+      LIVEPEER_RUNNER_URL: ${LIVEPEER_RUNNER_URL:-http://127.0.0.1:18991}
+    command: ["--host=0.0.0.0", "--port=8991", "--workspace=/workspace/ComfyUI", "--skip-bootstrap", "--skip-batch"]

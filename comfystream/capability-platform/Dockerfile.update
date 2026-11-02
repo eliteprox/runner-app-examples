@@ -1,0 +1,10 @@
+# syntax=docker/dockerfile:1
+# Use only a previously tested immutable base image; dependency locks stay enforced.
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
+ARG COMFYSTREAM_REF
+RUN test ${#COMFYSTREAM_REF} -eq 40 \
+    && uv pip install --python /opt/venv/bin/python \
+       --constraint /opt/source/requirements-linux-media.lock \
+       "comfystream[media,live-runner,ffmpeg] @ git+https://github.com/eliteprox/comfystream.git@${COMFYSTREAM_REF}"
+LABEL org.opencontainers.image.revision=${COMFYSTREAM_REF}
