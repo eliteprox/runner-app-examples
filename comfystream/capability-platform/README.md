@@ -20,8 +20,8 @@ Build the selected package revision with:
 
 ```sh
 docker build --target media --build-arg PROFILE=media \
-  --build-arg COMFYSTREAM_REF=7955243db071f5d4191c1bf600dfc108fa5a6340 \
-  -t comfystream-catalog:7955243 .
+  --build-arg COMFYSTREAM_REF=fda5ad3e6f9c05328d2e841bd1fd0054c1f14ecf \
+  -t comfystream-catalog:fda5ad3 .
 ```
 
 `comfystream-catalog-runner --config /state/deployment.json` provides synchronous
@@ -50,3 +50,4 @@ HTTP acceptance results and public registration declarations to the state volume
 The fixture volume contains `inputs/subject.png` and `inputs/reference.wav`. These
 checks establish runner behavior; gateway/operator admission and paid accounting
 remain separate acceptance steps. Not all nine models are deployed or certified.
+
