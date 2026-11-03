@@ -1,0 +1,28 @@
+services:
+  catalog:
+    image: ${CATALOG_IMAGE:?Set the tested immutable image reference}
+    pull_policy: never
+    network_mode: host
+    restart: unless-stopped
+    entrypoint: comfystream-catalog-runner
+    command: ["--config", "/state/deployment.json", "--port", "8993"]
+    env_file: ["${CATALOG_ENV_FILE:?Set the private runtime environment file}"]
+    environment:
+      COMFYSTREAM_CAPACITY_FILE: /state/gpu.lock
+      COMFYSTREAM_CAPABILITY_STATE: /state
+      CUDA_VISIBLE_DEVICES: "0"
+      HF_HUB_CACHE: /model-cache
+      HF_HUB_OFFLINE: "1"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ["${GPU_DEVICE:-0}"]
+              capabilities: [gpu]
+    volumes:
+      - ${STATE_DIR:?Set the catalog state directory}:/state
+      - ${HF_CACHE:?Set the immutable checkpoint cache}:/model-cache:ro
+      - ${FLUX_CACHE:?Set the existing FLUX snapshot cache}:/model-cache/models--black-forest-labs--FLUX.2-klein-4B:ro
+      - ${MODEL_CACHE:?Set the ComfyUI model cache}:/workspace/ComfyUI/models:ro
+      - ${NATIVE_CHECKPOINTS:?Set the native ACE checkpoint directory}:/workspace/ComfyUI/models/checkpoints:ro

@@ -1,0 +1,105 @@
+{
+  "date": "2026-11-03",
+  "transport": "Unpaid host-local HTTP; individual samples, not a sustained throughput benchmark",
+  "source_commit": "f207a08a17a013cea8b5be8defb5daf0cc75a6de",
+  "orchestrators": {
+    "ada": "https://ai1.eliteencoder.net:8936",
+    "rtx4090": "https://ai.eliteencoder.net:8936"
+  },
+  "samples": [
+    {
+      "operation": "FLUX Klein 512x512, 4 steps",
+      "ada_first_seconds": 15.07,
+      "rtx4090_first_seconds": 14.026,
+      "ada_warm_seconds": 1.247,
+      "rtx4090_warm_seconds": 0.774
+    },
+    {
+      "operation": "ACE-Step 5 seconds audio",
+      "ada_warm_seconds": 2.204,
+      "rtx4090_warm_seconds": 2.067
+    }
+  ],
+  "rtx4090_acceptance": {
+    "flux_and_birefnet": "passed; warm residency and model switch verified",
+    "remaining_models": [
+      {
+        "capability": "whisper",
+        "status": "passed",
+        "seconds": 9.363,
+        "output_bytes": 45,
+        "text": " The quick brown fox jumps over the lazy dog."
+      },
+      {
+        "capability": "ace-music",
+        "status": "passed",
+        "seconds": 16.618,
+        "output_bytes": 960044,
+        "audio_seconds": 5.0
+      },
+      {
+        "capability": "triposr",
+        "status": "passed",
+        "seconds": 13.59,
+        "output_bytes": 9550144,
+        "mesh_has_vertices_and_faces": true
+      }
+    ],
+    "ace_repeat": "same worker across seven idle seconds"
+  },
+  "network_verification": [
+    {
+      "app": "flux-klein",
+      "orchestrators": [
+        "https://ai1.eliteencoder.net:8936",
+        "https://ai.eliteencoder.net:8936"
+      ],
+      "runner_id": "eliteprd2-4090-flux-image",
+      "shared_capacity_group": "eliteprd2-4090-gpu0"
+    },
+    {
+      "app": "birefnet",
+      "orchestrators": [
+        "https://ai1.eliteencoder.net:8936",
+        "https://ai.eliteencoder.net:8936"
+      ],
+      "runner_id": "eliteprd2-4090-birefnet",
+      "shared_capacity_group": "eliteprd2-4090-gpu0"
+    },
+    {
+      "app": "whisper",
+      "orchestrators": [
+        "https://ai1.eliteencoder.net:8936",
+        "https://ai.eliteencoder.net:8936"
+      ],
+      "runner_id": "eliteprd2-4090-whisper",
+      "shared_capacity_group": "eliteprd2-4090-gpu0"
+    },
+    {
+      "app": "ace-step",
+      "orchestrators": [
+        "https://ai1.eliteencoder.net:8936",
+        "https://ai.eliteencoder.net:8936"
+      ],
+      "runner_id": "eliteprd2-4090-ace-music",
+      "shared_capacity_group": "eliteprd2-4090-gpu0"
+    },
+    {
+      "app": "triposr",
+      "orchestrators": [
+        "https://ai1.eliteencoder.net:8936",
+        "https://ai.eliteencoder.net:8936"
+      ],
+      "runner_id": "eliteprd2-4090-triposr",
+      "shared_capacity_group": "eliteprd2-4090-gpu0"
+    }
+  ],
+  "image_identity": {
+    "config_digest": "sha256:a9a862f41c5f242e8dab295bb779f93813ae5de9ccf0d263f4a9a6796fbff2e6",
+    "manifest_digest": "sha256:5f481a70f3022c4d649d0e0476f922053f81fa17e765041662f839a757632e9f",
+    "verified_rootfs": true
+  },
+  "discovery": "Both orchestrators were already in the production static directory; no duplicate URL or service redeployment required",
+  "placement": "eliteprd2 GPU0; GPU1 free; eliteprd3 unchanged",
+  "paid_tests": "not submitted"
+}
