@@ -1,0 +1,31 @@
+{
+  "image": "local/comfystream-catalog@sha256:a9a862f41c5f242e8dab295bb779f93813ae5de9ccf0d263f4a9a6796fbff2e6",
+  "capacity_group": "eliteprd2-4090-gpu0",
+  "models": {
+    "flux-image": {
+      "app": "flux-klein",
+      "runner_id": "eliteprd2-4090-flux-image",
+      "price": "0.02"
+    },
+    "birefnet": {
+      "app": "birefnet",
+      "runner_id": "eliteprd2-4090-birefnet",
+      "price": "0.02"
+    },
+    "whisper": {
+      "app": "whisper",
+      "runner_id": "eliteprd2-4090-whisper",
+      "price": "0.02"
+    },
+    "ace-music": {
+      "app": "ace-step",
+      "runner_id": "eliteprd2-4090-ace-music",
+      "price": "0.02"
+    },
+    "triposr": {
+      "app": "triposr",
+      "runner_id": "eliteprd2-4090-triposr",
+      "price": "0.02"
+    }
+  }
+}
